@@ -3,13 +3,28 @@
 
 #include "ArinaCharacter.h"
 
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInput/Public//EnhancedInputComponent.h"
+#include "Arina/ArinaInputConfigData.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
 AArinaCharacter::AArinaCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	CameraSpringArm->SetupAttachment(GetMesh());
+	CameraSpringArm->TargetArmLength = 600.f;
+	CameraSpringArm->bUsePawnControlRotation = true;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -18,6 +33,7 @@ void AArinaCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
 
 // Called every frame
 void AArinaCharacter::Tick(float DeltaTime)
@@ -31,5 +47,75 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (PC == nullptr)
+	{
+		return;
+	}
+
+	if (UEnhancedInputLocalPlayerSubsystem* LocalSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+	{
+		LocalSubsystem->ClearAllMappings();
+		LocalSubsystem->AddMappingContext(InputMapping, 0);
+	}
+
+	UEnhancedInputComponent* PEI = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	PEI->BindAction(InputActions->InputMoveForward, ETriggerEvent::Triggered, this, &ThisClass::MoveForward);
+	PEI->BindAction(InputActions->InputMoveRight, ETriggerEvent::Triggered, this, &ThisClass::MoveRight);
+	PEI->BindAction(InputActions->InputLookUp, ETriggerEvent::Triggered, this, &ThisClass::LookUp);
+	PEI->BindAction(InputActions->InputLookRight, ETriggerEvent::Triggered, this, &ThisClass::LookRight);
+
 }
 
+void AArinaCharacter::MoveForward(const FInputActionValue& Value)
+{
+	if (Controller != nullptr)
+	{
+		float MoveForwardValue = Value.Get<float>();
+
+		if (MoveForwardValue != 0.f)
+		{
+			AddMovementInput(GetActorForwardVector(), MoveForwardValue);
+		}
+	}
+}
+
+void AArinaCharacter::MoveRight(const FInputActionValue& Value)
+{
+	if (Controller != nullptr)
+	{
+		double MoveRightValue = Value.Get<float>();
+
+		if (MoveRightValue != 0.f)
+		{
+			AddMovementInput(GetActorRightVector(), MoveRightValue);
+		}
+	}
+}
+
+void AArinaCharacter::LookUp(const FInputActionValue& Value)
+{
+	if (Controller != nullptr)
+	{
+		double LookUpValue = Value.Get<FVector2D>().Y;
+
+		if (LookUpValue != 0.f)
+		{
+			AddControllerPitchInput(LookUpValue);
+		}
+	}
+}
+
+void AArinaCharacter::LookRight(const FInputActionValue& Value)
+{
+	if (Controller != nullptr)
+	{
+		double LookRightValue = Value.Get<FVector2D>().X;
+
+		if (LookRightValue != 0.f)
+		{
+			AddControllerYawInput(LookRightValue);
+		}
+	}
+}
