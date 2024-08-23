@@ -11,10 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Arina.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/Arina.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultGame.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultGame.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Arina.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Arina.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultInput.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -483,6 +483,7 @@
       <updated>1724355788167</updated>
       <workItem from="1724355789629" duration="7000" />
       <workItem from="1724356583544" duration="1926000" />
+      <workItem from="1724359277940" duration="3331000" />
     </task>
     <servers />
   </component>
