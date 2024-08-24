@@ -11,12 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Arina/ArinaInputConfigData.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arina.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/Arina.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Architecture/Platform/Material/MI_Platform_M_A.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Architecture/Platform/Material/MI_Platform_M_A.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/GameStartup.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/GameStartup.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Maps/Lobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/Lobby.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +45,8 @@
     <setting file="file://$PROJECT_DIR$/Source/Arina/ArinaInputConfigData.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Arina/GameMode/ArinaLobbyGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Arina/GameMode/ArinaLobbyGameMode.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -495,6 +495,7 @@
       <workItem from="1724428985511" duration="2158000" />
       <workItem from="1724435911190" duration="647000" />
       <workItem from="1724436652656" duration="8178000" />
+      <workItem from="1724444897064" duration="6979000" />
     </task>
     <servers />
   </component>
