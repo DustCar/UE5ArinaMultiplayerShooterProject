@@ -8,10 +8,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInput/Public//EnhancedInputComponent.h"
 #include "Arina/ArinaInputConfigData.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AArinaCharacter::AArinaCharacter()
 {
+	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = true;
 
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
@@ -25,13 +27,17 @@ AArinaCharacter::AArinaCharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	OverHeadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidgetComp"));
+	OverHeadWidget->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AArinaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//ServerSetPlayerName(ThisPlayerName);
 }
 
 

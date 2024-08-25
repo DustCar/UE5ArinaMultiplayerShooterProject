@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ArinaCharacter.generated.h"
 
+class UWidgetComponent;
 struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
@@ -41,6 +42,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	UWidgetComponent* OverHeadWidget;
+
+	UPROPERTY(EditAnywhere, Category = "PlayerStats")
+	FString ThisPlayerName = TEXT("Unnamed");
 
 	void MoveForward(const FInputActionValue& Value);
 
