@@ -86,12 +86,15 @@ void AArinaBaseWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedCompone
 	}
 }
 
+// notifies client when WeaponState changes, i.e. when a weapon gets equipped
 void AArinaBaseWeapon::OnRep_WeaponState()
 {
 	switch (WeaponState)
 	{
 	case EWeaponState::EWS_Equipped:
-		// ShowPickupWidget(false);
+		// Do not need to call the function since server disables weapons pickup collision when character overlap ends
+		// hiding the widget
+		/*ShowPickupWidget(false);*/
 		break;
 	}
 }
@@ -103,7 +106,8 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 	switch (WeaponState)
 	{
 	case EWeaponState::EWS_Equipped:
-		ShowPickupWidget(false);
+		// Same reasoning as in the OnRep version
+		/*ShowPickupWidget(false);*/
 		PickupArea->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
 	}
