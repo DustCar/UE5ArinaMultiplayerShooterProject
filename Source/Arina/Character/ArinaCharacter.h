@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ArinaCharacter.generated.h"
 
+class UArinaCombatComponent;
+class AArinaBaseWeapon;
 class UWidgetComponent;
 struct FInputActionValue;
 class UCameraComponent;
@@ -17,15 +19,12 @@ class ARINA_API AArinaCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AArinaCharacter();
-
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -46,18 +45,29 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	UWidgetComponent* OverHeadWidget;
 
-	UPROPERTY(EditAnywhere, Category = "PlayerStats")
-	FString ThisPlayerName = TEXT("Unnamed");
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
+	AArinaBaseWeapon* OverlappingWeapon;
+
+	UPROPERTY(VisibleAnywhere)
+	UArinaCombatComponent* CombatComp;
+
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(AArinaBaseWeapon* LastWeapon);
+
+	UFUNCTION(Server, Reliable)
+	void ServerEquipItem();
 
 	void MoveForward(const FInputActionValue& Value);
-
 	void MoveRight(const FInputActionValue& Value);
-
 	void LookUp(const FInputActionValue& Value);
-
 	void LookRight(const FInputActionValue& Value);
+	void EquipItem();
+	void CrouchPlayer();
+	void AimIn(const FInputActionValue& Value);
 
 public:	
-	
+	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
+	bool IsWeaponEquipped();
+	bool IsAiming();
 
 };

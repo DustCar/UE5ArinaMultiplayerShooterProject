@@ -31,4 +31,22 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
 	bool bIsAccelerating;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	bool bWeaponEquipped;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+    bool bIsCrouched;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	bool bAiming;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	float YawOffset;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	float Lean;
+
+	FRotator CharacterRotationLastFrame;
+	FRotator CharacterRotation;
 };

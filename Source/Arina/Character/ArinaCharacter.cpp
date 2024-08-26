@@ -8,8 +8,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInput/Public//EnhancedInputComponent.h"
 #include "Arina/ArinaInputConfigData.h"
+#include "Arina/ArinaComponents/ArinaCombatComponent.h"
+#include "Arina/Weapon/ArinaBaseWeapon.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AArinaCharacter::AArinaCharacter()
 {
@@ -30,6 +33,29 @@ AArinaCharacter::AArinaCharacter()
 
 	OverHeadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidgetComp"));
 	OverHeadWidget->SetupAttachment(RootComponent);
+
+	CombatComp = CreateDefaultSubobject<UArinaCombatComponent>(TEXT("CombatComponent"));
+	CombatComp->SetIsReplicated(true);
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+}
+
+void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ThisClass, OverlappingWeapon, COND_OwnerOnly);
+}
+
+// Runs after all components of actor have been initialized
+void AArinaCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (CombatComp)
+	{
+		CombatComp->Character = this;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -37,7 +63,6 @@ void AArinaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ServerSetPlayerName(ThisPlayerName);
 }
 
 
@@ -71,6 +96,9 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PEI->BindAction(InputActions->InputMoveRight, ETriggerEvent::Triggered, this, &ThisClass::MoveRight);
 	PEI->BindAction(InputActions->InputLookUp, ETriggerEvent::Triggered, this, &ThisClass::LookUp);
 	PEI->BindAction(InputActions->InputLookRight, ETriggerEvent::Triggered, this, &ThisClass::LookRight);
+	PEI->BindAction(InputActions->InputEquipItem, ETriggerEvent::Triggered, this, &ThisClass::EquipItem);
+	PEI->BindAction(InputActions->InputCrouch, ETriggerEvent::Triggered, this, &ThisClass::CrouchPlayer);
+	PEI->BindAction(InputActions->InputAim, ETriggerEvent::Triggered, this, &ThisClass::AimIn);
 
 }
 
@@ -124,4 +152,98 @@ void AArinaCharacter::LookRight(const FInputActionValue& Value)
 			AddControllerYawInput(LookRightValue);
 		}
 	}
+}
+
+void AArinaCharacter::CrouchPlayer()
+{
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Crouch();
+	}
+}
+
+void AArinaCharacter::AimIn(const FInputActionValue& Value)
+{
+	if (CombatComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IA value: %hhd"), Value.Get<bool>())
+		CombatComp->SetAiming(Value.Get<bool>());
+	}
+}
+
+void AArinaCharacter::SetOverlappingWeapon(AArinaBaseWeapon* Weapon)
+{
+	// Check for the character that is owned by the server machine, since OnRep_OverlappingWeapon will not run for the
+	// server because replication does not occur for the server machine
+	// Without check, widget would disappear for server if the client walks away from weapon, despite the server overlapping
+	if (IsLocallyControlled())
+	{
+		if (OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickupWidget(false);
+		}
+	}
+	
+	OverlappingWeapon = Weapon;
+
+	// Same check as before, keeps it server-side only 
+	// Without check, server would see the widget if a Client is overlapping a weapon
+	if (IsLocallyControlled())
+	{
+		if (OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickupWidget(true);
+		}
+	}
+}
+
+void AArinaCharacter::OnRep_OverlappingWeapon(AArinaBaseWeapon* LastWeapon)
+{
+	if (OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(true);
+	}
+	if (LastWeapon)
+	{
+		LastWeapon->ShowPickupWidget(false);
+	}
+}
+
+void AArinaCharacter::EquipItem()
+{
+	if (CombatComp)
+	{
+		// if server machine, directly call the combat comp EquipWeapon() function
+		if (HasAuthority())
+		{
+			CombatComp->EquipWeapon(OverlappingWeapon);
+		}
+		// if client machine, call the Server RPC version of EquipItem()
+		else
+		{
+			ServerEquipItem();
+		}
+	}
+}
+
+void AArinaCharacter::ServerEquipItem_Implementation()
+{
+	if (CombatComp)
+	{
+		CombatComp->EquipWeapon(OverlappingWeapon);
+	}
+}
+
+bool AArinaCharacter::IsWeaponEquipped()
+{
+	return (CombatComp && CombatComp->EquippedWeapon);
+}
+
+bool AArinaCharacter::IsAiming()
+{
+	return (CombatComp && CombatComp->bAiming);
 }
