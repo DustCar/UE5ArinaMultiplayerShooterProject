@@ -52,4 +52,7 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	const float Target = Delta.Yaw / DeltaSeconds;
 	const float InterpTarget = FMath::FInterpTo(Lean, Target, DeltaSeconds, 6.f);
 	Lean = FMath::Clamp(InterpTarget, -90.f, 90.f);
+
+	AO_Yaw = ArinaCharacter->GetAO_Yaw();
+	AO_Pitch = ArinaCharacter->GetAO_Pitch();
 }

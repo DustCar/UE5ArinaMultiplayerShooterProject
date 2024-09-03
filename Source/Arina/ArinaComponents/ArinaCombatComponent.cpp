@@ -15,6 +15,9 @@ UArinaCombatComponent::UArinaCombatComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	bAiming = false;
+
+	BaseWalkSpeed = 600.f;
+	AimWalkSpeed = 400.f;
 }
 
 
@@ -22,13 +25,10 @@ void UArinaCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
-}
-
-void UArinaCombatComponent::SetAiming(bool bIsAiming)
-{
-	bAiming = bIsAiming;
-	ServerSetAiming(bIsAiming);
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	}
 }
 
 // notifies clients to set rotation back to camera
@@ -41,9 +41,25 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 	}
 }
 
+// local setting
+void UArinaCombatComponent::SetAiming(bool bIsAiming)
+{
+	bAiming = bIsAiming;
+	ServerSetAiming(bIsAiming);
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
+}
+
+// calls to the server to implement changes server wide
 void UArinaCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 {
 	bAiming = bIsAiming;
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
 }
 
 void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

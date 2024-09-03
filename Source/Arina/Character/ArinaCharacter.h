@@ -35,6 +35,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	class UArinaInputConfigData* InputActions;
 
+	void MoveForward(const FInputActionValue& Value);
+	void MoveRight(const FInputActionValue& Value);
+	void LookUp(const FInputActionValue& Value);
+	void LookRight(const FInputActionValue& Value);
+	void EquipItem();
+	void CrouchPlayer();
+	void AimIn(const FInputActionValue& Value);
+	void AimOffset(float DeltaTime);
+	
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	USpringArmComponent* CameraSpringArm;
@@ -57,17 +67,15 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerEquipItem();
 
-	void MoveForward(const FInputActionValue& Value);
-	void MoveRight(const FInputActionValue& Value);
-	void LookUp(const FInputActionValue& Value);
-	void LookRight(const FInputActionValue& Value);
-	void EquipItem();
-	void CrouchPlayer();
-	void AimIn(const FInputActionValue& Value);
+	float AO_Yaw;
+	float AO_Pitch;
+	FRotator StartingAimRotation;
 
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
 	bool IsWeaponEquipped();
 	bool IsAiming();
-
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	
 };

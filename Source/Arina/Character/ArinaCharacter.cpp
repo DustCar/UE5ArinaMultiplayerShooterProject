@@ -10,8 +10,10 @@
 #include "Arina/ArinaInputConfigData.h"
 #include "Arina/ArinaComponents/ArinaCombatComponent.h"
 #include "Arina/Weapon/ArinaBaseWeapon.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 AArinaCharacter::AArinaCharacter()
@@ -38,6 +40,9 @@ AArinaCharacter::AArinaCharacter()
 	CombatComp->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
+
 }
 
 void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -71,6 +76,7 @@ void AArinaCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AimOffset(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -170,9 +176,39 @@ void AArinaCharacter::AimIn(const FInputActionValue& Value)
 {
 	if (CombatComp)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("IA value: %hhd"), Value.Get<bool>())
 		CombatComp->SetAiming(Value.Get<bool>());
 	}
+}
+
+void AArinaCharacter::AimOffset(float DeltaTime)
+{
+	if (CombatComp && CombatComp->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.f;
+	float CharacterSpeed = Velocity.Size();
+	bool bIsInAir = GetCharacterMovement()->IsFalling();
+
+	// obtain yaw of the character for aim offsets when not moving
+	// standing still and not jumping
+	if (CharacterSpeed == 0.f && !bIsInAir)
+	{
+		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
+		AO_Yaw = DeltaAimRotation.Yaw;
+		bUseControllerRotationYaw = false;
+	}
+	// running or jumping
+	if (CharacterSpeed > 0.f || bIsInAir)
+	{
+		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		AO_Yaw = 0.f;
+		bUseControllerRotationYaw = true;
+	}
+
+	AO_Pitch = GetBaseAimRotation().Pitch;
 }
 
 void AArinaCharacter::SetOverlappingWeapon(AArinaBaseWeapon* Weapon)
