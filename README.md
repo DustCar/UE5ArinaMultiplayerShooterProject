@@ -28,6 +28,10 @@ Here are a few things I added that were not done as part of the course:
 # Project Showcase
 
 ## Multiplayer Plugin
+A Game Module plugin that can be used in any project that is meant to be used with Steam. Uses a client-server model with a listen server as host. Includes a simple menu with the ability to host and join active sessions. Client travel map is configurable in Blueprints.
 
+### Functionality
+
+### Menu Design
 
 
