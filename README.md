@@ -37,6 +37,7 @@ I created 5 local functions that are used as setup functions for the actual Sess
 
 All delegates were created during initialization using `CreateUObject()` from their respective structs.
 
+**FUNCTIONS**
 ---
 #### CreateSession
 Function: `void CreateSession(int32 NumPublicConnections, FString MatchType)`
@@ -102,7 +103,18 @@ Function: `void StartSession()`
 
 ---
 ### Menu
-For the menu, I created some custom delegates on the _MultiplayerSessionsSubsystem_ class
+A UserWidget class that includes functions for UI setup, button functionality, and similar session functions like in _MultiplayerSessionsSubsystems_ but tailored to calling the Session Intrerface functions and actually moving the player.
+
+To use the functions from the Subsystem, the Menu class had to reference the Subsystem. That way the Menu class can start the Session pipeline and call `CreateSession()` on MultiplayerSessionsSubsystems. However, to continue the pipeline, the Menu class needed to know when its functions would be called in order to do the actual travel. 
+
+This was accomplished by declaring custom delegates on the Subsystem class and binding the Menu class functions to it. This essentially allows the Subsystem class to call Menu functions by broadcasting, avoiding a direct reference to the Menu class. This keeps dependency one-way; Menu depends on Subsystem, but Subsystem does not depend on Menu.
+
+Custom delegates added to MultiplayerSessionsSubsystems:
+- `FMultiplayerOnCreateSessionComplete MultiplayerCreateSessionCompleteDelegate`: Dynamic Multicast OneParam Delegate
+- `FMultiplayerOnFindSessionsComplete MultiplayerFindSessionsCompleteDelegate`: Multicast TwoParam Delegate
+- `FMultiplayerOnJoinSessionComplete MultiplayerJoinSessionCompleteDelegate`: Multicast TwoParam Delegate
+- `FMultiplayerOnDestroySessionComplete MultiplayerDestroySessionCompleteDelegate`: Dynamic Multicast OneParam Delegate
+- `FMultiplayerOnStartSessionComplete MultiplayerStartSessionCompleteDelegate`: Dynamic Multicast OneParam Delegate
 
 
 
