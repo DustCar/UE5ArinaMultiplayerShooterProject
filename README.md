@@ -50,6 +50,7 @@ Function: `void CreateSession(int32 NumPublicConnections, FString MatchType)`
 
 **Delegate callback function:** `void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)`
 - Clears the delegate from the delegate list using the delegate handle, if Session Interface is valid.
+- Broadcasts to `MultiplayerCreateSessionCompleteDelegate` with _bWasSuccessful_ as parameter.
 
 ---
 
@@ -63,6 +64,7 @@ Function: `void FindSessions(int32 MaxSearchResults)`
 
 **Delegate callback function:** `void OnFindSessionsComplete(bool bWasSuccessful)`
 - Clears the delegate from the delegate list using the delegate handle, if Session Interface is valid.
+- Broadcasts to `MultiplayerFindSessionsCompleteDelegate`. If any results are found, passes in _SearchResults_ array and _bWasSuccessful_, else, passes in an empty array and false.
 
 ---
 
@@ -75,6 +77,8 @@ Function: `void JoinSession(const FOnlineSessionSearchResult& SessionResult)`
 
 **Delegate callback function:** `void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)`
 - Clears the delegate from the delegate list using the delegate handle, if Session Interface is valid.
+- Calls `SessionInterface->GetResolvedConnectString(NAME_GameSession, ObtainedAddress)` and stores address info in _ObtainedAddress_.
+- Broadcasts to `MultiplayerJoinSessionCompleteDelegate` and passes in _Result_ and _ObtainedAddress_ if connect string was successful.
 
 ---
 
@@ -87,7 +91,8 @@ Function: `void DestroySession()`
 
 **Delegate callback function:** `void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)`
 - Clears the delegate from the delegate list using the delegate handle, if Session Interface is valid.
-- Calls `CreateSession(int32 NPC, FString MT)` again and passes in the _NumPublicConnections_ and _MatchType_ variables from CreateSession() that were saved in private member variables
+- Calls `CreateSession(int32 NPC, FString MT)` again and passes in the _NumPublicConnections_ and _MatchType_ variables from CreateSession() that were saved in private member variables.
+- Broadcasts to `MultiplayerDestroySessionCompleteDelegate` and passes in _bWasSuccessful_.
 
 ---
 
@@ -100,6 +105,7 @@ Function: `void StartSession()`
 
 **Delegate callback function:** `void OnStartSessionComplete(FName SessionName, bool bWasSuccessful)`
 - Clears the delegate from the delegate list using the delegate handle, if Session Interface is valid.
+- Broadcasts to `MultiplayerStartSessionCompleteDelegate` and passes in _bWasSuccessful_.
 
 ---
 ### Menu
@@ -109,14 +115,37 @@ To use the functions from the Subsystem, the Menu class had to reference the Sub
 
 This was accomplished by declaring custom delegates on the Subsystem class and binding the Menu class functions to it. This essentially allows the Subsystem class to call Menu functions by broadcasting, avoiding a direct reference to the Menu class. This keeps dependency one-way; Menu depends on Subsystem, but Subsystem does not depend on Menu.
 
-Custom delegates added to MultiplayerSessionsSubsystems:
+**Custom delegates added to MultiplayerSessionsSubsystems**:
 - `FMultiplayerOnCreateSessionComplete MultiplayerCreateSessionCompleteDelegate`: Dynamic Multicast OneParam Delegate
 - `FMultiplayerOnFindSessionsComplete MultiplayerFindSessionsCompleteDelegate`: Multicast TwoParam Delegate
 - `FMultiplayerOnJoinSessionComplete MultiplayerJoinSessionCompleteDelegate`: Multicast TwoParam Delegate
 - `FMultiplayerOnDestroySessionComplete MultiplayerDestroySessionCompleteDelegate`: Dynamic Multicast OneParam Delegate
 - `FMultiplayerOnStartSessionComplete MultiplayerStartSessionCompleteDelegate`: Dynamic Multicast OneParam Delegate
 
+**Functions in Menu**:
+- `void OnCreateSession(bool bWasSuccessful)`: on success, calls server travel and sends everyone to lobby level.
+- `void OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful)`: loops through SessionResults, checks if Result match type matches _MatchType_ member variable. If so, call `MultiplayerSessionsSubsystems->JoinSession(Result)`
+- `void OnJoinSession(EOnJoinSessionCompleteResult::Type Result, const FString& Address)`: if _Result_ is **Success**, gets player controller from game instance and calls `ClientTravel(Address, TRAVEL_Absolute)`
+- `void OnDestroySession(bool bWasSuccessful)`: Not used currently (Sep. 8, 2024)
+- `void OnStartSession(bool bWasSuccessful)`: Not used currently (Sep. 8, 2024)
 
+The callback functions that will be binded to the dynamic delegates are marked with the `UFUNCTION()` macro
 
+I binded the functions to the delegates in a function called `MenuSetup()` which includes other setup like assigning _MatchType_ and setting focus to the widget.
+
+**Menu Setup**
+---
+Menu class includes a function that sets up the Menu widget and all functions pertaining to running the Online Subsystem Session Interface code from the widget.
+
+Function: `MenuSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FString LobbyPath)`
+- Defines member variables _MatchType_, _NumPublicConnections_, and _PathToLobby_.
+- Adds widget to viewport, sets it as focus and shows mouse cursor using PlayerController
+- Gets MultiplayerSessionsSubsystem from game instance
+- Binds Menu functions to Subsystem custom delegates using `Delegate.AddDynamic()` for dynamic delegates and `Delegate.AddUObject()` for non-dynamic delegates
+
+Menu class also declares two button widgets that are bounded called **HostButton** and **JoinButton**. These buttons also have callback functions which are bounded to the `OnClicked` event in the `Initialize()` function.
+
+#### Menu Design and Demo
+Here is a video of how the menu looks, as well as how hosting and joining sessions looks.
 
 
