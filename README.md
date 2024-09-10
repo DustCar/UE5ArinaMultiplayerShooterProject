@@ -2,7 +2,7 @@
 
 **Many of what I have listed are things that I have already covered**
 
-**Last Update: 08/30/2024**
+**Last Update: 09/09/2024**
 
 # Project Purpose
 Personal project that I created alongside a UDemy course called "Unreal Engine 5 C++ Multiplayer Shooter" made by Stephen Ulibarri.
