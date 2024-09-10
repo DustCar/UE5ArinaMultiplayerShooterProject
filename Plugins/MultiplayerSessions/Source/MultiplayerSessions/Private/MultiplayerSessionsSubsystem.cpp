@@ -162,7 +162,7 @@ void UMultiplayerSessionsSubsystem::DestroySession()
 	
 }
 
-// Sets up delegates for DestroySession() Session Interface function and runs it
+// Sets up delegates for StartSession() Session Interface function and runs it
 // Different from the SI version of the function
 void UMultiplayerSessionsSubsystem::StartSession()
 {
@@ -232,7 +232,7 @@ void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOn
 	// Call GetResolvedConnectString() to obtain connection info and save into ObtainedAddress
 	if (SessionInterface->GetResolvedConnectString(NAME_GameSession, ObtainedAddress))
 	{
-		// Broadcast to custom delegate and pass in Result type and address info for the class callback funciton to use
+		// Broadcast to custom delegate and pass in Result type and address info for the class callback function to use
 		MultiplayerJoinSessionCompleteDelegate.Broadcast(Result, ObtainedAddress);
 	}
 }

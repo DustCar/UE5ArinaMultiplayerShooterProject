@@ -191,7 +191,7 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 	float CharacterSpeed = Velocity.Size();
 	bool bIsInAir = GetCharacterMovement()->IsFalling();
 
-	// obtain yaw of the character for aim offsets when not moving
+	// obtain yaw of the character for aim offsets when not moving. aim and move based on top half
 	// standing still and not jumping
 	if (CharacterSpeed == 0.f && !bIsInAir)
 	{
@@ -200,6 +200,7 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 		AO_Yaw = DeltaAimRotation.Yaw;
 		bUseControllerRotationYaw = false;
 	}
+	// aim and move whole character
 	// running or jumping
 	if (CharacterSpeed > 0.f || bIsInAir)
 	{

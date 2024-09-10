@@ -87,16 +87,6 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 {
 	if (bWasSuccessful)
 	{
-		/*if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(
-				-1,
-				15.f,
-				FColor::Yellow,
-				FString(TEXT("Session Created"))
-				);
-		}*/
-
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -106,15 +96,7 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 	else
 	{
 		HostButton->SetIsEnabled(true);
-		/*if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(
-				-1,
-				15.f,
-				FColor::Red,
-				FString(TEXT("Failed to create session!"))
-			);
-		}*/
+		
 	}
 }
 
@@ -164,27 +146,7 @@ void UMenu::OnDestroySession(bool bWasSuccessful)
 // Menu callback function for when a session is started
 void UMenu::OnStartSession(bool bWasSuccessful)
 {
-	if (bWasSuccessful)
-	{
-		/*if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(
-				3,
-				120.f,
-				FColor::Green,
-				FString(TEXT("Started session!"))
-			);
-		}*/
-	}
-	else
-	{
-		/*GEngine->AddOnScreenDebugMessage(
-			3,
-			120.f,
-			FColor::Red,
-			FString(TEXT("Failed to start session!"))
-		);*/
-	}
+	
 }
 
 // Function to run when host button is clicked

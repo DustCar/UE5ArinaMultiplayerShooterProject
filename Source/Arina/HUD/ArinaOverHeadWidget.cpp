@@ -53,30 +53,11 @@ void UArinaOverHeadWidget::ShowPlayerNetRole(APawn* InPawn)
 void UArinaOverHeadWidget::ShowPlayerName(APawn* InPawn)
 {
 	APlayerState* PlayerState = InPawn->GetPlayerState();
-	if (PlayerState)
+	if (PlayerState != nullptr)
 	{
 		FString PlayerName = FString::Printf(TEXT("%s"), *PlayerState->GetPlayerName());
 		SetDisplayText(PlayerName);
-
-		GetWorld()->GetTimerManager().ClearTimer(PlayerNameTimerHandle);
-	}
-	// repeat the function call until PlayerState is acquired, in turn acquiring PlayerName
-	else
-	{
-		if (PlayerNameTimerHandle.IsValid())
-		{
-			return;
-		}
-
-		// uses a lambda function for callback to this function
-		GetWorld()->GetTimerManager().SetTimer(PlayerNameTimerHandle,
-			[this, InPawn]()
-			{
-				ShowPlayerName(InPawn);
-			},
-			.5f,
-			true
-			);
+		
 	}
 }
 
