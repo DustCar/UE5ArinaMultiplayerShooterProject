@@ -148,4 +148,18 @@ Menu class also declares two button widgets that are bounded called **HostButton
 #### Menu Design and Demo
 Here is a video of how the menu looks, as well as how hosting and joining sessions looks.
 
+**Menu Design and Hosting a Session**
+
+https://github.com/user-attachments/assets/86407a68-38b3-472c-bf1b-c722b3ff6e69
+
+*_Note: Animations and gameplay are not finished in this clip and is from Sep. 3, 2024_
+
+**Joining Session**
+
+https://github.com/user-attachments/assets/a1305060-0539-45cb-94f1-51a09cb2688f
+
+*_Note: Animations and gameplay are not finished in this clip and is from Sep. 3, 2024_
+
+
+
 
