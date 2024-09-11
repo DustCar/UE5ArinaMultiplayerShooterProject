@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Arina/ArinaTypesHeaders/TurningInPlace.h"
 #include "ArinaAnimInstance.generated.h"
 
 class AArinaCharacter;
@@ -20,39 +21,48 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 private:
-	UPROPERTY(BlueprintReadWrite, Category = "Character", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = true))
 	AArinaCharacter* ArinaCharacter;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	float CharacterSpeed;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	bool bInAir;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	bool bIsAccelerating;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	bool bWeaponEquipped;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY()
+	class AArinaBaseWeapon* EquippedWeapon;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
     bool bIsCrouched;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	bool bAiming;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	float YawOffset;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	float Lean;
 
 	FRotator CharacterRotationLastFrame;
 	FRotator CharacterRotation;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	float AO_Yaw;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
 	float AO_Pitch;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
+	FTransform LeftHandTransform;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = true))
+	ETurningInPlace TurningInPlace;
 };

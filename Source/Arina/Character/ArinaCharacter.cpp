@@ -40,9 +40,12 @@ AArinaCharacter::AArinaCharacter()
 	CombatComp->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+
+	// Remove collision between character and camera to not bug out camera
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
 
+	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 }
 
 void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -199,6 +202,7 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
 		AO_Yaw = DeltaAimRotation.Yaw;
 		bUseControllerRotationYaw = false;
+		TurnInPlace(DeltaTime);
 	}
 	// aim and move whole character
 	// running or jumping
@@ -207,9 +211,31 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		AO_Yaw = 0.f;
 		bUseControllerRotationYaw = true;
+		TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 	}
 
 	AO_Pitch = GetBaseAimRotation().Pitch;
+
+	// handles issue of AO_Pitch becoming unsigned from yaw and pitch compression in the Character Movement Component class
+	if (AO_Pitch > 90.f && !IsLocallyControlled())
+	{
+		// map pitch from [270, 360) to [-90,0) for pawns that are not locally controlled
+		FVector2D InRange(270.f, 360.f);
+		FVector2D OutRange(-90.f, 0.f);
+		AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
+	}
+}
+
+void AArinaCharacter::TurnInPlace(float DeltaTime)
+{
+	if (AO_Yaw > 90.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Right;
+	}
+	else if (AO_Yaw < -90.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
 }
 
 void AArinaCharacter::SetOverlappingWeapon(AArinaBaseWeapon* Weapon)
@@ -283,4 +309,14 @@ bool AArinaCharacter::IsWeaponEquipped()
 bool AArinaCharacter::IsAiming()
 {
 	return (CombatComp && CombatComp->bAiming);
+}
+
+AArinaBaseWeapon* AArinaCharacter::GetEquippedWeapon() const
+{
+	if (CombatComp == nullptr)
+	{
+		return nullptr;
+	}
+
+	return CombatComp->EquippedWeapon;
 }

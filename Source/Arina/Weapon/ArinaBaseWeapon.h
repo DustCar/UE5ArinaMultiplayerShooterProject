@@ -73,5 +73,6 @@ private:
 public:
 	void SetWeaponState(EWeaponState State);
 	FORCEINLINE USphereComponent* GetPickupArea() const { return PickupArea; }
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 
 };

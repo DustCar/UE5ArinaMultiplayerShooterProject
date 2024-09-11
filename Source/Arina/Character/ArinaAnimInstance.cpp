@@ -3,6 +3,7 @@
 
 #include "ArinaAnimInstance.h"
 #include "ArinaCharacter.h"
+#include "Arina/Weapon/ArinaBaseWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -27,7 +28,7 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
-	// get velocity and zero out z so that velocity is focused just on movement on the horizontal plane
+	// Get velocity and zero out z so that velocity is focused just on movement on the horizontal plane
 	FVector Velocity = ArinaCharacter->GetVelocity();
 	Velocity.Z = 0.f;
 	CharacterSpeed = Velocity.Size();
@@ -36,8 +37,10 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsAccelerating = ArinaCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 
 	bWeaponEquipped = ArinaCharacter->IsWeaponEquipped();
+	EquippedWeapon = ArinaCharacter->GetEquippedWeapon();
 	bIsCrouched = ArinaCharacter->bIsCrouched;
 	bAiming = ArinaCharacter->IsAiming();
+	TurningInPlace = ArinaCharacter->GetTurningInPlace();
 
 	// Offset Yaw for strafing
 	FRotator AimRotation = ArinaCharacter->GetBaseAimRotation();
@@ -48,11 +51,31 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	CharacterRotationLastFrame = CharacterRotation;
 	CharacterRotation = ArinaCharacter->GetActorRotation();
 	const FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(CharacterRotation, CharacterRotationLastFrame);
-	// scales value up and makes value frame rate independent
+	// Scales value up and makes value frame rate independent
 	const float Target = Delta.Yaw / DeltaSeconds;
 	const float InterpTarget = FMath::FInterpTo(Lean, Target, DeltaSeconds, 6.f);
 	Lean = FMath::Clamp(InterpTarget, -90.f, 90.f);
 
 	AO_Yaw = ArinaCharacter->GetAO_Yaw();
 	AO_Pitch = ArinaCharacter->GetAO_Pitch();
+
+	// Assigns left hand to left hand socket position on weapon mesh. Used with FABRIK in the character ABP
+	if (bWeaponEquipped && EquippedWeapon && EquippedWeapon->GetWeaponMesh() && ArinaCharacter->GetMesh())
+	{
+		LeftHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform(FName("LeftHandSocket"));
+
+		FVector OutPos;
+		FRotator OutRot;
+		// Transforms left hand socket on weapon to be relative to "hand_r" bone space on character
+		// We use bone space to keep numbers small
+		ArinaCharacter->GetMesh()->TransformToBoneSpace(
+			FName("hand_r"),
+			LeftHandTransform.GetLocation(),
+			FRotator::ZeroRotator,
+			OutPos,
+			OutRot
+		);
+		LeftHandTransform.SetLocation(OutPos);
+		LeftHandTransform.SetRotation(FQuat(OutRot));
+	}
 }

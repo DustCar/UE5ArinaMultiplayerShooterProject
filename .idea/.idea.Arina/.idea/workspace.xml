@@ -11,17 +11,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/Arina/ArinaTypesHeaders/TurningInPlace.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultGame.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultGame.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_ArinaGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_ArinaGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/GameStartup.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/GameStartup.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/Lobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/Lobby.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/Menu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/Menu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaOverHeadWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaOverHeadWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaOverHeadWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaOverHeadWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +52,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Pawn.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerState.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Actor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Pawn.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/SkeletalMesh.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Public/Net/UnrealNetwork.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Public/TimerManager.h" root0="FORCE_HIGHLIGHTING" />
@@ -537,6 +537,7 @@
       <workItem from="1725865280872" duration="767000" />
       <workItem from="1725866176032" duration="674000" />
       <workItem from="1725867146206" duration="711000" />
+      <workItem from="1726005065186" duration="8285000" />
     </task>
     <servers />
   </component>
