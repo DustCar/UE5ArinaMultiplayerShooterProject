@@ -32,6 +32,7 @@ AArinaCharacter::AArinaCharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 800.f, 0.f);
 
 	OverHeadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidgetComp"));
 	OverHeadWidget->SetupAttachment(RootComponent);
@@ -46,6 +47,8 @@ AArinaCharacter::AArinaCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+	NetUpdateFrequency = 66.f;
+	MinNetUpdateFrequency = 33.f;
 }
 
 void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -100,7 +103,7 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	}
 
 	UEnhancedInputComponent* PEI = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	PEI->BindAction(InputActions->InputJump, ETriggerEvent::Triggered, this, &ThisClass::Jump);
 	PEI->BindAction(InputActions->InputMoveForward, ETriggerEvent::Triggered, this, &ThisClass::MoveForward);
 	PEI->BindAction(InputActions->InputMoveRight, ETriggerEvent::Triggered, this, &ThisClass::MoveRight);
 	PEI->BindAction(InputActions->InputLookUp, ETriggerEvent::Triggered, this, &ThisClass::LookUp);
@@ -119,7 +122,9 @@ void AArinaCharacter::MoveForward(const FInputActionValue& Value)
 
 		if (MoveForwardValue != 0.f)
 		{
-			AddMovementInput(GetActorForwardVector(), MoveForwardValue);
+			const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+			const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
+			AddMovementInput(Direction, MoveForwardValue);
 		}
 	}
 }
@@ -132,7 +137,9 @@ void AArinaCharacter::MoveRight(const FInputActionValue& Value)
 
 		if (MoveRightValue != 0.f)
 		{
-			AddMovementInput(GetActorRightVector(), MoveRightValue);
+			const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+			const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y));
+			AddMovementInput(Direction, MoveRightValue);
 		}
 	}
 }
@@ -201,7 +208,12 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
 		AO_Yaw = DeltaAimRotation.Yaw;
-		bUseControllerRotationYaw = false;
+		if (TurningInPlace == ETurningInPlace::ETIP_NotTurning)
+		{
+			InterpAO_Yaw = AO_Yaw;
+		}
+		
+		bUseControllerRotationYaw = true; // rotates character but gets cancelled when rotating bone in ABP
 		TurnInPlace(DeltaTime);
 	}
 	// aim and move whole character
@@ -226,6 +238,18 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 	}
 }
 
+void AArinaCharacter::Jump()
+{
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Super::Jump();
+	}
+}
+
 void AArinaCharacter::TurnInPlace(float DeltaTime)
 {
 	if (AO_Yaw > 90.f)
@@ -235,6 +259,16 @@ void AArinaCharacter::TurnInPlace(float DeltaTime)
 	else if (AO_Yaw < -90.f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
+	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
+	{
+		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0, DeltaTime, 4.f);
+		AO_Yaw = InterpAO_Yaw;
+		if (FMath::Abs(AO_Yaw) < 15.f)
+		{
+			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		}
 	}
 }
 

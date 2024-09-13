@@ -17,7 +17,7 @@ UArinaCombatComponent::UArinaCombatComponent()
 	bAiming = false;
 
 	BaseWalkSpeed = 600.f;
-	AimWalkSpeed = 400.f;
+	AimWalkSpeed = 350.f;
 }
 
 

@@ -44,6 +44,7 @@ protected:
 	void CrouchPlayer();
 	void AimIn(const FInputActionValue& Value);
 	void AimOffset(float DeltaTime);
+	virtual void Jump() override;
 	
 
 private:
@@ -69,6 +70,7 @@ private:
 	void ServerEquipItem();
 
 	float AO_Yaw;
+	float InterpAO_Yaw;
 	float AO_Pitch;
 	FRotator StartingAimRotation;
 

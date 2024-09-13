@@ -11,16 +11,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Arina/ArinaTypesHeaders/TurningInPlace.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Idle_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Idle_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Turn_Left.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Turn_Left.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Turn_Left_Standing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Turn_Left_Standing.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Turn_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Turn_Right.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Turning_Right_45_Degrees.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Turning_Right_45_Degrees.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/BlendSpaces/BS_EquippedRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/BlendSpaces/BS_EquippedRun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -537,7 +541,11 @@
       <workItem from="1725865280872" duration="767000" />
       <workItem from="1725866176032" duration="674000" />
       <workItem from="1725867146206" duration="711000" />
-      <workItem from="1726005065186" duration="8285000" />
+      <workItem from="1726005065186" duration="20573000" />
+      <workItem from="1726117802271" duration="915000" />
+      <workItem from="1726171285102" duration="889000" />
+      <workItem from="1726173942935" duration="83000" />
+      <workItem from="1726174399114" duration="19000" />
     </task>
     <servers />
   </component>
