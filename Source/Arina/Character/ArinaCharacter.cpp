@@ -111,6 +111,7 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PEI->BindAction(InputActions->InputEquipItem, ETriggerEvent::Triggered, this, &ThisClass::EquipItem);
 	PEI->BindAction(InputActions->InputCrouch, ETriggerEvent::Triggered, this, &ThisClass::CrouchPlayer);
 	PEI->BindAction(InputActions->InputAim, ETriggerEvent::Triggered, this, &ThisClass::AimIn);
+	PEI->BindAction(InputActions->InputFire, ETriggerEvent::Triggered, this, &ThisClass::Fire);
 
 }
 
@@ -247,6 +248,30 @@ void AArinaCharacter::Jump()
 	else
 	{
 		Super::Jump();
+	}
+}
+
+void AArinaCharacter::Fire(const FInputActionValue& Value)
+{
+	if (CombatComp)
+	{
+		CombatComp->FireButtonPressed(Value.Get<bool>());
+	}
+}
+
+void AArinaCharacter::PlayFireMontage(bool bAiming)
+{
+	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+		FName SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
 

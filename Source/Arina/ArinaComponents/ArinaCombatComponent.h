@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ArinaCombatComponent.generated.h"
 
+#define TRACE_LENGTH 80000.f
 
 class AArinaBaseWeapon;
 
@@ -32,6 +33,16 @@ protected:
 
 	UFUNCTION()
 	void OnRep_EquippedWeapon();
+
+	void FireButtonPressed(bool bPressed);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerFire();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastFire();
+
+	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 	
 private:
 
@@ -48,6 +59,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float AimWalkSpeed;
+
+	bool bFireButtonPressed;
 
 public:	
 
