@@ -4,6 +4,8 @@
 #include "ArinaCombatComponent.h"
 
 #include "Arina/Character/ArinaCharacter.h"
+#include "Arina/HUD/ArinaHUD.h"
+#include "Arina/PlayerController/ArinaPlayerController.h"
 #include "Arina/Weapon/ArinaBaseWeapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -15,6 +17,7 @@ UArinaCombatComponent::UArinaCombatComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	bAiming = false;
+	bFireButtonPressed = false;
 
 	BaseWalkSpeed = 600.f;
 	AimWalkSpeed = 350.f;
@@ -32,25 +35,74 @@ void UArinaCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Character)
+	if (ArinaCharacter)
 	{
-		Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	}
 }
 
 void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (EquippedWeapon)
+	{
+		SetHUDCrosshairs(DeltaTime);
+	}
 	
+}
+
+void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
+{
+	if (ArinaCharacter == nullptr || WeaponToEquip == nullptr)
+	{
+		return;
+	}
+
+	EquippedWeapon = WeaponToEquip;
+	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+
+	const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
+	if (HandSocket)
+	{
+		HandSocket->AttachActor(WeaponToEquip, ArinaCharacter->GetMesh());
+	}
+	EquippedWeapon->SetOwner(ArinaCharacter);
+	ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+	ArinaCharacter->bUseControllerRotationYaw = true;
 }
 
 // notifies clients to set rotation back to camera
 void UArinaCombatComponent::OnRep_EquippedWeapon()
 {
-	if (EquippedWeapon && Character)
+	if (EquippedWeapon && ArinaCharacter)
 	{
-		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-		Character->bUseControllerRotationYaw = true;
+		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+		ArinaCharacter->bUseControllerRotationYaw = true;
+	}
+}
+
+void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
+{
+	if (ArinaCharacter == nullptr || ArinaCharacter->Controller == nullptr) { return; }
+
+	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->Controller) : ArinaController;
+
+	if (ArinaController)
+	{
+		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(ArinaController->GetHUD()) : ArinaHUD;
+
+		if (ArinaHUD)
+		{
+			FHUDPackage HUDPackage;
+			HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
+			HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
+			HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
+			HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
+			HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
+			
+			ArinaHUD->SetHUDPackage(HUDPackage);
+		}
 	}
 }
 
@@ -59,9 +111,9 @@ void UArinaCombatComponent::SetAiming(bool bIsAiming)
 {
 	bAiming = bIsAiming;
 	ServerSetAiming(bIsAiming);
-	if (Character)
+	if (ArinaCharacter)
 	{
-		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
 	}
 }
 
@@ -69,30 +121,10 @@ void UArinaCombatComponent::SetAiming(bool bIsAiming)
 void UArinaCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 {
 	bAiming = bIsAiming;
-	if (Character)
+	if (ArinaCharacter)
 	{
-		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
 	}
-}
-
-void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
-{
-	if (Character == nullptr || WeaponToEquip == nullptr)
-	{
-		return;
-	}
-
-	EquippedWeapon = WeaponToEquip;
-	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-
-	const USkeletalMeshSocket* HandSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket"));
-	if (HandSocket)
-	{
-		HandSocket->AttachActor(WeaponToEquip, Character->GetMesh());
-	}
-	EquippedWeapon->SetOwner(Character);
-	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-	Character->bUseControllerRotationYaw = true;
 }
 
 void UArinaCombatComponent::FireButtonPressed(bool bPressed)
@@ -135,11 +167,10 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			TraceHitResult,
 			Start,
 			End,
-			ECollisionChannel::ECC_Visibility
+			ECC_Visibility
 		);
 	}
 }
-
 
 void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
@@ -147,9 +178,9 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 	{
 		return;
 	}
-	if (Character)
+	if (ArinaCharacter)
 	{
-		Character->PlayFireMontage(bAiming);
+		ArinaCharacter->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
 	}
 }

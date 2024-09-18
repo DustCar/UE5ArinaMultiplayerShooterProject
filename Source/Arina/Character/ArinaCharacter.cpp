@@ -65,7 +65,7 @@ void AArinaCharacter::PostInitializeComponents()
 
 	if (CombatComp)
 	{
-		CombatComp->Character = this;
+		CombatComp->ArinaCharacter = this;
 	}
 }
 

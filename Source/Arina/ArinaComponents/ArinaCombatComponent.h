@@ -8,6 +8,8 @@
 
 #define TRACE_LENGTH 80000.f
 
+class AArinaHUD;
+class AArinaPlayerController;
 class AArinaBaseWeapon;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -44,10 +46,18 @@ protected:
 
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
+	void SetHUDCrosshairs(float DeltaTime);
+
 	
 private:
+	UPROPERTY()
+	AArinaCharacter* ArinaCharacter;
 
-	AArinaCharacter* Character;
+	UPROPERTY()
+	AArinaPlayerController* ArinaController;
+
+	UPROPERTY()
+	AArinaHUD* ArinaHUD;
 
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	AArinaBaseWeapon* EquippedWeapon;
