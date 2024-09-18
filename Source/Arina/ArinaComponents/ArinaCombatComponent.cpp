@@ -5,7 +5,6 @@
 
 #include "Arina/Character/ArinaCharacter.h"
 #include "Arina/Weapon/ArinaBaseWeapon.h"
-#include "Components/SphereComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -42,10 +41,7 @@ void UArinaCombatComponent::BeginPlay()
 void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	FHitResult Hit;
 	
-	TraceUnderCrosshairs(Hit);
 }
 
 // notifies clients to set rotation back to camera
@@ -104,7 +100,9 @@ void UArinaCombatComponent::FireButtonPressed(bool bPressed)
 	bFireButtonPressed = bPressed;
 	if (bFireButtonPressed)
 	{
-		ServerFire();
+		FHitResult Hit;
+		TraceUnderCrosshairs(Hit);
+		ServerFire(Hit.ImpactPoint);
 	}
 }
 
@@ -139,19 +137,11 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			End,
 			ECollisionChannel::ECC_Visibility
 		);
-		
-		if (!TraceHitResult.bBlockingHit)
-		{
-			TraceHitResult.ImpactPoint = End;
-		}
-		else
-		{
-			DrawDebugSphere(GetWorld(), TraceHitResult.ImpactPoint, 10.f, 12, FColor::Green);
-		}
 	}
 }
 
-void UArinaCombatComponent::MulticastFire_Implementation()
+
+void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	if (EquippedWeapon == nullptr)
 	{
@@ -160,12 +150,12 @@ void UArinaCombatComponent::MulticastFire_Implementation()
 	if (Character)
 	{
 		Character->PlayFireMontage(bAiming);
-		EquippedWeapon->Fire();
+		EquippedWeapon->Fire(TraceHitTarget);
 	}
 }
 
-void UArinaCombatComponent::ServerFire_Implementation()
+void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
-	MulticastFire();
+	MulticastFire(TraceHitTarget);
 }
 

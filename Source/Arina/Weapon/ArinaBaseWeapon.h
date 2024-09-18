@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ArinaBaseWeapon.generated.h"
 
+class AArinaCasing;
 class UArinaCombatComponent;
 class UWidgetComponent;
 class USphereComponent;
@@ -31,7 +32,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void ShowPickupWidget(bool bShowWidget);
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	void Fire();
+	virtual void Fire(const FVector& HitTarget);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -73,6 +74,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="WeaponProperties")
 	UAnimationAsset* FireAnimation;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AArinaCasing> CasingClass;
 
 public:
 	void SetWeaponState(EWeaponState State);
