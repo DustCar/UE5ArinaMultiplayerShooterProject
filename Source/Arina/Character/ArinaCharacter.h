@@ -81,6 +81,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	UAnimMontage* FireWeaponMontage;
+
+	bool bSpaceBarUncrouch = false;
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
@@ -90,4 +92,5 @@ public:
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	AArinaBaseWeapon* GetEquippedWeapon() const;
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
+	FVector GetHitTarget();
 };

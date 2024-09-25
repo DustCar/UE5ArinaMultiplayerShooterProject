@@ -173,6 +173,12 @@ void AArinaCharacter::LookRight(const FInputActionValue& Value)
 
 void AArinaCharacter::CrouchPlayer()
 {
+	if (bSpaceBarUncrouch)
+	{
+		bSpaceBarUncrouch = false;
+		return;
+	}
+	
 	if (bIsCrouched)
 	{
 		UnCrouch();
@@ -243,6 +249,7 @@ void AArinaCharacter::Jump()
 {
 	if (bIsCrouched)
 	{
+		bSpaceBarUncrouch = true;
 		UnCrouch();
 	}
 	else
@@ -378,4 +385,14 @@ AArinaBaseWeapon* AArinaCharacter::GetEquippedWeapon() const
 	}
 
 	return CombatComp->EquippedWeapon;
+}
+
+FVector AArinaCharacter::GetHitTarget()
+{
+	if (CombatComp == nullptr)
+	{
+		return FVector();
+	}
+
+	return CombatComp->HitTarget;
 }

@@ -61,7 +61,7 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	// Assigns left hand to left hand socket position on weapon mesh. Used with FABRIK in the character ABP
 	if (bWeaponEquipped && EquippedWeapon && EquippedWeapon->GetWeaponMesh() && ArinaCharacter->GetMesh())
 	{
-		LeftHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform(FName("LeftHandSocket"));
+		LeftHandTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform(FName("LeftHandSocket"), RTS_World);
 
 		FVector OutPos;
 		FRotator OutRot;
@@ -76,5 +76,14 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		);
 		LeftHandTransform.SetLocation(OutPos);
 		LeftHandTransform.SetRotation(FQuat(OutRot));
+
+		if (ArinaCharacter->IsLocallyControlled())
+		{
+			bLocallyControlled = true;
+			FTransform RightHandTransform = ArinaCharacter->GetMesh()->GetSocketTransform(FName("hand_r"), RTS_World);
+			RightHandRotation = UKismetMathLibrary::FindLookAtRotation(RightHandTransform.GetLocation(), RightHandTransform.GetLocation() + (RightHandTransform.GetLocation() - ArinaCharacter->GetHitTarget()));
+			
+		}
+		
 	}
 }

@@ -49,6 +49,14 @@ void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	{
 		SetHUDCrosshairs(DeltaTime);
 	}
+
+	if (ArinaCharacter && ArinaCharacter->IsLocallyControlled())
+	{
+		FHitResult HitResult;
+		TraceUnderCrosshairs(HitResult);
+		HitTarget = HitResult.ImpactPoint;
+	}
+	
 	
 }
 
@@ -100,6 +108,42 @@ void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
 			HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
 			HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
 			HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
+
+			// calculate crosshair spread
+
+			FVector2D WalkSpeedRange;
+			FVector2D VelocityMultiplierRange;
+
+			if (ArinaCharacter->bIsCrouched)
+			{
+				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeedCrouched);
+				VelocityMultiplierRange =  FVector2D(0.f, 0.5f);
+			}
+			else
+			{
+				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed);
+				VelocityMultiplierRange =  FVector2D(0.f, 1.f);
+			}
+			
+			FVector Velocity = ArinaCharacter->GetVelocity();
+			Velocity.Z = 0.f;
+			
+			CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(
+				WalkSpeedRange,
+				VelocityMultiplierRange,
+				Velocity.Size()
+			);
+
+			if (ArinaCharacter->GetCharacterMovement()->IsFalling())
+			{
+				CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 1.5f, DeltaTime, 2.5f);
+			}
+			else
+			{
+				CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 0.f, DeltaTime, 30.f);
+			}
+
+			HUDPackage.CrosshairSpread = CrosshairVelocityFactor + CrosshairAirborneFactor;
 			
 			ArinaHUD->SetHUDPackage(HUDPackage);
 		}
@@ -169,6 +213,11 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			End,
 			ECC_Visibility
 		);
+
+		if (TraceHitResult.bBlockingHit == false)
+		{
+			TraceHitResult.ImpactPoint = End;
+		}
 	}
 }
 
