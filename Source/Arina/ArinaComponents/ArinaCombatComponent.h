@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
 #include "ArinaCombatComponent.generated.h"
 
 #define TRACE_LENGTH 80000.f
@@ -78,10 +79,43 @@ private:
 	 */
 
 	// amount for crosshair spread
+	UPROPERTY(EditAnywhere)
+	float CrosshairBaseSpread = 0.3f;
 	float CrosshairVelocityFactor;
 	float CrosshairAirborneFactor;
+	float CrosshairAimFactor;
+	float CrosshairShootFactor;
+
+	FHUDPackage HUDPackage;
 
 	FVector HitTarget;
+	
+	/**
+	*  Aiming and FOV
+	*/
+	
+	// FOV when not aiming; set to camera's base FOV in BeginPlay
+	float DefaultFOV;
+	
+	/*UPROPERTY(EditAnywhere, Category = "Combat")
+	float ZoomedFOV = 30.f;*/
+
+	float CurrentFOV;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+    float UnZoomInterpSpeed = 15.f;
+
+	void InterpFOV(float DeltaTime);
+
+	/**
+	 *	Sensitivity variables
+	 */
+	
+	UPROPERTY(EditAnywhere, Category = "Sensitivity", meta=(UIMin = 0.f, UIMax = 1.f))
+	float AimSensitivityMultiplier = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category = "Sensitivity", meta=(UIMin = 0.f, UIMax = 1.f))
+	float BaseSensitivity = 0.5f;
 
 public:	
 

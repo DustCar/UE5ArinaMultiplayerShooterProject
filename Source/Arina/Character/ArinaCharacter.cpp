@@ -43,8 +43,9 @@ AArinaCharacter::AArinaCharacter()
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 
 	// Remove collision between character and camera to not bug out camera
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
-	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 	NetUpdateFrequency = 66.f;
@@ -83,6 +84,7 @@ void AArinaCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AimOffset(DeltaTime);
+	HideCharacterIfCameraClose();
 }
 
 // Called to bind functionality to input
@@ -153,7 +155,7 @@ void AArinaCharacter::LookUp(const FInputActionValue& Value)
 
 		if (LookUpValue != 0.f)
 		{
-			AddControllerPitchInput(LookUpValue);
+			AddControllerPitchInput(LookUpValue * RotationLookSpeedMultiplier);
 		}
 	}
 }
@@ -166,7 +168,7 @@ void AArinaCharacter::LookRight(const FInputActionValue& Value)
 
 		if (LookRightValue != 0.f)
 		{
-			AddControllerYawInput(LookRightValue);
+			AddControllerYawInput(LookRightValue * RotationLookSpeedMultiplier);
 		}
 	}
 }
@@ -301,6 +303,19 @@ void AArinaCharacter::TurnInPlace(float DeltaTime)
 			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		}
+	}
+}
+
+void AArinaCharacter::HideCharacterIfCameraClose()
+{
+	if (!IsLocallyControlled()) { return; }
+
+	bool bMakeVisible = (FollowCamera->GetComponentLocation() - GetActorLocation()).Size() >= CameraThreshold;
+	
+	GetMesh()->SetVisibility(bMakeVisible);
+	if (CombatComp && CombatComp->EquippedWeapon && CombatComp->EquippedWeapon->GetWeaponMesh())
+	{
+		CombatComp->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = !bMakeVisible;
 	}
 }
 

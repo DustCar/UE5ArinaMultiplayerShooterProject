@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Arina/ArinaTypesHeaders/TurningInPlace.h"
+#include "Arina/Interfaces/ArinaCrosshairInteractionInterface.h"
 #include "GameFramework/Character.h"
 #include "ArinaCharacter.generated.h"
 
@@ -15,7 +16,7 @@ class UCameraComponent;
 class USpringArmComponent;
 
 UCLASS()
-class ARINA_API AArinaCharacter : public ACharacter
+class ARINA_API AArinaCharacter : public ACharacter, public IArinaCrosshairInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -82,7 +83,15 @@ private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	UAnimMontage* FireWeaponMontage;
 
+	void HideCharacterIfCameraClose();
+
+	UPROPERTY(EditAnywhere)
+	float CameraThreshold = 200.f;
+
 	bool bSpaceBarUncrouch = false;
+	
+	// Rotation speed based on aiming
+	float RotationLookSpeedMultiplier = 1.f;
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
@@ -93,4 +102,6 @@ public:
 	AArinaBaseWeapon* GetEquippedWeapon() const;
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 	FVector GetHitTarget();
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE void SetRotationLookSpeedMultiplier(float Multiplier) { RotationLookSpeedMultiplier = Multiplier; }
 };

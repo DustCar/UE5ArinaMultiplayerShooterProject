@@ -4,22 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
 #include "ArinaHUD.generated.h"
-
-USTRUCT(BlueprintType)
-struct FHUDPackage
-{
-	GENERATED_BODY()
-	
-public:
-	UTexture2D* CrosshairCenter;
-	UTexture2D* CrosshairRight;
-	UTexture2D* CrosshairLeft;
-	UTexture2D* CrosshairTop;
-	UTexture2D* CrosshairBottom;
-	float CrosshairSpread;
-
-};
 
 /**
  * 
@@ -36,7 +22,7 @@ public:
 private:
 	FHUDPackage HUDPackage;
 
-	void DrawCrosshair(UTexture2D* InTexture, FVector2D ViewportCenter, FVector2D Spread);
+	void DrawCrosshair(UTexture2D* InTexture, FVector2D ViewportCenter, FVector2D Spread, FLinearColor InCrosshairColor);
 
 	UPROPERTY(EditAnywhere)
 	float CrosshairSpreadMax = 16.f;
