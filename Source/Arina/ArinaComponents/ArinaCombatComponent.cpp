@@ -17,11 +17,6 @@ UArinaCombatComponent::UArinaCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	bAiming = false;
-	bFireButtonPressed = false;
-
-	BaseWalkSpeed = 600.f;
-	AimWalkSpeed = 350.f;
 }
 
 void UArinaCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -98,106 +93,6 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 	}
 }
 
-void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
-{
-	if (ArinaCharacter == nullptr || ArinaCharacter->Controller == nullptr) { return; }
-
-	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->Controller) : ArinaController;
-
-	if (ArinaController)
-	{
-		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(ArinaController->GetHUD()) : ArinaHUD;
-
-		if (ArinaHUD)
-		{
-			HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
-			HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
-			HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
-			HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
-			HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
-
-			// calculate crosshair spread
-
-			FVector2D WalkSpeedRange;
-			FVector2D VelocityMultiplierRange;
-
-			if (ArinaCharacter->bIsCrouched)
-			{
-				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeedCrouched);
-				VelocityMultiplierRange =  FVector2D(0.f, 0.5f);
-			}
-			else
-			{
-				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed);
-				VelocityMultiplierRange =  FVector2D(0.f, 0.8f);
-			}
-			
-			FVector Velocity = ArinaCharacter->GetVelocity();
-			Velocity.Z = 0.f;
-			
-			CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(
-				WalkSpeedRange,
-				VelocityMultiplierRange,
-				Velocity.Size()
-			);
-
-			if (ArinaCharacter->GetCharacterMovement()->IsFalling())
-			{
-				CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 1.5f, DeltaTime, 2.5f);
-			}
-			else
-			{
-				CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 0.f, DeltaTime, 40.f);
-			}
-
-			if (bAiming)
-			{
-				CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.38f, DeltaTime, 30.f);	
-			}
-			else
-			{
-				CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.f, DeltaTime, 30.f);
-			}
-
-			if (EquippedWeapon && bFireButtonPressed)
-			{
-				CrosshairShootFactor = FMath::FInterpTo(CrosshairShootFactor, 0.8f, DeltaTime, 20.f);
-			}
-			else
-			{
-				CrosshairShootFactor = FMath::FInterpTo(CrosshairShootFactor, 0.f, DeltaTime, 10.f);
-			}
-
-			HUDPackage.CrosshairSpread = CrosshairBaseSpread +
-				CrosshairVelocityFactor +
-				CrosshairAirborneFactor -
-				CrosshairAimFactor +
-				CrosshairShootFactor;
-			
-			ArinaHUD->SetHUDPackage(HUDPackage);
-		}
-	}
-}
-
-void UArinaCombatComponent::InterpFOV(float DeltaTime)
-{
-	if (EquippedWeapon == nullptr) { return; }
-
-	if (bAiming)
-	{
-		CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomedFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
-	}
-	else
-	{
-		CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, UnZoomInterpSpeed);
-	}
-
-	if (ArinaCharacter && ArinaCharacter->GetFollowCamera())
-	{
-		ArinaCharacter->GetFollowCamera()->SetFieldOfView(CurrentFOV);
-	}
-}
-
 // local setting
 void UArinaCombatComponent::SetAiming(bool bIsAiming)
 {
@@ -223,15 +118,64 @@ void UArinaCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 	}
 }
 
+void UArinaCombatComponent::StartFireTimer()
+{
+	if (const UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().SetTimer(
+			FireTimerHandle,
+			this,
+			&UArinaCombatComponent::FireTimerFinished,
+			EquippedWeapon->GetFireDelay()
+		);
+	}
+}
+
+void UArinaCombatComponent::FireTimerFinished()
+{
+	bCanFire = true;
+	if (bFireButtonPressed && EquippedWeapon->IsAutomatic())
+	{
+		Fire();
+	}
+}
+
+void UArinaCombatComponent::Fire()
+{
+	if (bCanFire)
+	{
+		bCanFire = false;
+		ServerFire(HitTarget);
+		StartFireTimer();
+	}
+	
+}
+
 void UArinaCombatComponent::FireButtonPressed(bool bPressed)
 {
 	bFireButtonPressed = bPressed;
 	if (bFireButtonPressed)
 	{
-		FHitResult Hit;
-		TraceUnderCrosshairs(Hit);
-		ServerFire(Hit.ImpactPoint);
+		Fire();
 	}
+}
+
+void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+{
+	if (EquippedWeapon == nullptr)
+	{
+		return;
+	}
+	if (ArinaCharacter)
+	{
+		ArinaCharacter->PlayFireMontage(bAiming);
+		EquippedWeapon->Fire(TraceHitTarget);
+	}
+}
+
+void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+{
+	MulticastFire(TraceHitTarget);
 }
 
 void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
@@ -281,29 +225,135 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UArinaCrosshairInteractionInterface>())
 		{
 			HUDPackage.CrosshairColor = FLinearColor::Red;
+			bEnemyInSight = true;
 		}
 		else
 		{
 			HUDPackage.CrosshairColor = FLinearColor::White;
+			bEnemyInSight = false;
 		}
 	}
 }
 
-void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+void UArinaCombatComponent::CalculateCrosshairFactors(float DeltaTime)
 {
-	if (EquippedWeapon == nullptr)
+	if (ArinaCharacter->GetCharacterMovement()->IsFalling())
 	{
-		return;
+		CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 1.5f, DeltaTime, 2.5f);
 	}
-	if (ArinaCharacter)
+	else
 	{
-		ArinaCharacter->PlayFireMontage(bAiming);
-		EquippedWeapon->Fire(TraceHitTarget);
+		CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 0.f, DeltaTime, 40.f);
+	}
+
+	if (bAiming)
+	{
+		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.48f, DeltaTime, 30.f);	
+	}
+	else
+	{
+		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.f, DeltaTime, 30.f);
+	}
+
+	if (EquippedWeapon && bFireButtonPressed)
+	{
+		CrosshairShootFactor = FMath::FInterpTo(CrosshairShootFactor, 0.8f, DeltaTime, 20.f);
+	}
+	else
+	{
+		CrosshairShootFactor = FMath::FInterpTo(CrosshairShootFactor, 0.f, DeltaTime, 10.f);
+	}
+
+	if (bEnemyInSight)
+	{
+		if (bAiming)
+		{
+			CrosshairEnemyFactor = 0.f;
+		}
+		else
+		{
+			CrosshairEnemyFactor = FMath::FInterpTo(CrosshairEnemyFactor, 0.28f, DeltaTime, 30.f);
+		}
+	}
+	else
+	{
+		CrosshairEnemyFactor = FMath::FInterpTo(CrosshairEnemyFactor, 0.f, DeltaTime, 30.f);
+	}
+
+	HUDPackage.CrosshairSpread = CrosshairBaseSpread +
+		CrosshairVelocityFactor +
+		CrosshairAirborneFactor -
+		CrosshairAimFactor +
+		CrosshairShootFactor -
+		CrosshairEnemyFactor;
+	
+}
+
+void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
+{
+	if (ArinaCharacter == nullptr || ArinaCharacter->Controller == nullptr) { return; }
+
+	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->Controller) : ArinaController;
+
+	if (ArinaController)
+	{
+		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(ArinaController->GetHUD()) : ArinaHUD;
+
+		if (ArinaHUD)
+		{
+			HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
+			HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
+			HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
+			HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
+			HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
+
+			// calculate crosshair spread
+
+			FVector2D WalkSpeedRange;
+			FVector2D VelocityMultiplierRange;
+
+			if (ArinaCharacter->bIsCrouched)
+			{
+				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeedCrouched);
+				VelocityMultiplierRange =  FVector2D(0.f, 0.5f);
+			}
+			else
+			{
+				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed);
+				VelocityMultiplierRange =  FVector2D(0.f, 0.8f);
+			}
+			
+			FVector Velocity = ArinaCharacter->GetVelocity();
+			Velocity.Z = 0.f;
+			
+			CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(
+				WalkSpeedRange,
+				VelocityMultiplierRange,
+				Velocity.Size()
+			);
+
+			CalculateCrosshairFactors(DeltaTime);
+			
+			ArinaHUD->SetHUDPackage(HUDPackage);
+		}
 	}
 }
 
-void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+void UArinaCombatComponent::InterpFOV(float DeltaTime)
 {
-	MulticastFire(TraceHitTarget);
-}
+	if (EquippedWeapon == nullptr) { return; }
 
+	if (bAiming)
+	{
+		CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomedFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
+	}
+	else
+	{
+		CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, UnZoomInterpSpeed);
+	}
+
+	if (ArinaCharacter && ArinaCharacter->GetFollowCamera())
+	{
+		ArinaCharacter->GetFollowCamera()->SetFieldOfView(CurrentFOV);
+	}
+}

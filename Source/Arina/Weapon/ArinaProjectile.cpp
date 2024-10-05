@@ -3,6 +3,8 @@
 
 #include "ArinaProjectile.h"
 
+#include "Arina/Arina.h"
+#include "Arina/Character/ArinaCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -19,6 +21,8 @@ AArinaProjectile::AArinaProjectile()
 	CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CollisionBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	CollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	CollisionBox->SetCollisionResponseToChannel(ECC_SkeletalMesh, ECR_Block);
+
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
@@ -32,7 +36,7 @@ void AArinaProjectile::BeginPlay()
 
 	if (TracerFX)
 	{
-		TracerParticleComponent = UGameplayStatics::SpawnEmitterAttached(
+		UGameplayStatics::SpawnEmitterAttached(
 			TracerFX,
 			CollisionBox,
 			FName(),
@@ -52,7 +56,42 @@ void AArinaProjectile::BeginPlay()
 void AArinaProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(OtherActor);
+	if (ArinaCharacter)
+	{
+		ArinaCharacter->MulticastHit();
+	}
+
+	bool bCharacterHit = Cast<AArinaCharacter>(OtherActor) ? true : false;
+
+	if (HasAuthority())
+	{
+		MulticastOnHit(bCharacterHit, Hit.ImpactPoint, Hit.ImpactNormal);
+	}
+
 	Destroy();
+}
+
+void AArinaProjectile::MulticastOnHit_Implementation(bool bCharacterHit, const FVector_NetQuantize& ImpactLocation, const FVector_NetQuantizeNormal& ImpactNormal)
+{
+	if (ActorHitFX && SurfaceHitFX)
+	{
+		ImpactFX = bCharacterHit ? ActorHitFX : SurfaceHitFX;
+	}
+
+	if (ActorHitSound && SurfaceHitSound)
+	{
+		ImpactSound = bCharacterHit ? ActorHitSound : SurfaceHitSound;
+	}
+	
+	if (ImpactFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactFX, ImpactLocation, ImpactNormal.Rotation());
+	}
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	}
 }
 
 void AArinaProjectile::Tick(float DeltaTime)
@@ -61,17 +100,4 @@ void AArinaProjectile::Tick(float DeltaTime)
 
 }
 
-void AArinaProjectile::Destroyed()
-{
-	Super::Destroyed();
-
-	if (ImpactFX)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactFX, GetActorTransform());
-	}
-	if (ImpactSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
-	}
-}
 

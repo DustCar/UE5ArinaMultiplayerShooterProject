@@ -17,7 +17,6 @@ class ARINA_API AArinaProjectile : public AActor
 public:	
 	AArinaProjectile();
 	virtual void Tick(float DeltaTime) override;
-	virtual void Destroyed() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -31,6 +30,9 @@ protected:
 		const FHitResult& Hit 
 	);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnHit(bool bCharacterHit, const FVector_NetQuantize& ImpactLocation, const FVector_NetQuantizeNormal& ImpactNormal);
+
 private:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* CollisionBox;
@@ -40,14 +42,23 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* TracerFX;
-	
-	UParticleSystemComponent* TracerParticleComponent;
+
+	UPROPERTY()
+	UParticleSystem* ImpactFX;
+	UPROPERTY()
+	USoundBase* ImpactSound;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* ImpactFX;
-	
+	UParticleSystem* SurfaceHitFX;
+
 	UPROPERTY(EditAnywhere)
-	USoundBase* ImpactSound;
+	USoundBase* SurfaceHitSound;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ActorHitFX;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ActorHitSound;
 
 public:	
 	

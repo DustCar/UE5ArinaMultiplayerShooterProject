@@ -106,11 +106,21 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ZoomInterpSpeed = 20.f;
 
+	/**
+	*  Automatic fire check and rates
+	*/
+	UPROPERTY(EditAnywhere, Category="Combat")
+	bool bAutomatic = false;
+	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float FireDelay = 0.1f;
+
 public:
 	void SetWeaponState(EWeaponState State);
 	FORCEINLINE USphereComponent* GetPickupArea() const { return PickupArea; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
-
+	FORCEINLINE float GetFireDelay() const { return FireDelay; }
+	FORCEINLINE bool IsAutomatic() const { return bAutomatic; }
 };

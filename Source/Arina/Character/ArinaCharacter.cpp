@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Arina/Arina.h"
 #include "EnhancedInput/Public//EnhancedInputComponent.h"
 #include "Arina/ArinaInputConfigData.h"
 #include "Arina/ArinaComponents/ArinaCombatComponent.h"
@@ -46,6 +47,8 @@ AArinaCharacter::AArinaCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 	NetUpdateFrequency = 66.f;
@@ -262,7 +265,7 @@ void AArinaCharacter::Jump()
 
 void AArinaCharacter::Fire(const FInputActionValue& Value)
 {
-	if (CombatComp)
+	if (CombatComp && CombatComp->EquippedWeapon)
 	{
 		CombatComp->FireButtonPressed(Value.Get<bool>());
 	}
@@ -284,6 +287,26 @@ void AArinaCharacter::PlayFireMontage(bool bAiming)
 	}
 }
 
+void AArinaCharacter::PlayHitReactMontage()
+{
+	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && HitReactMontage)
+	{
+		AnimInstance->Montage_Play(HitReactMontage);
+		AnimInstance->Montage_JumpToSection(FName("FromFront"));
+	}
+}
+
+void AArinaCharacter::MulticastHit_Implementation()
+{
+	PlayHitReactMontage();
+}
+
 void AArinaCharacter::TurnInPlace(float DeltaTime)
 {
 	if (AO_Yaw > 90.f)
@@ -294,9 +317,10 @@ void AArinaCharacter::TurnInPlace(float DeltaTime)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Left;
 	}
+	
 	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
 	{
-		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0, DeltaTime, 4.f);
+		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 4.f);
 		AO_Yaw = InterpAO_Yaw;
 		if (FMath::Abs(AO_Yaw) < 15.f)
 		{

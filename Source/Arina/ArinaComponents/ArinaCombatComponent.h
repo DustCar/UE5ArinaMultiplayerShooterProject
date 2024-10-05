@@ -46,7 +46,7 @@ protected:
 	void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
-
+	void CalculateCrosshairFactors(float DeltaTime);
 	void SetHUDCrosshairs(float DeltaTime);
 
 	
@@ -64,15 +64,15 @@ private:
 	AArinaBaseWeapon* EquippedWeapon;
 
 	UPROPERTY(Replicated)
-	bool bAiming;
+	bool bAiming = false;
 
 	UPROPERTY(EditAnywhere)
-	float BaseWalkSpeed;
+	float BaseWalkSpeed = 600.f;
 
 	UPROPERTY(EditAnywhere)
-	float AimWalkSpeed;
+	float AimWalkSpeed = 350.f;
 
-	bool bFireButtonPressed;
+	bool bFireButtonPressed = false;
 
 	/*
 	 * HUD and Crosshair
@@ -80,15 +80,18 @@ private:
 
 	// amount for crosshair spread
 	UPROPERTY(EditAnywhere)
-	float CrosshairBaseSpread = 0.3f;
+	float CrosshairBaseSpread = 0.48f;
 	float CrosshairVelocityFactor;
 	float CrosshairAirborneFactor;
 	float CrosshairAimFactor;
 	float CrosshairShootFactor;
+	float CrosshairEnemyFactor;
 
 	FHUDPackage HUDPackage;
 
 	FVector HitTarget;
+
+	bool bEnemyInSight = false;
 	
 	/**
 	*  Aiming and FOV
@@ -96,9 +99,6 @@ private:
 	
 	// FOV when not aiming; set to camera's base FOV in BeginPlay
 	float DefaultFOV;
-	
-	/*UPROPERTY(EditAnywhere, Category = "Combat")
-	float ZoomedFOV = 30.f;*/
 
 	float CurrentFOV;
 	
@@ -116,6 +116,17 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Sensitivity", meta=(UIMin = 0.f, UIMax = 1.f))
 	float BaseSensitivity = 0.5f;
+
+	/**
+	 *	Fire for automatic weapons
+	 */
+	FTimerHandle FireTimerHandle;
+
+	bool bCanFire = true;
+
+	void StartFireTimer();
+	void FireTimerFinished();
+	void Fire();
 
 public:	
 

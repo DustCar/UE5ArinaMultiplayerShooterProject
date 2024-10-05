@@ -11,24 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Arina/ArinaTypesHeaders/HUDPackageStruct.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Bottom.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Bottom.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Center.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Center.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Left.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Left.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Right.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Top.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Top.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/DefaultCrosshair.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/DefaultCrosshair.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -595,7 +578,9 @@
       <workItem from="1727220864711" duration="188000" />
       <workItem from="1727221076460" duration="4271000" />
       <workItem from="1727297104165" duration="246000" />
-      <workItem from="1727297375355" duration="12138000" />
+      <workItem from="1727297375355" duration="13172000" />
+      <workItem from="1727460493240" duration="4030000" />
+      <workItem from="1727984095060" duration="123000" />
     </task>
     <servers />
   </component>
