@@ -2,7 +2,7 @@
 
 **Many of what I have listed are things that I have already covered**
 
-**Last Update: 09/09/2024**
+**Last Update: 10/08/2024**
 
 # Project Purpose
 Personal project that I created alongside a UDemy course called "Unreal Engine 5 C++ Multiplayer Shooter" made by Stephen Ulibarri.
@@ -14,7 +14,7 @@ In this course, I learned new topics that broadened my skill set with Unreal Eng
 - Creating a plugin
 - Setting up Networking/Multiplayer through Steam, including hosting and joining game sessions
 - Replicating data for multiplayer using RPCs and OnRep functions
-- Using game states for player information
+- Using game state and player state for player information
 - many more...
 
 *_The topics listed are what I have currently covered as of Sep. 5, 2024_
@@ -22,8 +22,11 @@ In this course, I learned new topics that broadened my skill set with Unreal Eng
 # Personal Additions
 In addition to the topics I learned through the course, I added my own additions to try my hand at applying what I have learned.
 
-Here are a few things I added that were not done as part of the course:
+Here are a few minor changes I added that were not done as part of the course:
 - Displayed player names above their character
+- Sensitivity options including aim in sensitivity
+- Respawn based on other players distance
+- Minor visual changes (spinning bullets, bullets cooling down, etc...)
 
 # Project Showcase
 
