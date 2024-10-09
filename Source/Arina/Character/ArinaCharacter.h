@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "ArinaCharacter.generated.h"
 
+class AArinaPlayerController;
 class UArinaCombatComponent;
 class AArinaBaseWeapon;
 class UWidgetComponent;
@@ -27,9 +28,11 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
+	void PlayEliminatedMontage();
+	void Eliminated();
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastHit();
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastEliminated();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -51,8 +54,11 @@ protected:
 	void AimOffset(float DeltaTime);
 	virtual void Jump() override;
 	void Fire(const FInputActionValue& Value);
-	
 	void PlayHitReactMontage();
+	void UpdateHUDHealth();
+
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorBy, AActor* DamageCauser);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
@@ -70,6 +76,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UArinaCombatComponent* CombatComp;
 
+	UPROPERTY()
+	AArinaPlayerController* ArinaPlayerController;
+
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AArinaBaseWeapon* LastWeapon);
 
@@ -84,11 +93,14 @@ private:
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
 
-	UPROPERTY(EditAnywhere, Category="Combat")
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* FireWeaponMontage;
 
-	UPROPERTY(EditAnywhere, Category="Combat")
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* EliminatedMontage;
 
 	void HideCharacterIfCameraClose();
 
@@ -99,6 +111,27 @@ private:
 	
 	// Rotation speed based on aiming
 	float RotationLookSpeedMultiplier = 1.f;
+
+	/**
+	*	Player Health
+	*/
+	UPROPERTY(EditAnywhere, Category = "PlayerStats")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentHealth, VisibleAnywhere, Category = "PlayerStats")
+	float CurrentHealth = MaxHealth;
+
+	UFUNCTION()
+	void OnRep_CurrentHealth();
+
+	bool bEliminated = false;
+
+	FTimerHandle EliminatedTimer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float EliminatedDelay = 3.f;
+
+	void EliminatedTimerFinished();
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
@@ -111,4 +144,5 @@ public:
 	FVector GetHitTarget();
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE void SetRotationLookSpeedMultiplier(float Multiplier) { RotationLookSpeedMultiplier = Multiplier; }
+	FORCEINLINE bool IsEliminated() const { return bEliminated; }
 };

@@ -7,6 +7,7 @@
 #include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
 #include "ArinaHUD.generated.h"
 
+class UArinaCharacterOverlay;
 /**
  * 
  */
@@ -18,6 +19,17 @@ class ARINA_API AArinaHUD : public AHUD
 public:
 	
 	virtual void DrawHUD() override;
+
+	UPROPERTY(EditAnywhere, Category = "PlayerStats")
+	TSubclassOf<UUserWidget> CharacterOverlayClass;
+	
+	UPROPERTY()
+	UArinaCharacterOverlay* CharacterOverlay;
+
+protected:
+	virtual void BeginPlay() override;
+
+	void AddCharacterOverlay();
 
 private:
 	FHUDPackage HUDPackage;

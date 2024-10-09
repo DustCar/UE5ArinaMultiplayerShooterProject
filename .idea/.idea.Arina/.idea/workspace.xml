@@ -12,6 +12,27 @@
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Idle_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Idle_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_ArinaGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_ArinaGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/BP_ArinaHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/BP_ArinaHUD.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaOverHeadWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaOverHeadWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaPickupWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaPickupWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +58,13 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/Containers/Array.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/Containers/Map.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/Containers/Set.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/Containers/SparseArray.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/Math/Rotator.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/Math/Vector.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/CoreUObject/Public/Templates/Casts.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Animation/AnimNotifies/AnimNotify_PlaySound.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Components/BoxComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Components/PrimitiveComponent.h" root0="FORCE_HIGHLIGHTING" />
@@ -71,6 +98,8 @@
     <setting file="file://$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/GameMode/ArinaLobbyGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/GameMode/ArinaLobbyGameMode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/HUD/ArinaOverHeadWidget.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -83,6 +112,8 @@
     <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaCasing.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileBullet.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileBullet.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileWeapon.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileWeapon.h" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -581,6 +612,11 @@
       <workItem from="1727297375355" duration="13172000" />
       <workItem from="1727460493240" duration="4030000" />
       <workItem from="1727984095060" duration="123000" />
+      <workItem from="1727984269871" duration="23294000" />
+      <workItem from="1728239302193" duration="26000" />
+      <workItem from="1728239350793" duration="8091000" />
+      <workItem from="1728408793467" duration="32000" />
+      <workItem from="1728408849488" duration="17713000" />
     </task>
     <servers />
   </component>

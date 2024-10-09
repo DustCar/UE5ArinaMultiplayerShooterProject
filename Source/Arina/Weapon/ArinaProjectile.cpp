@@ -56,12 +56,6 @@ void AArinaProjectile::BeginPlay()
 void AArinaProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(OtherActor);
-	if (ArinaCharacter)
-	{
-		ArinaCharacter->MulticastHit();
-	}
-
 	bool bCharacterHit = Cast<AArinaCharacter>(OtherActor) ? true : false;
 
 	if (HasAuthority())

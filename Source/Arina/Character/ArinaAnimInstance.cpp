@@ -41,6 +41,7 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsCrouched = ArinaCharacter->bIsCrouched;
 	bAiming = ArinaCharacter->IsAiming();
 	TurningInPlace = ArinaCharacter->GetTurningInPlace();
+	bEliminated = ArinaCharacter->IsEliminated();
 
 	// Offset Yaw for strafing
 	FRotator AimRotation = ArinaCharacter->GetBaseAimRotation();

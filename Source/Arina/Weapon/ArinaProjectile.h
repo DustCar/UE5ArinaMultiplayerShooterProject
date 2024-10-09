@@ -33,6 +33,9 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnHit(bool bCharacterHit, const FVector_NetQuantize& ImpactLocation, const FVector_NetQuantizeNormal& ImpactNormal);
 
+	UPROPERTY(EditAnywhere)
+	float Damage = 10.f;
+	
 private:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* CollisionBox;

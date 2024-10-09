@@ -3,6 +3,8 @@
 
 #include "ArinaHUD.h"
 
+#include "ArinaCharacterOverlay.h"
+
 void AArinaHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -40,6 +42,23 @@ void AArinaHUD::DrawHUD()
 			FVector2D Spread(0.f, -SpreadScaled);
 			DrawCrosshair(HUDPackage.CrosshairBottom, ViewportCenter, Spread, HUDPackage.CrosshairColor);
 		}
+	}
+}
+
+void AArinaHUD::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AddCharacterOverlay();
+}
+
+void AArinaHUD::AddCharacterOverlay()
+{
+	APlayerController* PC = GetOwningPlayerController();
+	if (PC && CharacterOverlayClass)
+	{
+		CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PC, CharacterOverlayClass);
+		CharacterOverlay->AddToViewport();
 	}
 }
 

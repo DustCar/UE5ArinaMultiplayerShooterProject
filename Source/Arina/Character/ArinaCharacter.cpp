@@ -10,6 +10,8 @@
 #include "EnhancedInput/Public//EnhancedInputComponent.h"
 #include "Arina/ArinaInputConfigData.h"
 #include "Arina/ArinaComponents/ArinaCombatComponent.h"
+#include "Arina/GameMode/ArinaGameMode.h"
+#include "Arina/PlayerController/ArinaPlayerController.h"
 #include "Arina/Weapon/ArinaBaseWeapon.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -19,7 +21,6 @@
 
 AArinaCharacter::AArinaCharacter()
 {
-	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = true;
 
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
@@ -51,8 +52,8 @@ AArinaCharacter::AArinaCharacter()
 	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
-	NetUpdateFrequency = 66.f;
-	MinNetUpdateFrequency = 33.f;
+	NetUpdateFrequency = 120.f;
+	MinNetUpdateFrequency = 60.f;
 }
 
 void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -60,6 +61,7 @@ void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(ThisClass, OverlappingWeapon, COND_OwnerOnly);
+	DOREPLIFETIME(ThisClass, CurrentHealth);
 }
 
 // Runs after all components of actor have been initialized
@@ -73,15 +75,18 @@ void AArinaCharacter::PostInitializeComponents()
 	}
 }
 
-// Called when the game starts or when spawned
 void AArinaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UpdateHUDHealth();
+
+	if (HasAuthority())
+	{
+		OnTakeAnyDamage.AddDynamic(this, &ThisClass::AArinaCharacter::ReceiveDamage);
+	}
 }
 
-
-// Called every frame
 void AArinaCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -194,6 +199,19 @@ void AArinaCharacter::CrouchPlayer()
 	}
 }
 
+void AArinaCharacter::Jump()
+{
+	if (bIsCrouched)
+	{
+		bSpaceBarUncrouch = true;
+		UnCrouch();
+	}
+	else
+	{
+		Super::Jump();
+	}
+}
+
 void AArinaCharacter::AimIn(const FInputActionValue& Value)
 {
 	if (CombatComp)
@@ -250,19 +268,6 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 	}
 }
 
-void AArinaCharacter::Jump()
-{
-	if (bIsCrouched)
-	{
-		bSpaceBarUncrouch = true;
-		UnCrouch();
-	}
-	else
-	{
-		Super::Jump();
-	}
-}
-
 void AArinaCharacter::Fire(const FInputActionValue& Value)
 {
 	if (CombatComp && CombatComp->EquippedWeapon)
@@ -287,6 +292,41 @@ void AArinaCharacter::PlayFireMontage(bool bAiming)
 	}
 }
 
+void AArinaCharacter::PlayEliminatedMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && EliminatedMontage)
+	{
+		AnimInstance->Montage_Play(EliminatedMontage);
+	}
+}
+
+void AArinaCharacter::Eliminated()
+{
+	MulticastEliminated();
+	GetWorldTimerManager().SetTimer(
+		EliminatedTimer,
+		this,
+		&ThisClass::EliminatedTimerFinished,
+		EliminatedDelay
+	);
+}
+
+void AArinaCharacter::MulticastEliminated_Implementation()
+{
+	bEliminated = true;
+	PlayEliminatedMontage();
+}
+
+void AArinaCharacter::EliminatedTimerFinished()
+{
+	AArinaGameMode* ArinaGameMode = GetWorld()->GetAuthGameMode<AArinaGameMode>();
+	if (ArinaGameMode)
+	{
+		ArinaGameMode->RequestRespawn(this, Controller);
+	}
+}
+
 void AArinaCharacter::PlayHitReactMontage()
 {
 	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
@@ -302,22 +342,41 @@ void AArinaCharacter::PlayHitReactMontage()
 	}
 }
 
-void AArinaCharacter::MulticastHit_Implementation()
+void AArinaCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	AController* InstigatorBy, AActor* DamageCauser)
 {
-	PlayHitReactMontage();
+	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
+
+	AArinaGameMode* ArinaGameMode = GetWorld()->GetAuthGameMode<AArinaGameMode>();
+
+	if (CurrentHealth > 0.f)
+	{
+		PlayHitReactMontage();
+	}
+	else
+	{
+		if (ArinaGameMode)
+		{
+			ArinaPlayerController = ArinaPlayerController == nullptr ? Cast<AArinaPlayerController>(Controller) : ArinaPlayerController;
+			AArinaPlayerController* AttackerController = Cast<AArinaPlayerController>(InstigatorBy);
+			ArinaGameMode->PlayerEliminated(this, ArinaPlayerController, AttackerController);
+		}
+	}
 }
 
 void AArinaCharacter::TurnInPlace(float DeltaTime)
 {
-	if (AO_Yaw > 90.f)
+	if (AO_Yaw > 45.f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Right;
 	}
-	else if (AO_Yaw < -90.f)
+	else if (AO_Yaw < -45.f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Left;
 	}
-	
+
+	// Turns the character to where the camera is pointing by resetting Aim Offset yaw to 0
 	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
 	{
 		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 4.f);
@@ -340,6 +399,24 @@ void AArinaCharacter::HideCharacterIfCameraClose()
 	if (CombatComp && CombatComp->EquippedWeapon && CombatComp->EquippedWeapon->GetWeaponMesh())
 	{
 		CombatComp->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = !bMakeVisible;
+	}
+}
+
+void AArinaCharacter::UpdateHUDHealth()
+{
+	ArinaPlayerController = ArinaPlayerController == nullptr ? Cast<AArinaPlayerController>(Controller) : ArinaPlayerController;
+	if (ArinaPlayerController)
+	{
+		ArinaPlayerController->SetHUDHealth(CurrentHealth, MaxHealth);
+	}
+}
+
+void AArinaCharacter::OnRep_CurrentHealth()
+{
+	UpdateHUDHealth();
+	if (CurrentHealth > 0.f)
+	{
+		PlayHitReactMontage();
 	}
 }
 
