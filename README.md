@@ -12,7 +12,7 @@ Largest reason I decided to take the course is to learn about Multiplayer and ho
 # Project Takeaways
 In this course, I learned new topics that broadened my skill set with Unreal Engine and C++. Some of these topics include:
 - Creating a plugin
-- Setting up Networking/Multiplayer through Steam, including hosting and joining game sessions
+- Setting up Networking/Multiplayer through Steam, including hosting and joining game sessions (works only regionally on Steam)
 - Replicating data for multiplayer using RPCs and OnRep functions
 - Using game state and player state for player information
 - many more...
