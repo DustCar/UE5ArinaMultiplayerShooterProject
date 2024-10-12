@@ -51,6 +51,7 @@ private:
 	UFUNCTION()
 	void CoolDown();
 
+	UPROPERTY()
 	UMaterialInstanceDynamic* MaterialInstance;
 
 	float CoolTime;

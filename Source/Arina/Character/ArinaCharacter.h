@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Arina/ArinaTypesHeaders/TurningInPlace.h"
 #include "Arina/Interfaces/ArinaCrosshairInteractionInterface.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "ArinaCharacter.generated.h"
 
@@ -132,6 +133,30 @@ private:
 	float EliminatedDelay = 3.f;
 
 	void EliminatedTimerFinished();
+
+	/**
+	*	Dissolve Effect
+	*/
+
+	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* DissolveTimeline;
+
+	FOnTimelineFloat DissolveTrack;
+	
+	UPROPERTY(EditAnywhere, Category="Elimination")
+	UCurveFloat* DissolveCurve;
+
+	UFUNCTION()
+	void UpdateDissolveMaterial(float DissolveValue);
+	void StartDissolve();
+
+	// Dynamic instance that we can change at runtime
+	UPROPERTY(VisibleAnywhere, Category="Elimination")
+	UMaterialInstanceDynamic* DynamicDissolveMaterialInstance;
+
+	// Material instance set on the Blueprint, used with the dynamic material instance
+	UPROPERTY(EditAnywhere, Category = "Elimination")
+	UMaterialInstance* DissolveMaterialInstance;
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);

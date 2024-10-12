@@ -45,7 +45,7 @@ void AArinaGameMode::CalculateSmallestDistance(const TArray<AActor*>& PlayerStar
 	
 	for (int32 i = 0; i < PlayerStarts.Num(); i++)
 	{
-		static int32 MinDistance = MAX_int32;
+		int32 MinDistance = MAX_int32;
 		for (int32 j = 0; j < Characters.Num(); j++)
 		{
 			const AActor* CurrentPlayerStart = PlayerStarts[i];

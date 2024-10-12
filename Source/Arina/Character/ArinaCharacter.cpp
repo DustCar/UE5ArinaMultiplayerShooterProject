@@ -54,6 +54,8 @@ AArinaCharacter::AArinaCharacter()
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 	NetUpdateFrequency = 120.f;
 	MinNetUpdateFrequency = 60.f;
+
+	DissolveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DissolveTimelineComponent"));
 }
 
 void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -303,6 +305,10 @@ void AArinaCharacter::PlayEliminatedMontage()
 
 void AArinaCharacter::Eliminated()
 {
+	if (CombatComp && CombatComp->EquippedWeapon)
+	{
+		CombatComp->EquippedWeapon->Dropped();
+	}
 	MulticastEliminated();
 	GetWorldTimerManager().SetTimer(
 		EliminatedTimer,
@@ -315,7 +321,29 @@ void AArinaCharacter::Eliminated()
 void AArinaCharacter::MulticastEliminated_Implementation()
 {
 	bEliminated = true;
-	PlayEliminatedMontage();
+
+	// Creating dynamic material instance for dissolve effect and starting it
+	if (DissolveMaterialInstance)
+	{
+		DynamicDissolveMaterialInstance = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, DynamicDissolveMaterialInstance);
+
+		DynamicDissolveMaterialInstance->SetScalarParameterValue(TEXT("Dissolve"), 0.55f);
+		DynamicDissolveMaterialInstance->SetScalarParameterValue(TEXT("Glow"), 150.f);
+	}
+	StartDissolve();
+
+	// Disable character movement and input
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	if (ArinaPlayerController)
+	{
+		DisableInput(ArinaPlayerController);
+	}
+
+	// Disable collision
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AArinaCharacter::EliminatedTimerFinished()
@@ -417,6 +445,24 @@ void AArinaCharacter::OnRep_CurrentHealth()
 	if (CurrentHealth > 0.f)
 	{
 		PlayHitReactMontage();
+	}
+}
+
+void AArinaCharacter::UpdateDissolveMaterial(float DissolveValue)
+{
+	if (DynamicDissolveMaterialInstance)
+	{
+		DynamicDissolveMaterialInstance->SetScalarParameterValue(TEXT("Dissolve"), DissolveValue);
+	}
+}
+
+void AArinaCharacter::StartDissolve()
+{
+	DissolveTrack.BindDynamic(this, &ThisClass::UpdateDissolveMaterial);
+	if (DissolveCurve && DissolveTimeline)
+	{
+		DissolveTimeline->AddInterpFloat(DissolveCurve, DissolveTrack);
+		DissolveTimeline->Play();
 	}
 }
 

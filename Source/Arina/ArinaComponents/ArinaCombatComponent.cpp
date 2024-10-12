@@ -72,11 +72,11 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-
+	
 	const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
 	if (HandSocket)
 	{
-		HandSocket->AttachActor(WeaponToEquip, ArinaCharacter->GetMesh());
+		HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
 	}
 	EquippedWeapon->SetOwner(ArinaCharacter);
 	ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -88,6 +88,12 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 {
 	if (EquippedWeapon && ArinaCharacter)
 	{
+		EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+		const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
+		if (HandSocket)
+		{
+			HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
+		}
 		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 		ArinaCharacter->bUseControllerRotationYaw = true;
 	}
