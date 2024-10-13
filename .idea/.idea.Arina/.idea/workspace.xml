@@ -12,6 +12,140 @@
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Bwd_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Bwd_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Bwd_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Bwd_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Fwd_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Fwd_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Fwd_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Fwd_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Lt_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Lt_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Lt_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Lt_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Rt_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Rt_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Rt_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Crouch_Walk_Rt_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_45_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_45_Right.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_45_Left.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_45_Left.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jump_Down_trim.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jump_Down_trim.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jump_Up.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jump_Up.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turn_Left.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turn_Left.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turn_Left_Standing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turn_Left_Standing.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turn_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turn_Right.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turning_Right_45_Degrees.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Turning_Right_45_Degrees.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Bwd_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Bwd_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Fwd_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Fwd_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Lt_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Lt_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Rt_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Walk_Rt_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Bwd_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Bwd_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Fwd_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Fwd_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Lt_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Lt_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Rt_Rifle_Ironsights.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Walk_Rt_Rifle_Ironsights.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Curves/DissolveCurve.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Curves/DissolveCurve.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_CrouchWalk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_CrouchWalk.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_JumpUp_End.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_JumpUp_End.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_JumpUp_Start.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_JumpUp_Start.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_Run.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_Run.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_Walk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Animations/EpicCharacter_Walk.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_ArinaGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_ArinaGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaCharacterOverlay.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaCharacterOverlay.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/Casings/BP_ArinaRfileCasing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/Casings/BP_ArinaRfileCasing.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Attenuations/Footsteps_att.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/SCue_Foley_Jump.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/SCue_Foley_Jumpland_Grass.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/SCue_Foley_Jumpland_Tile.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_JumpLand_Grass_01.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_JumpLand_Grass_02.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_JumpLand_Grass_03.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_JumpLand_Tile_01.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_JumpLand_Tile_02.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_JumpLand_Tile_03.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_Jump_01.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_Jump_02.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Foley/wav/sw_Foley_Jump_03.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/SCue_FS_Grass.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/SCue_FS_Grass_Silent.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/SCue_FS_Tile.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_01.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_02.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_03.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_04.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_05.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_06.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_07.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_08.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_09.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Grass_10.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_01.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_02.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_03.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_04.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_05.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_06.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_07.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_08.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_09.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Footsteps/wav/sw_FS_Tile_10.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/Shells_Drop_Cue.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/Shells_att.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_03_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_03_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_04_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_04_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_10_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_10_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_12_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_12_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_13_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_13_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_14_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_14_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_16_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_16_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_17_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_17_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_21_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_21_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_22_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_22_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_25_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_25_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_26_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_26_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_32_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_32_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_42_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_42_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_44_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_44_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_45_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_45_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_47_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_47_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_55_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_55_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_59_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_59_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_60_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_60_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_61_wav.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sounds/Shells/shell_61_wav.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Content/WBP_Menu.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/MultiplayerSessions/Content/WBP_Menu.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/GameMode/ArinaGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/GameMode/ArinaGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,19 +181,24 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Animation/AnimNotifies/AnimNotify_PlaySound.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Components/BoxComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Components/PrimitiveComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Components/TimelineComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Engine/SkeletalMeshSocket.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Engine/World.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Actor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Pawn.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerState.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Materials/MaterialInterface.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Actor.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Animation/AnimNotify_PlaySound.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/HUD.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/LevelActor.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Materials/MaterialInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Pawn.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/PlayerController.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/SkeletalMesh.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/UserInterface/Canvas.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Public/CanvasItem.h" root0="FORCE_HIGHLIGHTING" />
@@ -107,21 +246,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;C++ Project.Arina.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C++ Project.Arina.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "CodeInspectionSettingsId",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C++ Project.Arina">
     <configuration name="Arina" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -598,6 +737,9 @@
       <workItem from="1728408849488" duration="18534000" />
       <workItem from="1728678813510" duration="619000" />
       <workItem from="1728684751691" duration="675000" />
+      <workItem from="1728685757518" duration="9551000" />
+      <workItem from="1728768969240" duration="319000" />
+      <workItem from="1728769311260" duration="17014000" />
     </task>
     <servers />
   </component>

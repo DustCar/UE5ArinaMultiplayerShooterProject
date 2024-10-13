@@ -5,6 +5,7 @@
 
 #include "Arina/HUD/ArinaCharacterOverlay.h"
 #include "Arina/HUD/ArinaHUD.h"
+#include "Arina/PlayerState/ArinaPlayerState.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
@@ -34,3 +35,34 @@ void AArinaPlayerController::SetHUDHealth(float CurrentHealth, float MaxHealth)
 		ArinaHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
 	}
 }
+
+void AArinaPlayerController::SetHUDScore(float Score)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->ScoreAmount;
+	
+	if (bHUDValid)
+	{
+		FString ScoreAmountText = FString::Printf(TEXT("%d"), FMath::TruncToInt32(Score));
+		ArinaHUD->CharacterOverlay->ScoreAmount->SetText(FText::FromString(ScoreAmountText));
+	}
+}
+
+void AArinaPlayerController::SetHUDDeaths(int32 Deaths)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->DeathsAmount;
+
+	if (bHUDValid)
+	{
+		FString DeathsAmountText = FString::Printf(TEXT("%d"), Deaths);
+		ArinaHUD->CharacterOverlay->DeathsAmount->SetText(FText::FromString(DeathsAmountText));
+	}
+}
+

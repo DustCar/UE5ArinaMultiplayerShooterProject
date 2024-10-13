@@ -17,6 +17,8 @@ class ARINA_API AArinaPlayerController : public APlayerController
 
 public:
 	void SetHUDHealth(float CurrentHealth, float MaxHealth);
+	void SetHUDScore(float Score);
+	void SetHUDDeaths(int32 Defeats);
 
 protected:
 	virtual void BeginPlay() override;

@@ -34,6 +34,9 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastEliminated();
+
+	virtual void Destroyed() override;
+	virtual void PossessedBy(AController* NewController) override;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -157,6 +160,19 @@ private:
 	// Material instance set on the Blueprint, used with the dynamic material instance
 	UPROPERTY(EditAnywhere, Category = "Elimination")
 	UMaterialInstance* DissolveMaterialInstance;
+
+	/**
+	*	Elim Bot
+	*/
+	
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ElimBotEffect;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* ElimBotComponent;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ElimBotSound;
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);

@@ -4,6 +4,7 @@
 #include "ArinaHUD.h"
 
 #include "ArinaCharacterOverlay.h"
+#include "Arina/PlayerController/ArinaPlayerController.h"
 
 void AArinaHUD::DrawHUD()
 {
@@ -59,6 +60,13 @@ void AArinaHUD::AddCharacterOverlay()
 	{
 		CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PC, CharacterOverlayClass);
 		CharacterOverlay->AddToViewport();
+
+		AArinaPlayerController* ArinaPlayerController = Cast<AArinaPlayerController>(PC);
+		if (ArinaPlayerController)
+		{
+			ArinaPlayerController->SetHUDScore(0.f);
+			ArinaPlayerController->SetHUDDeaths(0);
+		}
 	}
 }
 

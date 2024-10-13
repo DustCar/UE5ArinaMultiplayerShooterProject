@@ -4,12 +4,26 @@
 #include "ArinaGameMode.h"
 
 #include "Arina/Character/ArinaCharacter.h"
+#include "Arina/PlayerState/ArinaPlayerState.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
 void AArinaGameMode::PlayerEliminated(AArinaCharacter* EliminatedCharacter,
                                       AArinaPlayerController* EliminatedController, AArinaPlayerController* AttackingController)
 {
+	AArinaPlayerState* AttackerPlayerState = AttackingController ? Cast<AArinaPlayerState>(AttackingController->PlayerState) : nullptr;
+	AArinaPlayerState* VictimPlayerState = EliminatedController ? Cast<AArinaPlayerState>(EliminatedController->PlayerState) : nullptr;
+
+	if (AttackerPlayerState && AttackerPlayerState != VictimPlayerState)
+	{
+		AttackerPlayerState->AddToScore(1.f);
+	}
+
+	if (VictimPlayerState)
+	{
+		VictimPlayerState->AddToDeaths(1);
+	}
+	
 	if (EliminatedCharacter)
 	{
 		EliminatedCharacter->Eliminated();

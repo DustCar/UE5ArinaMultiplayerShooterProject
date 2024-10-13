@@ -24,4 +24,10 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* HealthText;
 	
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ScoreAmount;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DeathsAmount;
+	
 };
