@@ -19,9 +19,14 @@ public:
 	void SetHUDHealth(float CurrentHealth, float MaxHealth);
 	void SetHUDScore(float Score);
 	void SetHUDDeaths(int32 Defeats);
+	void DisplayKilledByMessage(FString KillerName);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCollapseKilledByMessage();
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	UPROPERTY()

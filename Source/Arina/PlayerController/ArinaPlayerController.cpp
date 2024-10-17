@@ -5,7 +5,7 @@
 
 #include "Arina/HUD/ArinaCharacterOverlay.h"
 #include "Arina/HUD/ArinaHUD.h"
-#include "Arina/PlayerState/ArinaPlayerState.h"
+#include "Components/HorizontalBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
@@ -14,6 +14,13 @@ void AArinaPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ArinaHUD = Cast<AArinaHUD>(GetHUD());
+}
+
+void AArinaPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	MulticastCollapseKilledByMessage();
 }
 
 void AArinaPlayerController::SetHUDHealth(float CurrentHealth, float MaxHealth)
@@ -65,4 +72,39 @@ void AArinaPlayerController::SetHUDDeaths(int32 Deaths)
 		ArinaHUD->CharacterOverlay->DeathsAmount->SetText(FText::FromString(DeathsAmountText));
 	}
 }
+
+void AArinaPlayerController::DisplayKilledByMessage(FString KillerName)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->KilledByBox &&
+		ArinaHUD->CharacterOverlay->KilledByText &&
+		ArinaHUD->CharacterOverlay->KilledByName;
+
+	if (bHUDValid)
+	{
+		ArinaHUD->CharacterOverlay->KilledByName->SetText(FText::FromString(KillerName));
+		ArinaHUD->CharacterOverlay->KilledByBox->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+void AArinaPlayerController::MulticastCollapseKilledByMessage_Implementation()
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->KilledByBox &&
+		ArinaHUD->CharacterOverlay->KilledByText &&
+		ArinaHUD->CharacterOverlay->KilledByName;
+
+	if (bHUDValid)
+	{
+		ArinaHUD->CharacterOverlay->KilledByBox->SetVisibility(ESlateVisibility::Collapsed);
+		ArinaHUD->CharacterOverlay->KilledByName->SetText(FText::FromString(""));
+	}
+}
+
+
 

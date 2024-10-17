@@ -28,6 +28,7 @@ public:
 	
 	void AddToScore(float ScoreAmount);
 	void AddToDeaths(int32 DeathsAmount);
+	void SetKillerName(FString Killer);
 
 private:
 	UPROPERTY()
@@ -38,5 +39,8 @@ private:
 
 	UPROPERTY(ReplicatedUsing=OnRep_Deaths)
 	int32 Deaths;
+
+	UPROPERTY(Replicated)
+	FString KillerName;
 	
 };

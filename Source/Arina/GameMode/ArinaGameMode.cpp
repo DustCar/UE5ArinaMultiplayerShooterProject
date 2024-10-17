@@ -22,6 +22,7 @@ void AArinaGameMode::PlayerEliminated(AArinaCharacter* EliminatedCharacter,
 	if (VictimPlayerState)
 	{
 		VictimPlayerState->AddToDeaths(1);
+		VictimPlayerState->SetKillerName(AttackerPlayerState->GetPlayerName());
 	}
 	
 	if (EliminatedCharacter)

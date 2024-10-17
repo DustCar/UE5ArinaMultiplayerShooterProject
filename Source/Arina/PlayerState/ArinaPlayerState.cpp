@@ -12,6 +12,7 @@ void AArinaPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, Deaths);
+	DOREPLIFETIME(ThisClass, KillerName);
 }
 
 void AArinaPlayerState::AddToScore(float ScoreAmount)
@@ -58,6 +59,8 @@ void AArinaPlayerState::AddToDeaths(int32 DeathsAmount)
 		if (ArinaPlayerController)
 		{
 			ArinaPlayerController->SetHUDDeaths(Deaths);
+			ArinaPlayerController->DisplayKilledByMessage(KillerName);
+
 		}
 	}
 }
@@ -72,6 +75,12 @@ void AArinaPlayerState::OnRep_Deaths()
 		if (ArinaPlayerController)
 		{
 			ArinaPlayerController->SetHUDDeaths(Deaths);
+			ArinaPlayerController->DisplayKilledByMessage(KillerName);
 		}
 	}
+}
+
+void AArinaPlayerState::SetKillerName(FString Killer)
+{
+	KillerName = Killer;
 }

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ArinaCharacterOverlay.generated.h"
 
+class UHorizontalBox;
 class UTextBlock;
 class UProgressBar;
 /**
@@ -29,5 +30,14 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* DeathsAmount;
+
+	UPROPERTY(meta = (BindWidget))
+	UHorizontalBox* KilledByBox;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* KilledByText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* KilledByName;
 	
 };
