@@ -53,10 +53,7 @@ void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		TraceUnderCrosshairs(HitResult);
 		HitTarget = HitResult.ImpactPoint;
 
-		if (EquippedWeapon)
-		{
-			SetHUDCrosshairs(DeltaTime);
-		}
+		SetHUDCrosshairs(DeltaTime);
 		InterpFOV(DeltaTime);
 	}
 	
@@ -307,11 +304,22 @@ void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
 
 		if (ArinaHUD)
 		{
-			HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
-			HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
-			HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
-			HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
-			HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
+			if (EquippedWeapon)
+			{
+				HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
+				HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
+				HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
+				HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
+				HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
+			}
+			else
+			{
+				HUDPackage.CrosshairCenter = nullptr;
+				HUDPackage.CrosshairRight = nullptr;
+				HUDPackage.CrosshairLeft = nullptr;
+				HUDPackage.CrosshairTop = nullptr;
+				HUDPackage.CrosshairBottom = nullptr;
+			}
 
 			// calculate crosshair spread
 

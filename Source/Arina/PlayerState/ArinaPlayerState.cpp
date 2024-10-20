@@ -60,7 +60,6 @@ void AArinaPlayerState::AddToDeaths(int32 DeathsAmount)
 		{
 			ArinaPlayerController->SetHUDDeaths(Deaths);
 			ArinaPlayerController->DisplayKilledByMessage(KillerName);
-
 		}
 	}
 }
