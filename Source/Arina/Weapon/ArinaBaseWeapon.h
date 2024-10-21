@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponTypes.h"
 #include "GameFramework/Actor.h"
 #include "ArinaBaseWeapon.generated.h"
 
+class AArinaPlayerController;
+class AArinaCharacter;
 class AArinaCasing;
 class UArinaCombatComponent;
 class UWidgetComponent;
@@ -30,8 +33,9 @@ class ARINA_API AArinaBaseWeapon : public AActor
 public:	
 	AArinaBaseWeapon();
 	virtual void Tick(float DeltaTime) override;
-	void ShowPickupWidget(bool bShowWidget);
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_Owner() override;
+	void ShowPickupWidget(bool bShowWidget);
 	virtual void Fire(const FVector& HitTarget);
 	void Dropped();
 
@@ -116,12 +120,42 @@ private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float FireDelay = 0.1f;
 
+	/**
+	*	Ammo
+	*/
+	UPROPERTY(EditAnywhere, ReplicatedUsing=OnRep_Ammo)
+	int32 Ammo;
+
+	UFUNCTION()
+	void OnRep_Ammo();
+
+	void SpendRound();
+	
+	UPROPERTY(EditAnywhere)
+	int32 MagCapacity;
+
+	UPROPERTY()
+	AArinaCharacter* OwnerArinaCharacter;
+
+	UPROPERTY()
+	AArinaPlayerController* OwnerArinaPlayerController;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	EWeaponType WeaponType;
+
 public:
 	void SetWeaponState(EWeaponState State);
+	void SetHUDAmmo();
+	void AddToAmmoCount(int32 Count);
 	FORCEINLINE USphereComponent* GetPickupArea() const { return PickupArea; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
 	FORCEINLINE float GetFireDelay() const { return FireDelay; }
 	FORCEINLINE bool IsAutomatic() const { return bAutomatic; }
+	FORCEINLINE bool IsEmpty() const { return Ammo <= 0; }
+	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
+	FORCEINLINE int32 GetWeaponAmmoAmount() const { return Ammo; }
+	FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
+	FORCEINLINE bool MagIsFull() const { return Ammo == MagCapacity; }
 };

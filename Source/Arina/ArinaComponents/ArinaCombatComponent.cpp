@@ -25,6 +25,7 @@ void UArinaCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 
 	DOREPLIFETIME(ThisClass, EquippedWeapon);
 	DOREPLIFETIME(ThisClass, bAiming);
+	DOREPLIFETIME_CONDITION(ThisClass, CarriedAmmo, COND_OwnerOnly);
 }
 
 void UArinaCombatComponent::BeginPlay()
@@ -56,8 +57,6 @@ void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		SetHUDCrosshairs(DeltaTime);
 		InterpFOV(DeltaTime);
 	}
-	
-	
 }
 
 void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
@@ -65,6 +64,11 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 	if (ArinaCharacter == nullptr || WeaponToEquip == nullptr)
 	{
 		return;
+	}
+
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->Dropped();
 	}
 
 	EquippedWeapon = WeaponToEquip;
@@ -76,6 +80,13 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 		HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
 	}
 	EquippedWeapon->SetOwner(ArinaCharacter);
+	EquippedWeapon->SetHUDAmmo();
+	
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+	SetHUDCarriedAmmo();
 	ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 	ArinaCharacter->bUseControllerRotationYaw = true;
 }
@@ -94,6 +105,20 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 		ArinaCharacter->bUseControllerRotationYaw = true;
 	}
+}
+
+void UArinaCombatComponent::SetHUDCarriedAmmo()
+{
+	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
+	if (ArinaController)
+	{
+		ArinaController->SetHUDCarryAmmo(CarriedAmmo);
+	}
+}
+
+void UArinaCombatComponent::OnRep_CarriedAmmo()
+{
+	SetHUDCarriedAmmo();
 }
 
 // local setting
@@ -145,13 +170,23 @@ void UArinaCombatComponent::FireTimerFinished()
 
 void UArinaCombatComponent::Fire()
 {
-	if (bCanFire)
+	if (CanFire())
 	{
 		bCanFire = false;
 		ServerFire(HitTarget);
 		StartFireTimer();
 	}
 	
+}
+
+bool UArinaCombatComponent::CanFire()
+{
+	if (EquippedWeapon == nullptr)
+	{
+		return false;
+	}
+
+	return !EquippedWeapon->IsEmpty() || !bCanFire;
 }
 
 void UArinaCombatComponent::FireButtonPressed(bool bPressed)
@@ -179,6 +214,33 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	MulticastFire(TraceHitTarget);
+}
+
+
+void UArinaCombatComponent::ReloadWeapon()
+{
+	if (CarriedAmmo > 0)
+	{
+		ServerReload();
+	}
+}
+
+void UArinaCombatComponent::ServerReload_Implementation()
+{
+	if (ArinaCharacter == nullptr || EquippedWeapon->MagIsFull())
+	{
+		return;
+	}
+
+	ArinaCharacter->PlayReloadMontage();
+	int32 AmmoNeeded = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetWeaponAmmoAmount();
+	if (AmmoNeeded > CarriedAmmo)
+	{
+		AmmoNeeded = CarriedAmmo;
+	}
+	CarriedAmmo = FMath::Clamp(CarriedAmmo - AmmoNeeded, 0, CarriedAmmo);
+	SetHUDCarriedAmmo();
+	EquippedWeapon->AddToAmmoCount(AmmoNeeded);
 }
 
 void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
@@ -258,7 +320,7 @@ void UArinaCombatComponent::CalculateCrosshairFactors(float DeltaTime)
 		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.f, DeltaTime, 30.f);
 	}
 
-	if (EquippedWeapon && bFireButtonPressed)
+	if (EquippedWeapon && !EquippedWeapon->IsEmpty() && bFireButtonPressed)
 	{
 		CrosshairShootFactor = FMath::FInterpTo(CrosshairShootFactor, 0.8f, DeltaTime, 20.f);
 	}

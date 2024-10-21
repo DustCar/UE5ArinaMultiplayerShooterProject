@@ -19,6 +19,9 @@ public:
 	void SetHUDHealth(float CurrentHealth, float MaxHealth);
 	void SetHUDScore(float Score);
 	void SetHUDDeaths(int32 Defeats);
+	void SetHUDWeaponAmmo(int32 WeaponAmmo);
+	void SetHUDCarryAmmo(int32 CarryAmmo);
+	
 	void DisplayKilledByMessage(FString KillerName);
 
 	UFUNCTION(NetMulticast, Reliable)

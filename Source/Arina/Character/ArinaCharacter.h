@@ -29,6 +29,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
+	void PlayReloadMontage();
 	void PlayEliminatedMontage();
 	void Eliminated();
 
@@ -58,6 +59,7 @@ protected:
 	void AimOffset(float DeltaTime);
 	virtual void Jump() override;
 	void Fire(const FInputActionValue& Value);
+	void Reload();
 	void PlayHitReactMontage();
 	void UpdateHUDHealth();
 
@@ -97,8 +99,14 @@ private:
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
 
+	/**
+	*	Animation Montages
+	*/
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* FireWeaponMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* ReloadMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* HitReactMontage;

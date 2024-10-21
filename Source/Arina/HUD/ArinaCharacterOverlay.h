@@ -35,9 +35,12 @@ public:
 	UHorizontalBox* KilledByBox;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KilledByText;
+	UTextBlock* KilledByName;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KilledByName;
+	UTextBlock* WeaponAmmoAmount;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CarryAmmoAmount;
 	
 };

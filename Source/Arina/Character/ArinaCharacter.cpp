@@ -147,7 +147,7 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PEI->BindAction(InputActions->InputCrouch, ETriggerEvent::Triggered, this, &ThisClass::CrouchPlayer);
 	PEI->BindAction(InputActions->InputAim, ETriggerEvent::Triggered, this, &ThisClass::AimIn);
 	PEI->BindAction(InputActions->InputFire, ETriggerEvent::Triggered, this, &ThisClass::Fire);
-
+	PEI->BindAction(InputActions->InputReload, ETriggerEvent::Triggered, this, &ThisClass::Reload);
 }
 
 void AArinaCharacter::MoveForward(const FInputActionValue& Value)
@@ -301,6 +301,14 @@ void AArinaCharacter::Fire(const FInputActionValue& Value)
 	}
 }
 
+void AArinaCharacter::Reload()
+{
+	if (CombatComp && CombatComp->EquippedWeapon)
+	{
+		CombatComp->ReloadWeapon();
+	}
+}
+
 void AArinaCharacter::PlayFireMontage(bool bAiming)
 {
 	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
@@ -313,6 +321,30 @@ void AArinaCharacter::PlayFireMontage(bool bAiming)
 	{
 		AnimInstance->Montage_Play(FireWeaponMontage);
 		FName SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+void AArinaCharacter::PlayReloadMontage()
+{
+	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ReloadMontage)
+	{
+		AnimInstance->Montage_Play(ReloadMontage);
+		FName SectionName;
+		
+		switch (CombatComp->EquippedWeapon->GetWeaponType())
+		{
+		case EWeaponType::EWT_AssaultRifle:
+			SectionName = FName("Rifle");
+			break;
+		}
+		
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
@@ -344,6 +376,12 @@ void AArinaCharacter::Eliminated()
 void AArinaCharacter::MulticastEliminated_Implementation()
 {
 	bEliminated = true;
+
+	if (ArinaPlayerController)
+	{
+		ArinaPlayerController->SetHUDWeaponAmmo(0);
+		ArinaPlayerController->SetHUDCarryAmmo(0);
+	}
 
 	// Creating dynamic material instance for dissolve effect and starting it
 	if (DissolveMaterialInstance)

@@ -73,6 +73,36 @@ void AArinaPlayerController::SetHUDDeaths(int32 Deaths)
 	}
 }
 
+void AArinaPlayerController::SetHUDWeaponAmmo(int32 WeaponAmmo)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->WeaponAmmoAmount;
+
+	if (bHUDValid)
+	{
+		FString AmmoText = FString::Printf(TEXT("%d"), WeaponAmmo);
+		ArinaHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
+	}
+}
+
+void AArinaPlayerController::SetHUDCarryAmmo(int32 CarryAmmo)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->CarryAmmoAmount;
+
+	if (bHUDValid)
+	{
+		FString AmmoText = FString::Printf(TEXT("%d"), CarryAmmo);
+		ArinaHUD->CharacterOverlay->CarryAmmoAmount->SetText(FText::FromString(AmmoText));
+	}
+}
+
 void AArinaPlayerController::DisplayKilledByMessage(FString KillerName)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
@@ -80,7 +110,6 @@ void AArinaPlayerController::DisplayKilledByMessage(FString KillerName)
 	bool bHUDValid = ArinaHUD &&
 		ArinaHUD->CharacterOverlay &&
 		ArinaHUD->CharacterOverlay->KilledByBox &&
-		ArinaHUD->CharacterOverlay->KilledByText &&
 		ArinaHUD->CharacterOverlay->KilledByName;
 
 	if (bHUDValid)
@@ -96,7 +125,6 @@ void AArinaPlayerController::MulticastCollapseKilledByMessage_Implementation()
 	bool bHUDValid = ArinaHUD &&
 		ArinaHUD->CharacterOverlay &&
 		ArinaHUD->CharacterOverlay->KilledByBox &&
-		ArinaHUD->CharacterOverlay->KilledByText &&
 		ArinaHUD->CharacterOverlay->KilledByName;
 
 	if (bHUDValid)

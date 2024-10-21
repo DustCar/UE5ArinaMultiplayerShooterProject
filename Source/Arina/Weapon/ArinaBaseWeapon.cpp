@@ -5,6 +5,7 @@
 
 #include "ArinaCasing.h"
 #include "Arina/Character/ArinaCharacter.h"
+#include "Arina/PlayerController/ArinaPlayerController.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -66,6 +67,21 @@ void AArinaBaseWeapon::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, WeaponState);
+	DOREPLIFETIME(ThisClass, Ammo);
+}
+
+void AArinaBaseWeapon::OnRep_Owner()
+{
+	Super::OnRep_Owner();
+	if (Owner == nullptr)
+	{
+		OwnerArinaCharacter = nullptr;
+		OwnerArinaPlayerController = nullptr;
+	}
+	else
+	{
+		SetHUDAmmo();
+	}
 }
 
 void AArinaBaseWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -105,6 +121,8 @@ void AArinaBaseWeapon::OnRep_WeaponState()
 		WeaponMesh->SetSimulatePhysics(true);
 		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		
+		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
 		break;
 	}
 }
@@ -131,9 +149,42 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		WeaponMesh->SetSimulatePhysics(true);
 		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		
+		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
 		break;
 	}
 	
+}
+
+void AArinaBaseWeapon::SetHUDAmmo()
+{
+	OwnerArinaCharacter = OwnerArinaCharacter == nullptr ? Cast<AArinaCharacter>(GetOwner()) : OwnerArinaCharacter;
+
+	if (OwnerArinaCharacter)
+	{
+		OwnerArinaPlayerController = OwnerArinaPlayerController == nullptr ? Cast<AArinaPlayerController>(OwnerArinaCharacter->GetController()) : OwnerArinaPlayerController;
+		if (OwnerArinaPlayerController)
+		{
+			OwnerArinaPlayerController->SetHUDWeaponAmmo(Ammo);
+		}
+	}
+}
+
+void AArinaBaseWeapon::AddToAmmoCount(int32 Count)
+{
+	Ammo += Count;
+	SetHUDAmmo();
+}
+
+void AArinaBaseWeapon::SpendRound()
+{
+	Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
+	SetHUDAmmo();
+}
+
+void AArinaBaseWeapon::OnRep_Ammo()
+{
+	SetHUDAmmo();
 }
 
 void AArinaBaseWeapon::ShowPickupWidget(bool bShowWidget)
@@ -168,6 +219,8 @@ void AArinaBaseWeapon::Fire(const FVector& HitTarget)
 			}
 		}
 	}
+
+	SpendRound();
 }
 
 void AArinaBaseWeapon::Dropped()
@@ -176,5 +229,7 @@ void AArinaBaseWeapon::Dropped()
 	FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, true);
 	WeaponMesh->DetachFromComponent(DetachRules);
 	SetOwner(nullptr);
+	OwnerArinaCharacter = nullptr;
+	OwnerArinaPlayerController = nullptr;
 }
 

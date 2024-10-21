@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
+#include "Arina/Weapon/WeaponTypes.h"
 #include "ArinaCombatComponent.generated.h"
 
 #define TRACE_LENGTH 80000.f
@@ -23,9 +24,11 @@ public:
 	// "friend class" allows any class of type AArinaCharacter to access all functions of CombatComponent
 	friend class AArinaCharacter;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void SetHUDCarriedAmmo();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void EquipWeapon(AArinaBaseWeapon* WeaponToEquip);
+	void ReloadWeapon();
 
 protected:
 	virtual void BeginPlay() override;
@@ -49,6 +52,8 @@ protected:
 	void CalculateCrosshairFactors(float DeltaTime);
 	void SetHUDCrosshairs(float DeltaTime);
 
+	UFUNCTION(Server, Reliable)
+	void ServerReload();
 	
 private:
 	UPROPERTY()
@@ -74,9 +79,9 @@ private:
 
 	bool bFireButtonPressed = false;
 
-	/*
-	 * HUD and Crosshair
-	 */
+	/**
+	*	HUD and Crosshair
+	*/
 
 	// amount for crosshair spread
 	UPROPERTY(EditAnywhere)
@@ -96,7 +101,6 @@ private:
 	/**
 	*  Aiming and FOV
 	*/
-	
 	// FOV when not aiming; set to camera's base FOV in BeginPlay
 	float DefaultFOV;
 
@@ -110,7 +114,6 @@ private:
 	/**
 	 *	Sensitivity variables
 	 */
-	
 	UPROPERTY(EditAnywhere, Category = "Sensitivity", meta=(UIMin = 0.f, UIMax = 1.f))
 	float AimSensitivityMultiplier = 0.5f;
 
@@ -118,8 +121,8 @@ private:
 	float BaseSensitivity = 0.5f;
 
 	/**
-	 *	Fire for automatic weapons
-	 */
+	*	Fire for automatic weapons
+	*/
 	FTimerHandle FireTimerHandle;
 
 	bool bCanFire = true;
@@ -127,6 +130,20 @@ private:
 	void StartFireTimer();
 	void FireTimerFinished();
 	void Fire();
+	bool CanFire();
+
+	/**
+	*	Ammo and Ammo types (future)
+	*/
+	// Carried ammo for the currently equipped weapon
+	UPROPERTY(ReplicatedUsing=OnRep_CarriedAmmo)
+	int32 CarriedAmmo;
+
+	UFUNCTION()
+	void OnRep_CarriedAmmo();
+
+	UPROPERTY(EditAnywhere, Category = "Ammo")
+	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 public:	
 
