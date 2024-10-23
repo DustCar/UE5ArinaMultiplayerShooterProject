@@ -239,7 +239,7 @@ void AArinaCharacter::Jump()
 
 void AArinaCharacter::AimIn(const FInputActionValue& Value)
 {
-	if (CombatComp)
+	if (CombatComp && CombatComp->EquippedWeapon)
 	{
 		CombatComp->SetAiming(Value.Get<bool>());
 	}
@@ -384,6 +384,7 @@ void AArinaCharacter::MulticastEliminated_Implementation()
 	{
 		ArinaPlayerController->SetHUDWeaponAmmo(0);
 		ArinaPlayerController->SetHUDCarryAmmo(0);
+		ArinaPlayerController->SetHUDWeaponType("UnEquipped");
 	}
 
 	// Creating dynamic material instance for dissolve effect and starting it
@@ -616,12 +617,12 @@ void AArinaCharacter::ServerEquipItem_Implementation()
 
 bool AArinaCharacter::IsWeaponEquipped()
 {
-	return (CombatComp && CombatComp->EquippedWeapon);
+	return CombatComp && CombatComp->EquippedWeapon;
 }
 
 bool AArinaCharacter::IsAiming()
 {
-	return (CombatComp && CombatComp->bAiming);
+	return CombatComp && CombatComp->bAiming && CombatComp->CanAim();
 }
 
 AArinaBaseWeapon* AArinaCharacter::GetEquippedWeapon() const

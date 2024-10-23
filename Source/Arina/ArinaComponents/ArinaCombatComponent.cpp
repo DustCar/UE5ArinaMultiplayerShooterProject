@@ -74,6 +74,11 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+
+	if (EquippedWeapon->EquipSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, ArinaCharacter->GetActorLocation());
+	}
 	
 	const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
 	if (HandSocket)
@@ -82,6 +87,7 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 	}
 	EquippedWeapon->SetOwner(ArinaCharacter);
 	EquippedWeapon->SetHUDAmmo();
+	UpdateHUDWeaponType(EquippedWeapon->GetWeaponType());
 	
 	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
 	{
@@ -98,13 +104,31 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 	if (EquippedWeapon && ArinaCharacter)
 	{
 		EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+
+		if (EquippedWeapon->EquipSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, ArinaCharacter->GetActorLocation());
+		}
+		
 		const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
 		if (HandSocket)
 		{
 			HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
 		}
+		UpdateHUDWeaponType(EquippedWeapon->GetWeaponType());
+
 		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 		ArinaCharacter->bUseControllerRotationYaw = true;
+	}
+}
+
+void UArinaCombatComponent::UpdateWalkSpeed()
+{
+	if (ArinaCharacter && EquippedWeapon)
+	{
+		float Sensitivity = bAiming && CanAim() ? BaseSensitivity * AimSensitivityMultiplier : BaseSensitivity;
+		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = bAiming && CanAim() ? AimWalkSpeed : BaseWalkSpeed;
+		ArinaCharacter->SetRotationLookSpeedMultiplier(Sensitivity);
 	}
 }
 
@@ -112,25 +136,25 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 void UArinaCombatComponent::SetAiming(bool bIsAiming)
 {
 	bAiming = bIsAiming;
-	ServerSetAiming(bIsAiming);
-	if (ArinaCharacter && EquippedWeapon)
-	{
-		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
-		float LookSpeedMultiplier = bIsAiming ? AimSensitivityMultiplier * BaseSensitivity : BaseSensitivity;
-		ArinaCharacter->SetRotationLookSpeedMultiplier(LookSpeedMultiplier);
-	}
+    ServerSetAiming(bIsAiming);
+    UpdateWalkSpeed();
 }
 
 // calls to the server to implement changes server wide
 void UArinaCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 {
 	bAiming = bIsAiming;
-	if (ArinaCharacter && EquippedWeapon)
+	UpdateWalkSpeed();
+}
+
+bool UArinaCombatComponent::CanAim()
+{
+	if (EquippedWeapon == nullptr)
 	{
-		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
-		float LookSpeedMultiplier = bIsAiming ? AimSensitivityMultiplier * BaseSensitivity : BaseSensitivity;
-		ArinaCharacter->SetRotationLookSpeedMultiplier(LookSpeedMultiplier);
+		return false;
 	}
+
+	return CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UArinaCombatComponent::StartFireTimer()
@@ -157,6 +181,10 @@ void UArinaCombatComponent::FireTimerFinished()
 
 void UArinaCombatComponent::Fire()
 {
+	if (EquippedWeapon->IsEmpty())
+	{
+		ReloadWeapon();
+	}
 	if (CanFire())
 	{
 		bCanFire = false;
@@ -213,34 +241,89 @@ void UArinaCombatComponent::ReloadWeapon()
 
 void UArinaCombatComponent::ServerReload_Implementation()
 {
-	if (ArinaCharacter == nullptr || EquippedWeapon->MagIsFull())
+	if (ArinaCharacter == nullptr || EquippedWeapon == nullptr || EquippedWeapon->MagIsFull())
 	{
 		return;
 	}
 	CombatState = ECombatState::ECS_Reloading;
 	HandleReload();
+	UpdateWalkSpeed();
+}
+
+void UArinaCombatComponent::HandleReload()
+{
+	ReloadAnimDuration = ArinaCharacter->PlayReloadMontage();
+	ArinaCharacter->GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ThisClass::ReloadTimerFinished, ReloadAnimDuration - 0.1f, false);
+}
+
+int32 UArinaCombatComponent::AmountToReload()
+{
+	if (EquippedWeapon == nullptr)
+	{
+		return 0;
+	}
+	
+	int32 RoomInMag = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetWeaponAmmoAmount();
+
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		int32 AmmoInBag = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+		int32 AmmoNeeded = RoomInMag > AmmoInBag ? AmmoInBag : RoomInMag;
+		return AmmoNeeded;
+	}
+	
+	return 0;
+}
+
+void UArinaCombatComponent::UpdateHUDWeaponType(const EWeaponType& Type)
+{
+	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
+	if (ArinaController)
+	{
+		FString WeaponName;
+		switch (Type)
+		{
+		case EWeaponType::EWT_AssaultRifle:
+			WeaponName = "Assault Rifle";
+			break;
+		default:
+			WeaponName = "Unknown";
+			break;
+		}
+		ArinaController->SetHUDWeaponType(WeaponName);
+	}
+}
+
+void UArinaCombatComponent::UpdateAmmoValues()
+{
+	int32 ReloadAmount = AmountToReload();
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmoMap[EquippedWeapon->GetWeaponType()] -= ReloadAmount;
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+	SetHUDCarriedAmmo();
+	EquippedWeapon->AddToAmmoCount(ReloadAmount);
 }
 
 void UArinaCombatComponent::ReloadTimerFinished()
 {
-	int32 AmmoNeeded = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetWeaponAmmoAmount();
-	if (AmmoNeeded > CarriedAmmo)
+	if (EquippedWeapon == nullptr)
 	{
-		AmmoNeeded = CarriedAmmo;
+		return;
 	}
-	CarriedAmmo -= AmmoNeeded;
-	SetHUDCarriedAmmo();
-	EquippedWeapon->AddToAmmoCount(AmmoNeeded);
 	
-	if (CombatState == ECombatState::ECS_Reloading)
+	if (ArinaCharacter->HasAuthority() && CombatState == ECombatState::ECS_Reloading)
 	{
 		CombatState = ECombatState::ECS_Unoccupied;
+		UpdateAmmoValues();
 	}
 
-	if (bFireButtonPressed)
+	if (bFireButtonPressed && EquippedWeapon->IsAutomatic())
 	{
 		Fire();
 	}
+	UpdateWalkSpeed();
 }
 
 void UArinaCombatComponent::OnRep_CombatState()
@@ -249,20 +332,18 @@ void UArinaCombatComponent::OnRep_CombatState()
 	{
 	case ECombatState::ECS_Reloading:
 		HandleReload();
+		UpdateWalkSpeed();
 		break;
 	case ECombatState::ECS_Unoccupied:
-		if (bFireButtonPressed)
+		if (bFireButtonPressed && EquippedWeapon->IsAutomatic())
 		{
 			Fire();
 		}
+		UpdateWalkSpeed();
+		break;
+	default:
 		break;
 	}
-}
-
-void UArinaCombatComponent::HandleReload()
-{
-	ReloadAnimDuration = ArinaCharacter->PlayReloadMontage();
-	ArinaCharacter->GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ThisClass::ReloadTimerFinished, ReloadAnimDuration - 0.1f, false);
 }
 
 void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
@@ -332,7 +413,7 @@ void UArinaCombatComponent::CalculateCrosshairFactors(float DeltaTime)
 		CrosshairAirborneFactor = FMath::FInterpTo(CrosshairAirborneFactor, 0.f, DeltaTime, 40.f);
 	}
 
-	if (bAiming)
+	if (bAiming && CanAim())
 	{
 		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.48f, DeltaTime, 30.f);	
 	}
@@ -437,7 +518,7 @@ void UArinaCombatComponent::InterpFOV(float DeltaTime)
 {
 	if (EquippedWeapon == nullptr) { return; }
 
-	if (bAiming)
+	if (bAiming && CanAim())
 	{
 		CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomedFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
 	}

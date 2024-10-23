@@ -88,4 +88,6 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	bUseFABRIK = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading;
+	bUseAimOffsets = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading;
+	bTransformRightHand = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading;
 }

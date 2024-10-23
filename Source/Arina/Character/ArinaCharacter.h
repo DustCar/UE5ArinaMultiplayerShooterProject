@@ -183,6 +183,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* ElimBotSound;
+
+	
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);

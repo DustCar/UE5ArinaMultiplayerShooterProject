@@ -16,13 +16,14 @@ class ARINA_API AArinaPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	void SetHUDHealth(float CurrentHealth, float MaxHealth);
-	void SetHUDScore(float Score);
-	void SetHUDDeaths(int32 Defeats);
-	void SetHUDWeaponAmmo(int32 WeaponAmmo);
-	void SetHUDCarryAmmo(int32 CarryAmmo);
+	void SetHUDHealth(const float& CurrentHealth, const float& MaxHealth);
+	void SetHUDScore(const float& Score);
+	void SetHUDDeaths(const int32& Defeats);
+	void SetHUDWeaponAmmo(const int32& WeaponAmmo);
+	void SetHUDCarryAmmo(const int32& CarryAmmo);
+	void SetHUDWeaponType(const FString& WeaponType);
 	
-	void DisplayKilledByMessage(FString KillerName);
+	void DisplayKilledByMessage(const FString& KillerName);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastCollapseKilledByMessage();

@@ -23,7 +23,7 @@ void AArinaPlayerController::OnPossess(APawn* InPawn)
 	MulticastCollapseKilledByMessage();
 }
 
-void AArinaPlayerController::SetHUDHealth(float CurrentHealth, float MaxHealth)
+void AArinaPlayerController::SetHUDHealth(const float& CurrentHealth, const float& MaxHealth)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
@@ -43,7 +43,7 @@ void AArinaPlayerController::SetHUDHealth(float CurrentHealth, float MaxHealth)
 	}
 }
 
-void AArinaPlayerController::SetHUDScore(float Score)
+void AArinaPlayerController::SetHUDScore(const float& Score)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
@@ -58,7 +58,7 @@ void AArinaPlayerController::SetHUDScore(float Score)
 	}
 }
 
-void AArinaPlayerController::SetHUDDeaths(int32 Deaths)
+void AArinaPlayerController::SetHUDDeaths(const int32& Deaths)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
@@ -73,7 +73,7 @@ void AArinaPlayerController::SetHUDDeaths(int32 Deaths)
 	}
 }
 
-void AArinaPlayerController::SetHUDWeaponAmmo(int32 WeaponAmmo)
+void AArinaPlayerController::SetHUDWeaponAmmo(const int32& WeaponAmmo)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
@@ -88,7 +88,7 @@ void AArinaPlayerController::SetHUDWeaponAmmo(int32 WeaponAmmo)
 	}
 }
 
-void AArinaPlayerController::SetHUDCarryAmmo(int32 CarryAmmo)
+void AArinaPlayerController::SetHUDCarryAmmo(const int32& CarryAmmo)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
@@ -103,7 +103,22 @@ void AArinaPlayerController::SetHUDCarryAmmo(int32 CarryAmmo)
 	}
 }
 
-void AArinaPlayerController::DisplayKilledByMessage(FString KillerName)
+void AArinaPlayerController::SetHUDWeaponType(const FString& WeaponType)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->WeaponType;
+
+	if (bHUDValid)
+	{
+		FString WeaponText = FString::Printf(TEXT("%s"), *WeaponType);
+		ArinaHUD->CharacterOverlay->WeaponType->SetText(FText::FromString(WeaponText));
+	}
+}
+
+void AArinaPlayerController::DisplayKilledByMessage(const FString& KillerName)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 

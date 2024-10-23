@@ -9,6 +9,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -116,12 +117,17 @@ void AArinaBaseWeapon::OnRep_WeaponState()
 		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetEnableGravity(false);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 		break;
 	case EWeaponState::EWS_Dropped:
 		WeaponMesh->SetSimulatePhysics(true);
 		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		
+
+		if (DropSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
+		}
 		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
 		break;
 	}
@@ -134,12 +140,13 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 	switch (WeaponState)
 	{
 	case EWeaponState::EWS_Equipped:
-		// Do not need to call the function since server disables weapons pickup collision which in turns disables widget
+		// Do not need to call the function since server disables weapons pickup collision which in turn disables widget
 		/*ShowPickupWidget(false);*/
 		PickupArea->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetEnableGravity(false);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
 		break;
 	case EWeaponState::EWS_Dropped:
 		if (HasAuthority())
@@ -149,7 +156,11 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		WeaponMesh->SetSimulatePhysics(true);
 		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		
+
+		if (DropSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
+		}
 		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
 		break;
 	}
@@ -172,7 +183,7 @@ void AArinaBaseWeapon::SetHUDAmmo()
 
 void AArinaBaseWeapon::AddToAmmoCount(int32 Count)
 {
-	Ammo += Count;
+	Ammo = FMath::Clamp(Ammo + Count, 0, MagCapacity);
 	SetHUDAmmo();
 }
 

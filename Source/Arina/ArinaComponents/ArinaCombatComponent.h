@@ -33,6 +33,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
 	void SetAiming(bool bIsAiming);
 
 	UFUNCTION(Server, Reliable)
@@ -40,6 +41,7 @@ protected:
 
 	UFUNCTION()
 	void OnRep_EquippedWeapon();
+	void UpdateWalkSpeed();
 
 	void FireButtonPressed(bool bPressed);
 	
@@ -56,17 +58,15 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
 	void HandleReload();
+	int32 AmountToReload();
 	
 private:
 	UPROPERTY()
 	AArinaCharacter* ArinaCharacter;
-
 	UPROPERTY()
 	AArinaPlayerController* ArinaController;
-
 	UPROPERTY()
 	AArinaHUD* ArinaHUD;
-
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	AArinaBaseWeapon* EquippedWeapon;
 
@@ -75,7 +75,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float BaseWalkSpeed = 600.f;
-
 	UPROPERTY(EditAnywhere)
 	float AimWalkSpeed = 350.f;
 
@@ -95,7 +94,6 @@ private:
 	float CrosshairEnemyFactor;
 
 	FHUDPackage HUDPackage;
-
 	FVector HitTarget;
 
 	bool bEnemyInSight = false;
@@ -105,13 +103,13 @@ private:
 	*/
 	// FOV when not aiming; set to camera's base FOV in BeginPlay
 	float DefaultFOV;
-
 	float CurrentFOV;
 	
 	UPROPERTY(EditAnywhere, Category = "Combat")
     float UnZoomInterpSpeed = 15.f;
 
 	void InterpFOV(float DeltaTime);
+	bool CanAim();
 
 	/**
 	 *	Sensitivity variables
@@ -157,10 +155,12 @@ private:
 	*	Reload variables
 	*/
 	FTimerHandle ReloadTimerHandle;
-
 	float ReloadAnimDuration;
 
+	void UpdateAmmoValues();
 	void ReloadTimerFinished();
+	
+	void UpdateHUDWeaponType(const EWeaponType& Type);
 
 public:	
 

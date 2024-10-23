@@ -57,6 +57,15 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category="Crosshairs")
 	UTexture2D* CrosshairBottom;
+
+	/**
+	*	Weapon FX
+	*/
+	UPROPERTY(EditAnywhere, Category = "ArinaWeaponProps")
+	USoundBase* EquipSound;
+
+	UPROPERTY(EditAnywhere, Category = "ArinaWeaponProps")
+	USoundBase* DropSound;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -81,22 +90,22 @@ protected:
 	
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
+	UPROPERTY(VisibleAnywhere, Category = "ArinaWeaponProps")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
+	UPROPERTY(VisibleAnywhere, Category = "ArinaWeaponProps")
 	USphereComponent* PickupArea;
 
 	UFUNCTION()
 	void OnRep_WeaponState();
 
-	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties", ReplicatedUsing = OnRep_WeaponState)
+	UPROPERTY(VisibleAnywhere, Category = "ArinaWeaponProps", ReplicatedUsing = OnRep_WeaponState)
 	EWeaponState WeaponState;
 
-	UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
+	UPROPERTY(VisibleAnywhere, Category = "ArinaWeaponProps")
 	UWidgetComponent* PickupWidget;
 
-	UPROPERTY(EditAnywhere, Category="WeaponProperties")
+	UPROPERTY(EditAnywhere, Category="ArinaWeaponProps")
 	UAnimationAsset* FireAnimation;
 
 	UPROPERTY(EditAnywhere)
@@ -140,7 +149,7 @@ private:
 	UPROPERTY()
 	AArinaPlayerController* OwnerArinaPlayerController;
 
-	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	UPROPERTY(EditAnywhere, Category = "ArinaWeaponProps")
 	EWeaponType WeaponType;
 
 public:
