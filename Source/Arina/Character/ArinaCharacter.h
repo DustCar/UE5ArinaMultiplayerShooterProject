@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Arina/ArinaComponents/ArinaCombatComponent.h"
+#include "Arina/ArinaTypesHeaders/CombatState.h"
 #include "Arina/ArinaTypesHeaders/TurningInPlace.h"
 #include "Arina/Interfaces/ArinaCrosshairInteractionInterface.h"
 #include "Components/TimelineComponent.h"
@@ -29,7 +31,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
-	void PlayReloadMontage();
+	float PlayReloadMontage();
 	void PlayEliminatedMontage();
 	void Eliminated();
 
@@ -194,4 +196,5 @@ public:
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE void SetRotationLookSpeedMultiplier(float Multiplier) { RotationLookSpeedMultiplier = Multiplier; }
 	FORCEINLINE bool IsEliminated() const { return bEliminated; }
+	ECombatState GetCombatState() const;
 };

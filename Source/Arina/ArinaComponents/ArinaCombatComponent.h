@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Arina/ArinaTypesHeaders/CombatState.h"
 #include "Components/ActorComponent.h"
 #include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
 #include "Arina/Weapon/WeaponTypes.h"
@@ -54,6 +55,7 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
+	void HandleReload();
 	
 private:
 	UPROPERTY()
@@ -144,6 +146,21 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Ammo")
 	TMap<EWeaponType, int32> CarriedAmmoMap;
+
+	UPROPERTY(ReplicatedUsing=OnRep_CombatState)
+	ECombatState CombatState = ECombatState::ECS_Unoccupied;
+
+	UFUNCTION()
+	void OnRep_CombatState();
+
+	/**
+	*	Reload variables
+	*/
+	FTimerHandle ReloadTimerHandle;
+
+	float ReloadAnimDuration;
+
+	void ReloadTimerFinished();
 
 public:	
 

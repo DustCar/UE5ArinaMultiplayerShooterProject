@@ -11,26 +11,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Arina/Weapon/WeaponTypes.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/ArinaTypesHeaders/CombatState.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/DA_ArinaInputConfigData.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/DA_ArinaInputConfigData.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/IMC_ArinaDefault.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/IMC_ArinaDefault.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/InputActions/IA_Aim.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/InputActions/IA_Aim.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/InputActions/IA_Fire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/EnhancedInput/InputActions/IA_Fire.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaCharacterOverlay.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaCharacterOverlay.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaOverHeadWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaOverHeadWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip_fixed.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip_fixed.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaInputConfigData.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaInputConfigData.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaAnimInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,7 +141,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Language Defaults",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -639,7 +630,10 @@
       <workItem from="1729141064856" duration="425000" />
       <workItem from="1729141574126" duration="12007000" />
       <workItem from="1729184240013" duration="2093000" />
-      <workItem from="1729450172121" duration="19543000" />
+      <workItem from="1729450172121" duration="20133000" />
+      <workItem from="1729560654939" duration="943000" />
+      <workItem from="1729623402348" duration="768000" />
+      <workItem from="1729624195433" duration="11513000" />
     </task>
     <servers />
   </component>

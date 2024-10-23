@@ -85,6 +85,7 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(RightHandTransform.GetLocation(), RightHandTransform.GetLocation() + (RightHandTransform.GetLocation() - ArinaCharacter->GetHitTarget()));
 			RightHandRotation = FMath::RInterpTo(RightHandRotation, LookAtRotation, DeltaSeconds, 20.f);
 		}
-		
 	}
+
+	bUseFABRIK = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading;
 }

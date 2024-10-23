@@ -26,6 +26,7 @@ void UArinaCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 	DOREPLIFETIME(ThisClass, EquippedWeapon);
 	DOREPLIFETIME(ThisClass, bAiming);
 	DOREPLIFETIME_CONDITION(ThisClass, CarriedAmmo, COND_OwnerOnly);
+	DOREPLIFETIME(ThisClass, CombatState);
 }
 
 void UArinaCombatComponent::BeginPlay()
@@ -107,20 +108,6 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 	}
 }
 
-void UArinaCombatComponent::SetHUDCarriedAmmo()
-{
-	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
-	if (ArinaController)
-	{
-		ArinaController->SetHUDCarryAmmo(CarriedAmmo);
-	}
-}
-
-void UArinaCombatComponent::OnRep_CarriedAmmo()
-{
-	SetHUDCarriedAmmo();
-}
-
 // local setting
 void UArinaCombatComponent::SetAiming(bool bIsAiming)
 {
@@ -186,7 +173,7 @@ bool UArinaCombatComponent::CanFire()
 		return false;
 	}
 
-	return !EquippedWeapon->IsEmpty() || !bCanFire;
+	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UArinaCombatComponent::FireButtonPressed(bool bPressed)
@@ -204,7 +191,7 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 	{
 		return;
 	}
-	if (ArinaCharacter)
+	if (ArinaCharacter && CombatState == ECombatState::ECS_Unoccupied)
 	{
 		ArinaCharacter->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
@@ -216,10 +203,9 @@ void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize&
 	MulticastFire(TraceHitTarget);
 }
 
-
 void UArinaCombatComponent::ReloadWeapon()
 {
-	if (CarriedAmmo > 0)
+	if (CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading)
 	{
 		ServerReload();
 	}
@@ -231,16 +217,52 @@ void UArinaCombatComponent::ServerReload_Implementation()
 	{
 		return;
 	}
+	CombatState = ECombatState::ECS_Reloading;
+	HandleReload();
+}
 
-	ArinaCharacter->PlayReloadMontage();
+void UArinaCombatComponent::ReloadTimerFinished()
+{
 	int32 AmmoNeeded = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetWeaponAmmoAmount();
 	if (AmmoNeeded > CarriedAmmo)
 	{
 		AmmoNeeded = CarriedAmmo;
 	}
-	CarriedAmmo = FMath::Clamp(CarriedAmmo - AmmoNeeded, 0, CarriedAmmo);
+	CarriedAmmo -= AmmoNeeded;
 	SetHUDCarriedAmmo();
 	EquippedWeapon->AddToAmmoCount(AmmoNeeded);
+	
+	if (CombatState == ECombatState::ECS_Reloading)
+	{
+		CombatState = ECombatState::ECS_Unoccupied;
+	}
+
+	if (bFireButtonPressed)
+	{
+		Fire();
+	}
+}
+
+void UArinaCombatComponent::OnRep_CombatState()
+{
+	switch (CombatState)
+	{
+	case ECombatState::ECS_Reloading:
+		HandleReload();
+		break;
+	case ECombatState::ECS_Unoccupied:
+		if (bFireButtonPressed)
+		{
+			Fire();
+		}
+		break;
+	}
+}
+
+void UArinaCombatComponent::HandleReload()
+{
+	ReloadAnimDuration = ArinaCharacter->PlayReloadMontage();
+	ArinaCharacter->GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ThisClass::ReloadTimerFinished, ReloadAnimDuration - 0.1f, false);
 }
 
 void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
@@ -266,7 +288,6 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 	if (bScreenToWorld)
 	{
 		FVector Start = CrosshairWorldPos;
-
 		if (ArinaCharacter)
 		{
 			float DistanceToCharacter = (ArinaCharacter->GetActorLocation() - Start).Size();
@@ -359,11 +380,9 @@ void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
 	if (ArinaCharacter == nullptr || ArinaCharacter->Controller == nullptr) { return; }
 
 	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->Controller) : ArinaController;
-
 	if (ArinaController)
 	{
 		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(ArinaController->GetHUD()) : ArinaHUD;
-
 		if (ArinaHUD)
 		{
 			if (EquippedWeapon)
@@ -384,7 +403,6 @@ void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
 			}
 
 			// calculate crosshair spread
-
 			FVector2D WalkSpeedRange;
 			FVector2D VelocityMultiplierRange;
 
@@ -432,4 +450,18 @@ void UArinaCombatComponent::InterpFOV(float DeltaTime)
 	{
 		ArinaCharacter->GetFollowCamera()->SetFieldOfView(CurrentFOV);
 	}
+}
+
+void UArinaCombatComponent::SetHUDCarriedAmmo()
+{
+	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
+	if (ArinaController)
+	{
+		ArinaController->SetHUDCarryAmmo(CarriedAmmo);
+	}
+}
+
+void UArinaCombatComponent::OnRep_CarriedAmmo()
+{
+	SetHUDCarriedAmmo();
 }

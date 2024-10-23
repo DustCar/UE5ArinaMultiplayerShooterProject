@@ -325,17 +325,18 @@ void AArinaCharacter::PlayFireMontage(bool bAiming)
 	}
 }
 
-void AArinaCharacter::PlayReloadMontage()
+float AArinaCharacter::PlayReloadMontage()
 {
 	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
 	{
-		return;
+		return 0.f;
 	}
 
+	float Duration = 0.f;
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && ReloadMontage)
 	{
-		AnimInstance->Montage_Play(ReloadMontage);
+		Duration = AnimInstance->Montage_Play(ReloadMontage);
 		FName SectionName;
 		
 		switch (CombatComp->EquippedWeapon->GetWeaponType())
@@ -347,6 +348,8 @@ void AArinaCharacter::PlayReloadMontage()
 		
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
+
+	return Duration;
 }
 
 void AArinaCharacter::PlayEliminatedMontage()
@@ -639,4 +642,14 @@ FVector AArinaCharacter::GetHitTarget()
 	}
 
 	return CombatComp->HitTarget;
+}
+
+ECombatState AArinaCharacter::GetCombatState() const
+{
+	if (CombatComp == nullptr)
+	{
+		return ECombatState::ECS_MAX;
+	}
+
+	return CombatComp->CombatState;
 }
