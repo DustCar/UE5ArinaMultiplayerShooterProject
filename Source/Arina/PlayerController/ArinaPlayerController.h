@@ -24,6 +24,7 @@ public:
 	void SetHUDWeaponType(const FString& WeaponType);
 	
 	void DisplayKilledByMessage(const FString& KillerName);
+	void CollapseKilledByMessage();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastCollapseKilledByMessage();

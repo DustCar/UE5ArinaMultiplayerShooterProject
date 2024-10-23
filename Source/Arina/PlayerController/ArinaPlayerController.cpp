@@ -133,7 +133,7 @@ void AArinaPlayerController::DisplayKilledByMessage(const FString& KillerName)
 		ArinaHUD->CharacterOverlay->KilledByBox->SetVisibility(ESlateVisibility::Visible);
 	}
 }
-void AArinaPlayerController::MulticastCollapseKilledByMessage_Implementation()
+void AArinaPlayerController::CollapseKilledByMessage()
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
@@ -147,6 +147,11 @@ void AArinaPlayerController::MulticastCollapseKilledByMessage_Implementation()
 		ArinaHUD->CharacterOverlay->KilledByBox->SetVisibility(ESlateVisibility::Collapsed);
 		ArinaHUD->CharacterOverlay->KilledByName->SetText(FText::FromString(""));
 	}
+}
+
+void AArinaPlayerController::MulticastCollapseKilledByMessage_Implementation()
+{
+	CollapseKilledByMessage();
 }
 
 

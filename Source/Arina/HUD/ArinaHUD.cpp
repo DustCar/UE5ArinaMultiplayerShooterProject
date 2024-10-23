@@ -66,7 +66,7 @@ void AArinaHUD::AddCharacterOverlay()
 		{
 			ArinaPlayerController->SetHUDScore(0.f);
 			ArinaPlayerController->SetHUDDeaths(0);
-			ArinaPlayerController->MulticastCollapseKilledByMessage();
+			ArinaPlayerController->CollapseKilledByMessage();
 			ArinaPlayerController->SetHUDWeaponType("UnEquipped");
 		}
 	}
