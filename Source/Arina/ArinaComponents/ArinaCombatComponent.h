@@ -160,7 +160,7 @@ private:
 	void UpdateAmmoValues();
 	void ReloadTimerFinished();
 	
-	void UpdateHUDWeaponType(const EWeaponType& Type);
+	void UpdateHUDWeaponType();
 
 public:	
 

@@ -234,6 +234,17 @@ void AArinaBaseWeapon::Fire(const FVector& HitTarget)
 	SpendRound();
 }
 
+FString AArinaBaseWeapon::GetWeaponName() const
+{
+	switch (WeaponType)
+	{
+	case EWeaponType::EWT_AssaultRifle:
+		return FString(TEXT("Assault Rifle"));
+	default:
+		return FString(TEXT("Unknown"));
+	}
+}
+
 void AArinaBaseWeapon::Dropped()
 {
 	SetWeaponState(EWeaponState::EWS_Dropped);

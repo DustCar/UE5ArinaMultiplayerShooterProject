@@ -26,8 +26,8 @@ public:
 	void DisplayKilledByMessage(const FString& KillerName);
 	void CollapseKilledByMessage();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastCollapseKilledByMessage();
+	UFUNCTION(Client, Reliable)
+	void ClientCollapseKilledByMessage();
 
 protected:
 	virtual void BeginPlay() override;

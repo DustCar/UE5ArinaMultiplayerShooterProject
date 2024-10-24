@@ -87,7 +87,7 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 	}
 	EquippedWeapon->SetOwner(ArinaCharacter);
 	EquippedWeapon->SetHUDAmmo();
-	UpdateHUDWeaponType(EquippedWeapon->GetWeaponType());
+	UpdateHUDWeaponType();
 	
 	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
 	{
@@ -115,7 +115,7 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 		{
 			HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
 		}
-		UpdateHUDWeaponType(EquippedWeapon->GetWeaponType());
+		UpdateHUDWeaponType();
 
 		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 		ArinaCharacter->bUseControllerRotationYaw = true;
@@ -275,22 +275,12 @@ int32 UArinaCombatComponent::AmountToReload()
 	return 0;
 }
 
-void UArinaCombatComponent::UpdateHUDWeaponType(const EWeaponType& Type)
+void UArinaCombatComponent::UpdateHUDWeaponType()
 {
 	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
 	if (ArinaController)
 	{
-		FString WeaponName;
-		switch (Type)
-		{
-		case EWeaponType::EWT_AssaultRifle:
-			WeaponName = "Assault Rifle";
-			break;
-		default:
-			WeaponName = "Unknown";
-			break;
-		}
-		ArinaController->SetHUDWeaponType(WeaponName);
+		ArinaController->SetHUDWeaponType(EquippedWeapon->GetWeaponName());
 	}
 }
 

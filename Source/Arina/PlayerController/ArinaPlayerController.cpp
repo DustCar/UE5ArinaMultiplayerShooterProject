@@ -20,7 +20,7 @@ void AArinaPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	MulticastCollapseKilledByMessage();
+	ClientCollapseKilledByMessage();
 }
 
 void AArinaPlayerController::SetHUDHealth(const float& CurrentHealth, const float& MaxHealth)
@@ -149,7 +149,7 @@ void AArinaPlayerController::CollapseKilledByMessage()
 	}
 }
 
-void AArinaPlayerController::MulticastCollapseKilledByMessage_Implementation()
+void AArinaPlayerController::ClientCollapseKilledByMessage_Implementation()
 {
 	CollapseKilledByMessage();
 }

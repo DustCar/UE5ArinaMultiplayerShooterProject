@@ -66,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "ArinaWeaponProps")
 	USoundBase* DropSound;
+
+	FString GetWeaponName() const;
+	
 	
 protected:
 	virtual void BeginPlay() override;

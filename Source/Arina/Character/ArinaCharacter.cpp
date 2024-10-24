@@ -337,14 +337,7 @@ float AArinaCharacter::PlayReloadMontage()
 	if (AnimInstance && ReloadMontage)
 	{
 		Duration = AnimInstance->Montage_Play(ReloadMontage);
-		FName SectionName;
-		
-		switch (CombatComp->EquippedWeapon->GetWeaponType())
-		{
-		case EWeaponType::EWT_AssaultRifle:
-			SectionName = FName("Rifle");
-			break;
-		}
+		FName SectionName = FName(CombatComp->EquippedWeapon->GetWeaponName());
 		
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
