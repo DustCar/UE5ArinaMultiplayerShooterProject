@@ -8,6 +8,46 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
+AArinaGameMode::AArinaGameMode()
+{
+	bDelayedStart = true;
+}
+
+void AArinaGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	LevelStartingTime = GetWorld()->GetTimeSeconds();
+}
+
+void AArinaGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		if (CountdownTime <= 0.f)
+		{
+			StartMatch();
+		}
+	}
+}
+
+void AArinaGameMode::OnMatchStateSet()
+{
+	Super::OnMatchStateSet();
+
+	for (FConstPlayerControllerIterator PCIt = GetWorld()->GetPlayerControllerIterator(); PCIt; ++PCIt)
+	{
+		AArinaPlayerController* ArinaPlayerController = Cast<AArinaPlayerController>(*PCIt);
+		if (ArinaPlayerController)
+		{
+			ArinaPlayerController->OnMatchStateSet(MatchState);
+		}
+	}
+}
+
 void AArinaGameMode::PlayerEliminated(AArinaCharacter* EliminatedCharacter,
                                       AArinaPlayerController* EliminatedController, AArinaPlayerController* AttackingController)
 {

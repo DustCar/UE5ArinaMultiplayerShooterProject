@@ -8,6 +8,8 @@
 #include "Components/HorizontalBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Arina/GameMode/ArinaGameMode.h"
+#include "Net/UnrealNetwork.h"
 
 void AArinaPlayerController::BeginPlay()
 {
@@ -16,11 +18,37 @@ void AArinaPlayerController::BeginPlay()
 	ArinaHUD = Cast<AArinaHUD>(GetHUD());
 }
 
+void AArinaPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, MatchState);
+}
+
 void AArinaPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
 	ClientCollapseKilledByMessage();
+}
+
+void AArinaPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	SetHUDTime();
+
+	CheckTimeSync(DeltaSeconds);
+}
+
+void AArinaPlayerController::CheckTimeSync(float DeltaSeconds)
+{
+	TimeSyncRunningTime += DeltaSeconds;
+	if (IsLocalController() && TimeSyncRunningTime > TimeSyncFrequency)
+	{
+		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+		TimeSyncRunningTime = 0.f;
+	}
 }
 
 void AArinaPlayerController::SetHUDHealth(const float& CurrentHealth, const float& MaxHealth)
@@ -154,5 +182,102 @@ void AArinaPlayerController::ClientCollapseKilledByMessage_Implementation()
 	CollapseKilledByMessage();
 }
 
+void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
 
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->MatchTimerText;
 
+	if (bHUDValid)
+	{
+		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
+		int32 Seconds = CountdownTime - Minutes * 60;
+		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+		ArinaHUD->CharacterOverlay->MatchTimerText->SetText(FText::FromString(CountdownText));
+	}
+}
+
+void AArinaPlayerController::SetHUDTime()
+{
+	float SecondsLeft = MatchTime - GetServerTime();
+
+	if (CountDownInt != FMath::CeilToInt32(SecondsLeft))
+	{
+		SetHUDMatchTimer(SecondsLeft);
+	}
+
+	CountDownInt = FMath::CeilToInt32(SecondsLeft);
+
+}
+
+void AArinaPlayerController::ServerRequestServerTime_Implementation(float TimeOfClientRequest)
+{
+	float ServerTimeOfReceipt = GetWorld()->GetTimeSeconds();
+	ClientReportServerTime(TimeOfClientRequest, ServerTimeOfReceipt);
+}
+
+void AArinaPlayerController::ClientReportServerTime_Implementation(float TimeOfClientRequest,
+	float TimeServerReceivedRequest)
+{
+	float RoundTripTime = GetWorld()->GetTimeSeconds() - TimeOfClientRequest;
+	float CurrentServerTime = TimeServerReceivedRequest + 0.5f * RoundTripTime;
+
+	ClientServerDelta = CurrentServerTime - GetWorld()->GetTimeSeconds();
+}
+
+float AArinaPlayerController::GetServerTime()
+{
+	if (HasAuthority())
+	{
+		return GetWorld()->GetTimeSeconds();
+	}
+	else
+	{
+		return GetWorld()->GetTimeSeconds() + ClientServerDelta;
+	}
+}
+
+void AArinaPlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+	if (IsLocalController())
+	{
+		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+	}
+}
+
+void AArinaPlayerController::OnMatchStateSet(FName State)
+{
+	MatchState = State;
+
+	if (MatchState == MatchState::InProgress)
+	{
+		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+		if (ArinaHUD)
+		{
+			ArinaHUD->AddCharacterOverlay();
+			SetHUDScore(0.f);
+			SetHUDDeaths(0);
+			CollapseKilledByMessage();
+			SetHUDWeaponType("UnEquipped");
+		}
+	}
+}
+
+void AArinaPlayerController::OnRep_MatchState()
+{
+	if (MatchState == MatchState::InProgress)
+	{
+		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+		if (ArinaHUD)
+		{
+			ArinaHUD->AddCharacterOverlay();
+			SetHUDScore(0.f);
+			SetHUDDeaths(0);
+			CollapseKilledByMessage();
+			SetHUDWeaponType("UnEquipped");
+		}
+	}
+}

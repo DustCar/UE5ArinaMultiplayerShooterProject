@@ -22,19 +22,53 @@ public:
 	void SetHUDWeaponAmmo(const int32& WeaponAmmo);
 	void SetHUDCarryAmmo(const int32& CarryAmmo);
 	void SetHUDWeaponType(const FString& WeaponType);
-	
+	void SetHUDMatchTimer(const float CountdownTime);
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	void DisplayKilledByMessage(const FString& KillerName);
 	void CollapseKilledByMessage();
 
 	UFUNCTION(Client, Reliable)
 	void ClientCollapseKilledByMessage();
 
+	virtual float GetServerTime(); // Synced with server world clock
+	virtual void ReceivedPlayer() override; // Sync with server clock as early as possible
+
+	void OnMatchStateSet(FName State);
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnPossess(APawn* InPawn) override;
+	void CheckTimeSync(float DeltaSeconds);
+	void SetHUDTime();
 
+	/**
+	*	Sync time between client and server
+	*/
+	// Requests current server time, taking into account when client request was sent
+	UFUNCTION(Server, Reliable)
+	void ServerRequestServerTime(float TimeOfClientRequest);
+
+	// Returns the current server time to client based on ServerRequestServerTime
+	UFUNCTION(Client, Reliable)
+	void ClientReportServerTime(float TimeOfClientRequest, float TimeServerReceivedRequest);
+
+	float ClientServerDelta = 0.f; // difference between client and server time
+
+	UPROPERTY(EditAnywhere, Category = "Time")
+	float TimeSyncFrequency = 5.f;
+
+	float TimeSyncRunningTime = 0.f;
+	
 private:
 	UPROPERTY()
 	AArinaHUD* ArinaHUD;
-	
+
+	float MatchTime = 120.f;
+	int32 CountDownInt = 0;
+
+	UPROPERTY(ReplicatedUsing= OnRep_MatchState)
+	FName MatchState;
+
+	UFUNCTION()
+	void OnRep_MatchState();
 };

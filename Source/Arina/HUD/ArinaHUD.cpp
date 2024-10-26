@@ -50,25 +50,19 @@ void AArinaHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AddCharacterOverlay();
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && CharacterOverlayClass)
+	{
+		CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PlayerController, CharacterOverlayClass);
+	}
 }
 
 void AArinaHUD::AddCharacterOverlay()
 {
-	APlayerController* PC = GetOwningPlayerController();
-	if (PC && CharacterOverlayClass)
+	if (CharacterOverlay)
 	{
-		CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PC, CharacterOverlayClass);
 		CharacterOverlay->AddToViewport();
-
-		AArinaPlayerController* ArinaPlayerController = Cast<AArinaPlayerController>(PC);
-		if (ArinaPlayerController)
-		{
-			ArinaPlayerController->SetHUDScore(0.f);
-			ArinaPlayerController->SetHUDDeaths(0);
-			ArinaPlayerController->CollapseKilledByMessage();
-			ArinaPlayerController->SetHUDWeaponType("UnEquipped");
-		}
+		
 	}
 }
 
