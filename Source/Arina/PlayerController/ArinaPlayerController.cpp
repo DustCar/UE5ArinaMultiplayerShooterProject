@@ -16,10 +16,11 @@
 void AArinaPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
 	ArinaHUD = Cast<AArinaHUD>(GetHUD());
-	
-	ServerCheckMatchState();
+	if (ArinaHUD)
+	{
+		ServerCheckMatchState();
+	}
 }
 
 void AArinaPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -101,6 +102,11 @@ void AArinaPlayerController::SetHUDHealth(const float& CurrentHealth, const floa
 
 		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt32(CurrentHealth), FMath::CeilToInt32(MaxHealth));
 		ArinaHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
+	}
+	else
+	{
+		HUDMaxHealth = MaxHealth;
+		HUDCurrHealth = CurrentHealth;
 	}
 }
 
@@ -393,6 +399,7 @@ void AArinaPlayerController::HandleMatchHasStarted()
 		ArinaHUD->AddCharacterOverlay();
 		SetHUDScore(0.f);
 		SetHUDDeaths(0);
+		SetHUDHealth(HUDCurrHealth, HUDMaxHealth);
 		CollapseKilledByMessage();
 		SetHUDWeaponType("UnEquipped");
 	}

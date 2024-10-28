@@ -50,24 +50,15 @@ void AArinaHUD::DrawHUD()
 void AArinaHUD::BeginPlay()
 {
 	Super::BeginPlay();
-
-	APlayerController* PlayerController = GetOwningPlayerController();
-	if (PlayerController)
-	{
-		if (CharacterOverlayClass)
-		{
-			CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PlayerController, CharacterOverlayClass);
-		}
-		if (AnnouncementClass)
-		{
-			Announcement = CreateWidget<UArinaAnnouncement>(PlayerController, AnnouncementClass);
-
-		}
-	}
 }
 
 void AArinaHUD::AddCharacterOverlay()
 {
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && CharacterOverlayClass)
+	{
+		CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PlayerController, CharacterOverlayClass);
+	}
 	if (CharacterOverlay)
 	{
 		CharacterOverlay->AddToViewport();
@@ -76,6 +67,11 @@ void AArinaHUD::AddCharacterOverlay()
 
 void AArinaHUD::AddAnnouncement()
 {
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && AnnouncementClass)
+	{
+		Announcement = CreateWidget<UArinaAnnouncement>(PlayerController, AnnouncementClass);
+	}
 	if (Announcement)
 	{
 		Announcement->AddToViewport();

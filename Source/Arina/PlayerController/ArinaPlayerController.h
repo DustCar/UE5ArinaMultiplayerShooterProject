@@ -84,4 +84,7 @@ private:
 
 	UFUNCTION()
 	void OnRep_MatchState();
+
+	float HUDMaxHealth = 0.f;
+	float HUDCurrHealth = 0.f;
 };
