@@ -415,5 +415,9 @@ void AArinaPlayerController::HandleCooldown()
 		{
 			ArinaHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
 		}
+		else
+		{
+			ArinaHUD->AddAnnouncement();
+		}
 	}
 }
