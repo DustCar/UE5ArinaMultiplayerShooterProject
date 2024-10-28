@@ -7,6 +7,7 @@
 #include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
 #include "ArinaHUD.generated.h"
 
+class UArinaAnnouncement;
 class UArinaCharacterOverlay;
 /**
  * 
@@ -28,6 +29,14 @@ public:
 
 	void AddCharacterOverlay();
 
+	UPROPERTY(EditAnywhere, Category = "Announcement")
+	TSubclassOf<UUserWidget> AnnouncementClass; 
+
+	UPROPERTY()
+	UArinaAnnouncement* Announcement;
+
+	void AddAnnouncement();
+	
 protected:
 	virtual void BeginPlay() override;
 

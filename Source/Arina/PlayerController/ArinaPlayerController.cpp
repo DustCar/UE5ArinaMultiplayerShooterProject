@@ -9,6 +9,8 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Arina/GameMode/ArinaGameMode.h"
+#include "Arina/HUD/ArinaAnnouncement.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 void AArinaPlayerController::BeginPlay()
@@ -16,6 +18,8 @@ void AArinaPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ArinaHUD = Cast<AArinaHUD>(GetHUD());
+	
+	ServerCheckMatchState();
 }
 
 void AArinaPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -48,6 +52,35 @@ void AArinaPlayerController::CheckTimeSync(float DeltaSeconds)
 	{
 		ServerRequestServerTime(GetWorld()->GetTimeSeconds());
 		TimeSyncRunningTime = 0.f;
+	}
+}
+
+void AArinaPlayerController::ServerCheckMatchState_Implementation()
+{
+	AArinaGameMode* GameMode = Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this));
+	if (GameMode)
+	{
+		WarmupTime = GameMode->WarmupTime;
+		MatchTime = GameMode->MatchTime;
+		LevelStartingTime = GameMode->LevelStartingTime;
+		MatchState = GameMode->GetMatchState();
+		CooldownTime = GameMode->CooldownTime;
+		ClientJoinMidGame(MatchState, WarmupTime, MatchTime, LevelStartingTime, CooldownTime);
+	}
+}
+
+void AArinaPlayerController::ClientJoinMidGame_Implementation(FName StateOfMatch, float Warmup, float Match, float StartingTime, float CDTime)
+{
+	WarmupTime = Warmup;
+	MatchTime = Match;
+	LevelStartingTime = StartingTime;
+	MatchState = StateOfMatch;
+	CooldownTime = CDTime;
+	OnMatchStateSet(MatchState);
+
+	if (ArinaHUD && MatchState == MatchState::WaitingToStart)
+	{
+		ArinaHUD->AddAnnouncement();
 	}
 }
 
@@ -199,17 +232,92 @@ void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
 	}
 }
 
+void AArinaPlayerController::SetHUDAnnouncementTimer(const float CountdownTime)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->Announcement &&
+		ArinaHUD->Announcement->PreMatchTime;
+
+	if (bHUDValid)
+	{
+		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
+		int32 Seconds = CountdownTime - Minutes * 60;
+		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+		ArinaHUD->Announcement->PreMatchTime->SetText(FText::FromString(CountdownText));
+	}
+}
+
+void AArinaPlayerController::SetHUDCooldownTimer(const float CountdownTime)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->Announcement &&
+		ArinaHUD->Announcement->PreMatchTime &&
+		ArinaHUD->Announcement->PostMatchTime &&
+		ArinaHUD->Announcement->AnnouncementText;
+
+	if (bHUDValid)
+	{
+		FString AnnounceText = FString(TEXT("New Match Starts In: "));
+		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
+		int32 Seconds = CountdownTime - Minutes * 60;
+		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+		ArinaHUD->Announcement->PreMatchTime->SetText(FText::FromString(""));
+		ArinaHUD->Announcement->PostMatchTime->SetText(FText::FromString(CountdownText));
+		ArinaHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnounceText));
+	}
+}
+
 void AArinaPlayerController::SetHUDTime()
 {
-	float SecondsLeft = MatchTime - GetServerTime();
-
-	if (CountDownInt != FMath::CeilToInt32(SecondsLeft))
+	// Make sure to capture LevelStartingTime when game mode is valid on the server before using in TimeLeft
+	if (HasAuthority())
 	{
-		SetHUDMatchTimer(SecondsLeft);
+		AArinaGameMode* ArinaGameMode = Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this));
+		{
+			if (ArinaGameMode)
+			{
+				LevelStartingTime = ArinaGameMode->LevelStartingTime;
+			}
+		}
 	}
-
-	CountDownInt = FMath::CeilToInt32(SecondsLeft);
-
+	
+	float TimeLeft = 0.f;
+	// When Player joins since session is created
+	if (MatchState == MatchState::WaitingToStart)
+	{
+		TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;
+	}
+	// When Player joins mid-game. Adds WarmupTime since session would have passed it.
+	else if (MatchState == MatchState::InProgress)
+	{
+		TimeLeft = WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
+	}
+	else if (MatchState == MatchState::Cooldown)
+	{
+		TimeLeft = WarmupTime + MatchTime + CooldownTime - GetServerTime() + LevelStartingTime;
+	}
+	
+	uint32 SecondsLeft = FMath::CeilToInt32(TimeLeft);
+	if (CountDownInt != SecondsLeft)
+	{
+		if (MatchState == MatchState::WaitingToStart)
+		{
+			SetHUDAnnouncementTimer(TimeLeft);
+		}
+		if (MatchState == MatchState::InProgress)
+		{
+			SetHUDMatchTimer(TimeLeft);
+		}
+		if (MatchState == MatchState::Cooldown)
+		{
+			SetHUDCooldownTimer(TimeLeft);
+		}
+	}
+	CountDownInt = SecondsLeft;
 }
 
 void AArinaPlayerController::ServerRequestServerTime_Implementation(float TimeOfClientRequest)
@@ -221,9 +329,11 @@ void AArinaPlayerController::ServerRequestServerTime_Implementation(float TimeOf
 void AArinaPlayerController::ClientReportServerTime_Implementation(float TimeOfClientRequest,
 	float TimeServerReceivedRequest)
 {
+	// Time it takes for a request to go from the client to server then back to client.
 	float RoundTripTime = GetWorld()->GetTimeSeconds() - TimeOfClientRequest;
+	// Half of RoundTripTime roughly estimates to the time the server takes to send the request back to client.
 	float CurrentServerTime = TimeServerReceivedRequest + 0.5f * RoundTripTime;
-
+	
 	ClientServerDelta = CurrentServerTime - GetWorld()->GetTimeSeconds();
 }
 
@@ -233,10 +343,7 @@ float AArinaPlayerController::GetServerTime()
 	{
 		return GetWorld()->GetTimeSeconds();
 	}
-	else
-	{
-		return GetWorld()->GetTimeSeconds() + ClientServerDelta;
-	}
+	return GetWorld()->GetTimeSeconds() + ClientServerDelta;
 }
 
 void AArinaPlayerController::ReceivedPlayer()
@@ -251,18 +358,14 @@ void AArinaPlayerController::ReceivedPlayer()
 void AArinaPlayerController::OnMatchStateSet(FName State)
 {
 	MatchState = State;
-
+	
 	if (MatchState == MatchState::InProgress)
 	{
-		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
-		if (ArinaHUD)
-		{
-			ArinaHUD->AddCharacterOverlay();
-			SetHUDScore(0.f);
-			SetHUDDeaths(0);
-			CollapseKilledByMessage();
-			SetHUDWeaponType("UnEquipped");
-		}
+		HandleMatchHasStarted();
+	}
+	else if (MatchState == MatchState::Cooldown)
+	{
+		HandleCooldown();
 	}
 }
 
@@ -270,14 +373,40 @@ void AArinaPlayerController::OnRep_MatchState()
 {
 	if (MatchState == MatchState::InProgress)
 	{
-		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
-		if (ArinaHUD)
+		HandleMatchHasStarted();
+	}
+	else if (MatchState == MatchState::Cooldown)
+	{
+		HandleCooldown();
+	}
+}
+
+void AArinaPlayerController::HandleMatchHasStarted()
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+	if (ArinaHUD)
+	{
+		if (ArinaHUD->Announcement)
 		{
-			ArinaHUD->AddCharacterOverlay();
-			SetHUDScore(0.f);
-			SetHUDDeaths(0);
-			CollapseKilledByMessage();
-			SetHUDWeaponType("UnEquipped");
+			ArinaHUD->Announcement->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		ArinaHUD->AddCharacterOverlay();
+		SetHUDScore(0.f);
+		SetHUDDeaths(0);
+		CollapseKilledByMessage();
+		SetHUDWeaponType("UnEquipped");
+	}
+}
+
+void AArinaPlayerController::HandleCooldown()
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+	if (ArinaHUD)
+	{
+		ArinaHUD->CharacterOverlay->RemoveFromParent();
+		if (ArinaHUD->Announcement)
+		{
+			ArinaHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 }

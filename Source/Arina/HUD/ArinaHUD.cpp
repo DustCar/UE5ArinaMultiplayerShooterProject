@@ -3,6 +3,7 @@
 
 #include "ArinaHUD.h"
 
+#include "ArinaAnnouncement.h"
 #include "ArinaCharacterOverlay.h"
 #include "Arina/PlayerController/ArinaPlayerController.h"
 
@@ -51,9 +52,17 @@ void AArinaHUD::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* PlayerController = GetOwningPlayerController();
-	if (PlayerController && CharacterOverlayClass)
+	if (PlayerController)
 	{
-		CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PlayerController, CharacterOverlayClass);
+		if (CharacterOverlayClass)
+		{
+			CharacterOverlay = CreateWidget<UArinaCharacterOverlay>(PlayerController, CharacterOverlayClass);
+		}
+		if (AnnouncementClass)
+		{
+			Announcement = CreateWidget<UArinaAnnouncement>(PlayerController, AnnouncementClass);
+
+		}
 	}
 }
 
@@ -62,7 +71,14 @@ void AArinaHUD::AddCharacterOverlay()
 	if (CharacterOverlay)
 	{
 		CharacterOverlay->AddToViewport();
-		
+	}
+}
+
+void AArinaHUD::AddAnnouncement()
+{
+	if (Announcement)
+	{
+		Announcement->AddToViewport();
 	}
 }
 

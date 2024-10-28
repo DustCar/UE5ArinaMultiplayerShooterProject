@@ -23,6 +23,8 @@ public:
 	void SetHUDCarryAmmo(const int32& CarryAmmo);
 	void SetHUDWeaponType(const FString& WeaponType);
 	void SetHUDMatchTimer(const float CountdownTime);
+	void SetHUDAnnouncementTimer(const float CountdownTime);
+	void SetHUDCooldownTimer(const float CountdownTime);
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
@@ -36,6 +38,9 @@ public:
 	virtual void ReceivedPlayer() override; // Sync with server clock as early as possible
 
 	void OnMatchStateSet(FName State);
+	void HandleMatchHasStarted();
+	void HandleCooldown();
+	
 protected:
 	virtual void BeginPlay() override;
 	void CheckTimeSync(float DeltaSeconds);
@@ -56,14 +61,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Time")
 	float TimeSyncFrequency = 5.f;
-
 	float TimeSyncRunningTime = 0.f;
+	
+	UFUNCTION(Server, Reliable)
+	void ServerCheckMatchState();
+
+	UFUNCTION(Client, Reliable)
+	void ClientJoinMidGame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float CDTime);
 	
 private:
 	UPROPERTY()
 	AArinaHUD* ArinaHUD;
 
-	float MatchTime = 120.f;
+	float LevelStartingTime = 0.f;
+	float MatchTime = 0.f;
+	float WarmupTime = 0.f;
+	float CooldownTime = 0.f;
 	int32 CountDownInt = 0;
 
 	UPROPERTY(ReplicatedUsing= OnRep_MatchState)

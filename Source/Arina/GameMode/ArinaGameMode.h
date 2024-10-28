@@ -9,6 +9,11 @@
 
 class AArinaPlayerController;
 class AArinaCharacter;
+
+namespace MatchState
+{
+	extern ARINA_API const FName Cooldown; // Match duration finished. Display winner and begin cooldown timer
+}
 /**
  * 
  */
@@ -25,6 +30,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float WarmupTime = 10.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MatchTime = 120.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float CooldownTime = 10.f;
 
 	float LevelStartingTime = 0.f;
 protected:
