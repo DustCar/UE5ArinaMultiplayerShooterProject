@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ArinaPlayerController.generated.h"
 
+class AArinaPlayerState;
 class AArinaGameMode;
 class AArinaHUD;
 /**
@@ -90,4 +91,12 @@ private:
 
 	float HUDMaxHealth = 0.f;
 	float HUDCurrHealth = 0.f;
+	
+	void DisplayWinners();
+	void DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*> Leaderboard, FString& InfoTextString);
+	
+	void StartUrgentCountdown();
+	FTimerHandle BlinkerTimerHandle;
+	void BlinkerTimerFinished();
+	
 };

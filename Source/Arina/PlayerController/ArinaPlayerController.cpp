@@ -10,7 +10,9 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Arina/GameMode/ArinaGameMode.h"
+#include "Arina/GameState/ArinaGameState.h"
 #include "Arina/HUD/ArinaAnnouncement.h"
+#include "Arina/PlayerState/ArinaPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -222,6 +224,17 @@ void AArinaPlayerController::ClientCollapseKilledByMessage_Implementation()
 	CollapseKilledByMessage();
 }
 
+void AArinaPlayerController::StartUrgentCountdown()
+{
+	ArinaHUD->CharacterOverlay->MatchTimerText->SetColorAndOpacity(FLinearColor::Red);
+	GetWorldTimerManager().SetTimer(BlinkerTimerHandle, this, &ThisClass::BlinkerTimerFinished, 0.5f);
+}
+
+void AArinaPlayerController::BlinkerTimerFinished()
+{
+	ArinaHUD->CharacterOverlay->MatchTimerText->SetColorAndOpacity(FLinearColor::White);
+}
+
 void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
@@ -232,7 +245,7 @@ void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
 
 	if (bHUDValid)
 	{
-		if (CountdownTime < 0)
+		if (CountdownTime < 0.f)
 		{
 			ArinaHUD->Announcement->AnnouncementTimer->SetText(FText());
 			return;
@@ -240,6 +253,11 @@ void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
 		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
 		int32 Seconds = CountdownTime - Minutes * 60;
 		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+
+		if (CountdownTime <= 30.f)
+		{
+			StartUrgentCountdown();
+		}
 		ArinaHUD->CharacterOverlay->MatchTimerText->SetText(FText::FromString(CountdownText));
 	}
 }
@@ -401,6 +419,61 @@ void AArinaPlayerController::HandleMatchHasStarted()
 	}
 }
 
+void AArinaPlayerController::DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*> Leaderboard, FString& InfoTextString)
+{
+	if (Leaderboard.Num() > 3)
+	{
+		for (int32 i = 0; i < 3; i++)
+		{
+			if (Leaderboard[i] == CurrentPlayerState)
+			{
+				InfoTextString.Append(FString::Printf(TEXT("%s <<< You\n"), *Leaderboard[i]->GetPlayerName()));
+			}
+			else
+			{
+				InfoTextString.Append(FString::Printf(TEXT("%s\n"), *Leaderboard[i]->GetPlayerName()));
+			}
+		}
+	}
+	else
+	{
+		for (int32 i = 0; i < Leaderboard.Num(); i++)
+		{
+			if (Leaderboard[i] == CurrentPlayerState)
+			{
+				InfoTextString.Append(FString::Printf(TEXT("%s <<< You\n"), *Leaderboard[i]->GetPlayerName()));
+			}
+			else
+			{
+				InfoTextString.Append(FString::Printf(TEXT("%s\n"), *Leaderboard[i]->GetPlayerName()));
+			}
+		}
+	}
+}
+
+void AArinaPlayerController::DisplayWinners()
+{
+	AArinaGameState* ArinaGameState = Cast<AArinaGameState>(UGameplayStatics::GetGameState(this));
+	AArinaPlayerState* CurrentPlayerState = GetPlayerState<AArinaPlayerState>();
+	if (ArinaGameState == nullptr || CurrentPlayerState == nullptr)
+	{
+		return;
+	}
+	
+	TArray<AArinaPlayerState*> Leaderboard = ArinaGameState->PlayersLeaderboard;
+	FString InfoTextString;
+	if (Leaderboard.Num() == 0)
+	{
+		InfoTextString = FString("There is no winner.");
+	}
+	else if (Leaderboard.Num() >= 1)
+	{
+		InfoTextString = FString("Top Scoring Players: \n");
+		DisplayTopThree(CurrentPlayerState, Leaderboard, InfoTextString);
+	}
+	ArinaHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
+}
+
 void AArinaPlayerController::HandleCooldown()
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
@@ -416,14 +489,14 @@ void AArinaPlayerController::HandleCooldown()
 			ArinaHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
 			FString AnnounceText = FString(TEXT("New Match Starts In: "));
 			ArinaHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnounceText));
-			ArinaHUD->Announcement->InfoText->SetVisibility(ESlateVisibility::Collapsed);
+			DisplayWinners();
 		}
 		else
 		{
 			ArinaHUD->AddAnnouncement();
 			FString AnnounceText = FString(TEXT("New Match Starts In: "));
 			ArinaHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnounceText));
-			ArinaHUD->Announcement->InfoText->SetVisibility(ESlateVisibility::Collapsed);
+			DisplayWinners();
 		}
 	}
 

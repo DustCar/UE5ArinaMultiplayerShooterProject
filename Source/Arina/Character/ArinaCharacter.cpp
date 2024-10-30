@@ -100,7 +100,10 @@ void AArinaCharacter::Destroyed()
 	{
 		ElimBotComponent->DestroyComponent();
 	}
-	if (CombatComp && CombatComp->EquippedWeapon)
+
+	AArinaGameMode* ArinaGameMode = Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this));
+	bool bMatchNotInProgress = ArinaGameMode && ArinaGameMode->GetMatchState() != MatchState::InProgress;
+	if (CombatComp && CombatComp->EquippedWeapon && bMatchNotInProgress)
 	{
 		CombatComp->EquippedWeapon->Destroy();
 	}
@@ -421,6 +424,7 @@ void AArinaCharacter::MulticastEliminated_Implementation()
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
 	bDisableGameplay = true;
+	if (CombatComp) { CombatComp->FireButtonPressed(false); }
 
 	// Disable collision
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
