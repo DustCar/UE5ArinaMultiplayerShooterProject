@@ -40,7 +40,9 @@ public:
 
 	virtual void Destroyed() override;
 	virtual void PossessedBy(AController* NewController) override;
-	
+
+	UPROPERTY(Replicated)
+	bool bDisableGameplay = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -199,4 +201,6 @@ public:
 	FORCEINLINE void SetRotationLookSpeedMultiplier(float Multiplier) { RotationLookSpeedMultiplier = Multiplier; }
 	FORCEINLINE bool IsEliminated() const { return bEliminated; }
 	ECombatState GetCombatState() const;
+	FORCEINLINE UArinaCombatComponent* GetCombatComponent() const { return CombatComp; }
+	FORCEINLINE bool GetDisableGameplay() const { return bDisableGameplay; }
 };

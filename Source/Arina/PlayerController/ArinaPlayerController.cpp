@@ -3,6 +3,7 @@
 
 #include "ArinaPlayerController.h"
 
+#include "Arina/Character/ArinaCharacter.h"
 #include "Arina/HUD/ArinaCharacterOverlay.h"
 #include "Arina/HUD/ArinaHUD.h"
 #include "Components/HorizontalBox.h"
@@ -70,13 +71,13 @@ void AArinaPlayerController::ServerCheckMatchState_Implementation()
 	}
 }
 
-void AArinaPlayerController::ClientJoinMidGame_Implementation(FName StateOfMatch, float Warmup, float Match, float StartingTime, float CDTime)
+void AArinaPlayerController::ClientJoinMidGame_Implementation(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown)
 {
 	WarmupTime = Warmup;
 	MatchTime = Match;
 	LevelStartingTime = StartingTime;
 	MatchState = StateOfMatch;
-	CooldownTime = CDTime;
+	CooldownTime = Cooldown;
 	OnMatchStateSet(MatchState);
 
 	if (ArinaHUD && MatchState == MatchState::WaitingToStart)
@@ -231,6 +232,11 @@ void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
 
 	if (bHUDValid)
 	{
+		if (CountdownTime < 0)
+		{
+			ArinaHUD->Announcement->AnnouncementTimer->SetText(FText());
+			return;
+		}
 		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
 		int32 Seconds = CountdownTime - Minutes * 60;
 		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
@@ -244,45 +250,29 @@ void AArinaPlayerController::SetHUDAnnouncementTimer(const float CountdownTime)
 
 	bool bHUDValid = ArinaHUD &&
 		ArinaHUD->Announcement &&
-		ArinaHUD->Announcement->PreMatchTime;
-
-	if (bHUDValid)
-	{
-		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
-		int32 Seconds = CountdownTime - Minutes * 60;
-		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
-		ArinaHUD->Announcement->PreMatchTime->SetText(FText::FromString(CountdownText));
-	}
-}
-
-void AArinaPlayerController::SetHUDCooldownTimer(const float CountdownTime)
-{
-	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
-
-	bool bHUDValid = ArinaHUD &&
-		ArinaHUD->Announcement &&
-		ArinaHUD->Announcement->PreMatchTime &&
-		ArinaHUD->Announcement->PostMatchTime &&
+		ArinaHUD->Announcement->AnnouncementTimer &&
 		ArinaHUD->Announcement->AnnouncementText;
 
 	if (bHUDValid)
 	{
-		FString AnnounceText = FString(TEXT("New Match Starts In: "));
+		if (CountdownTime < 0)
+		{
+			ArinaHUD->Announcement->AnnouncementTimer->SetText(FText());
+			return;
+		}
 		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
 		int32 Seconds = CountdownTime - Minutes * 60;
 		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
-		ArinaHUD->Announcement->PreMatchTime->SetText(FText::FromString(""));
-		ArinaHUD->Announcement->PostMatchTime->SetText(FText::FromString(CountdownText));
-		ArinaHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnounceText));
+		ArinaHUD->Announcement->AnnouncementTimer->SetText(FText::FromString(CountdownText));
 	}
 }
 
 void AArinaPlayerController::SetHUDTime()
 {
-	// Make sure to capture LevelStartingTime when game mode is valid on the server before using in TimeLeft
+	// Make sure to capture LevelStartingTime when game mode is valid on the server before using in TimeLeft, ensures server time
 	if (HasAuthority())
 	{
-		AArinaGameMode* ArinaGameMode = Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this));
+		ArinaGameMode = ArinaGameMode == nullptr ? Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this)) : ArinaGameMode;
 		{
 			if (ArinaGameMode)
 			{
@@ -306,21 +296,27 @@ void AArinaPlayerController::SetHUDTime()
 	{
 		TimeLeft = WarmupTime + MatchTime + CooldownTime - GetServerTime() + LevelStartingTime;
 	}
-	
 	uint32 SecondsLeft = FMath::CeilToInt32(TimeLeft);
+
+	if (HasAuthority())
+	{
+		ArinaGameMode = ArinaGameMode == nullptr ? Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this)) : ArinaGameMode;
+		if (ArinaGameMode)
+		{
+			TimeLeft = ArinaGameMode->GetCountdownTime() + LevelStartingTime;
+			SecondsLeft = FMath::CeilToInt32(TimeLeft);
+		}
+	}
+	
 	if (CountDownInt != SecondsLeft)
 	{
-		if (MatchState == MatchState::WaitingToStart)
+		if (MatchState == MatchState::WaitingToStart || MatchState == MatchState::Cooldown)
 		{
 			SetHUDAnnouncementTimer(TimeLeft);
 		}
 		if (MatchState == MatchState::InProgress)
 		{
 			SetHUDMatchTimer(TimeLeft);
-		}
-		if (MatchState == MatchState::Cooldown)
-		{
-			SetHUDCooldownTimer(TimeLeft);
 		}
 	}
 	CountDownInt = SecondsLeft;
@@ -411,13 +407,30 @@ void AArinaPlayerController::HandleCooldown()
 	if (ArinaHUD)
 	{
 		ArinaHUD->CharacterOverlay->RemoveFromParent();
-		if (ArinaHUD->Announcement)
+		bool bHUDValid = ArinaHUD->Announcement &&
+			ArinaHUD->Announcement->AnnouncementText &&
+			ArinaHUD->Announcement->InfoText;
+		
+		if (bHUDValid)
 		{
 			ArinaHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
+			FString AnnounceText = FString(TEXT("New Match Starts In: "));
+			ArinaHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnounceText));
+			ArinaHUD->Announcement->InfoText->SetVisibility(ESlateVisibility::Collapsed);
 		}
 		else
 		{
 			ArinaHUD->AddAnnouncement();
+			FString AnnounceText = FString(TEXT("New Match Starts In: "));
+			ArinaHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnounceText));
+			ArinaHUD->Announcement->InfoText->SetVisibility(ESlateVisibility::Collapsed);
 		}
+	}
+
+	AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(GetPawn());
+	if (ArinaCharacter && ArinaCharacter->GetCombatComponent())
+	{
+		ArinaCharacter->bDisableGameplay = true;
+		ArinaCharacter->GetCombatComponent()->FireButtonPressed(false);
 	}
 }

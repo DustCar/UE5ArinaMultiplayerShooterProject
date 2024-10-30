@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ArinaPlayerController.generated.h"
 
+class AArinaGameMode;
 class AArinaHUD;
 /**
  * 
@@ -24,7 +25,6 @@ public:
 	void SetHUDWeaponType(const FString& WeaponType);
 	void SetHUDMatchTimer(const float CountdownTime);
 	void SetHUDAnnouncementTimer(const float CountdownTime);
-	void SetHUDCooldownTimer(const float CountdownTime);
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
@@ -60,18 +60,21 @@ protected:
 	float ClientServerDelta = 0.f; // difference between client and server time
 
 	UPROPERTY(EditAnywhere, Category = "Time")
-	float TimeSyncFrequency = 5.f;
+	float TimeSyncFrequency = 3.f;
 	float TimeSyncRunningTime = 0.f;
 	
 	UFUNCTION(Server, Reliable)
 	void ServerCheckMatchState();
 
 	UFUNCTION(Client, Reliable)
-	void ClientJoinMidGame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float CDTime);
+	void ClientJoinMidGame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown);
 	
 private:
 	UPROPERTY()
 	AArinaHUD* ArinaHUD;
+
+	UPROPERTY()
+	AArinaGameMode* ArinaGameMode;
 
 	float LevelStartingTime = 0.f;
 	float MatchTime = 0.f;

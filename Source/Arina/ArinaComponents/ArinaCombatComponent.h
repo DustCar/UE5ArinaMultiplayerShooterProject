@@ -29,6 +29,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void EquipWeapon(AArinaBaseWeapon* WeaponToEquip);
+	void FireButtonPressed(bool bPressed);
 	void ReloadWeapon();
 
 protected:
@@ -42,8 +43,6 @@ protected:
 	UFUNCTION()
 	void OnRep_EquippedWeapon();
 	void UpdateWalkSpeed();
-
-	void FireButtonPressed(bool bPressed);
 	
 	UFUNCTION(Server, Reliable)
 	void ServerFire(const FVector_NetQuantize& TraceHitTarget);

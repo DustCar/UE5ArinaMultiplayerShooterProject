@@ -21,11 +21,8 @@ public:
 	UTextBlock* AnnouncementText;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* PreMatchTime;
+	UTextBlock* AnnouncementTimer;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* InfoText;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* PostMatchTime;
 };

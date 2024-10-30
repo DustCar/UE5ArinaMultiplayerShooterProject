@@ -66,6 +66,7 @@ void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 
 	DOREPLIFETIME_CONDITION(ThisClass, OverlappingWeapon, COND_OwnerOnly);
 	DOREPLIFETIME(ThisClass, CurrentHealth);
+	DOREPLIFETIME(ThisClass, bDisableGameplay);
 }
 
 // Runs after all components of actor have been initialized
@@ -98,6 +99,10 @@ void AArinaCharacter::Destroyed()
 	if (ElimBotComponent)
 	{
 		ElimBotComponent->DestroyComponent();
+	}
+	if (CombatComp && CombatComp->EquippedWeapon)
+	{
+		CombatComp->EquippedWeapon->Destroy();
 	}
 }
 
@@ -152,6 +157,8 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AArinaCharacter::MoveForward(const FInputActionValue& Value)
 {
+	if (bDisableGameplay) { return; }
+	
 	if (Controller != nullptr)
 	{
 		float MoveForwardValue = Value.Get<float>();
@@ -167,6 +174,8 @@ void AArinaCharacter::MoveForward(const FInputActionValue& Value)
 
 void AArinaCharacter::MoveRight(const FInputActionValue& Value)
 {
+	if (bDisableGameplay) { return; }
+
 	if (Controller != nullptr)
 	{
 		double MoveRightValue = Value.Get<float>();
@@ -208,6 +217,8 @@ void AArinaCharacter::LookRight(const FInputActionValue& Value)
 
 void AArinaCharacter::CrouchPlayer()
 {
+	if (bDisableGameplay) { return; }
+
 	if (bSpaceBarUncrouch)
 	{
 		bSpaceBarUncrouch = false;
@@ -226,6 +237,8 @@ void AArinaCharacter::CrouchPlayer()
 
 void AArinaCharacter::Jump()
 {
+	if (bDisableGameplay) { return; }
+
 	if (bIsCrouched)
 	{
 		bSpaceBarUncrouch = true;
@@ -239,6 +252,8 @@ void AArinaCharacter::Jump()
 
 void AArinaCharacter::AimIn(const FInputActionValue& Value)
 {
+	if (bDisableGameplay) { return; }
+
 	if (CombatComp && CombatComp->EquippedWeapon)
 	{
 		CombatComp->SetAiming(Value.Get<bool>());
@@ -249,6 +264,13 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 {
 	if (CombatComp && CombatComp->EquippedWeapon == nullptr)
 	{
+		return;
+	}
+	if (bDisableGameplay)
+	{
+		bUseControllerRotationYaw = false;
+		TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+		
 		return;
 	}
 	FVector Velocity = GetVelocity();
@@ -295,6 +317,8 @@ void AArinaCharacter::AimOffset(float DeltaTime)
 
 void AArinaCharacter::Fire(const FInputActionValue& Value)
 {
+	if (bDisableGameplay) { return; }
+
 	if (CombatComp && CombatComp->EquippedWeapon)
 	{
 		CombatComp->FireButtonPressed(Value.Get<bool>());
@@ -303,6 +327,8 @@ void AArinaCharacter::Fire(const FInputActionValue& Value)
 
 void AArinaCharacter::Reload()
 {
+	if (bDisableGameplay) { return; }
+
 	if (CombatComp && CombatComp->EquippedWeapon)
 	{
 		CombatComp->ReloadWeapon();
@@ -394,10 +420,7 @@ void AArinaCharacter::MulticastEliminated_Implementation()
 	// Disable character movement and input
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
-	if (ArinaPlayerController)
-	{
-		DisableInput(ArinaPlayerController);
-	}
+	bDisableGameplay = true;
 
 	// Disable collision
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -585,6 +608,8 @@ void AArinaCharacter::OnRep_OverlappingWeapon(AArinaBaseWeapon* LastWeapon)
 
 void AArinaCharacter::EquipItem()
 {
+	if (bDisableGameplay) { return; }
+
 	if (CombatComp)
 	{
 		// if server machine, directly call the combat comp EquipWeapon() function

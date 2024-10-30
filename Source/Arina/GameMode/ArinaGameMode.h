@@ -47,4 +47,7 @@ private:
 
 	int32 FindLeastOccupiedPlayerStart(TArray<AActor*>& PlayerStarts) const;
 	void CalculateSmallestDistance(const TArray<AActor*>& PlayerStarts, const TArray<AActor*>& Characters, TArray<int32>& DistancesFromPlayerStarts) const;
+
+public:
+	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
 };
