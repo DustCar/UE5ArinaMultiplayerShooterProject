@@ -247,7 +247,7 @@ void AArinaPlayerController::SetHUDMatchTimer(const float CountdownTime)
 	{
 		if (CountdownTime < 0.f)
 		{
-			ArinaHUD->Announcement->AnnouncementTimer->SetText(FText());
+			ArinaHUD->CharacterOverlay->MatchTimerText->SetText(FText());
 			return;
 		}
 		int32 Minutes = FMath::FloorToInt32(CountdownTime / 60.f);
@@ -410,7 +410,10 @@ void AArinaPlayerController::HandleMatchHasStarted()
 		{
 			ArinaHUD->Announcement->SetVisibility(ESlateVisibility::Collapsed);
 		}
-		ArinaHUD->AddCharacterOverlay();
+		if (ArinaHUD->CharacterOverlay == nullptr)
+		{
+			ArinaHUD->AddCharacterOverlay();
+		}
 		SetHUDScore(0.f);
 		SetHUDDeaths(0);
 		SetHUDHealth(HUDCurrHealth, HUDMaxHealth);

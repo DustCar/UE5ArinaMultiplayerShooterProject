@@ -239,9 +239,11 @@ FString AArinaBaseWeapon::GetWeaponName() const
 	switch (WeaponType)
 	{
 	case EWeaponType::EWT_AssaultRifle:
-		return FString(TEXT("Assault Rifle"));
+		return FString("Assault Rifle");
+	case EWeaponType::EWT_RocketLauncher:
+		return FString("Rocket Launcher");
 	default:
-		return FString(TEXT("Unknown"));
+		return FString("Unknown");
 	}
 }
 
