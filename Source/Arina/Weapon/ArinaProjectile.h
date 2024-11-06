@@ -34,22 +34,24 @@ protected:
 	void MulticastOnHit(bool bCharacterHit, const FVector_NetQuantize& ImpactLocation, const FVector_NetQuantizeNormal& ImpactNormal);
 
 	UPROPERTY(EditAnywhere)
+	UBoxComponent* CollisionBox;
+	
+	UPROPERTY(EditAnywhere)
 	float Damage = 10.f;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactFX;
+	
+	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound;
 	
 private:
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* CollisionBox;
 
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* TracerFX;
-
-	UPROPERTY()
-	UParticleSystem* ImpactFX;
-	UPROPERTY()
-	USoundBase* ImpactSound;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* SurfaceHitFX;

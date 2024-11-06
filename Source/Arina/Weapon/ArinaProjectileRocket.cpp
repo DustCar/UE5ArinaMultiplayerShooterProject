@@ -4,6 +4,11 @@
 #include "ArinaProjectileRocket.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystemInstanceController.h"
+#include "Components/AudioComponent.h"
+#include "Components/BoxComponent.h"
 
 
 // Sets default values
@@ -21,14 +26,49 @@ AArinaProjectileRocket::AArinaProjectileRocket()
 void AArinaProjectileRocket::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (TrailSystem)
+	{
+		TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			TrailSystem,
+			GetRootComponent(),
+			FName(),
+			GetActorLocation(),
+			GetActorRotation(),
+			EAttachLocation::KeepWorldPosition,
+			false
+		);
+	}
+
+	if (ProjectileSoundLoop && ProjectileSoundLoopAttenuation)
+	{
+		ProjectileSoundLoopComponent = UGameplayStatics::SpawnSoundAttached(
+			ProjectileSoundLoop,
+			GetRootComponent(),
+			FName(),
+			GetActorLocation(),
+			EAttachLocation::KeepWorldPosition,
+			false,
+			1.f,
+			1.f,
+			0.f,
+			ProjectileSoundLoopAttenuation,
+			nullptr,
+			false
+		);
+	}
+
+	if (!HasAuthority())
+	{
+		CollisionBox->OnComponentHit.AddDynamic(this, &ThisClass::OnHit);
+	}
 }
 
 void AArinaProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	APawn* FiringPawn = GetInstigator();
-	if (FiringPawn)
+	if (FiringPawn && HasAuthority())
 	{
 		AController* FiringController = FiringPawn->GetController();
 		if (FiringController)
@@ -48,13 +88,50 @@ void AArinaProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* Ot
 			);
 		}
 	}
-	
-	Super::OnHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
+
+	GetWorldTimerManager().SetTimer(
+		DestroyTrailTimer,
+		this,
+		&ThisClass::DestroyTrailTimerFinished,
+		TrailTimer
+	);
+
+	if (ImpactFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactFX, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+	}
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	}
+
+	if (RocketMesh)
+	{
+		RocketMesh->SetVisibility(false);
+	}
+	if (CollisionBox)
+	{
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	if (TrailSystemComponent && TrailSystemComponent->GetSystemInstanceController())
+	{
+		TrailSystemComponent->GetSystemInstanceController()->Deactivate();
+	}
+
+	if (ProjectileSoundLoopComponent && ProjectileSoundLoopComponent->IsPlaying())
+	{
+		ProjectileSoundLoopComponent->Stop();
+	}
 }
 
 // Called every frame
 void AArinaProjectileRocket::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AArinaProjectileRocket::DestroyTrailTimerFinished()
+{
+	Destroy();
 }
 

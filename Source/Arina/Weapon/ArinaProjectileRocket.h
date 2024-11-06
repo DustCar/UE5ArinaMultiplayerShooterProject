@@ -6,19 +6,22 @@
 #include "ArinaProjectile.h"
 #include "ArinaProjectileRocket.generated.h"
 
+class USpringArmComponent;
+class UNiagaraComponent;
+class UNiagaraSystem;
+
 UCLASS()
 class ARINA_API AArinaProjectileRocket : public AArinaProjectile
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AArinaProjectileRocket();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	void DestroyTrailTimerFinished();
 
 	virtual void OnHit(
 		UPrimitiveComponent* HitComponent,
@@ -27,6 +30,21 @@ protected:
 		FVector NormalImpulse,
 		const FHitResult& Hit 
 	) override;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* TrailSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* TrailSystemComponent;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ProjectileSoundLoop;
+
+	UPROPERTY()
+	UAudioComponent* ProjectileSoundLoopComponent;
+
+	UPROPERTY(EditAnywhere)
+	USoundAttenuation* ProjectileSoundLoopAttenuation;
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -38,5 +56,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* RocketMesh;
+
+	FTimerHandle DestroyTrailTimer;
+
+	UPROPERTY(EditAnywhere)
+	float TrailTimer = 3.f;
 	
 };
