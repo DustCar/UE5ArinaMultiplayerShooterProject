@@ -224,6 +224,8 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 		ArinaCharacter->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
 	}
+
+	// Rocket Launch?? using LaunchCharacter()
 }
 
 void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)

@@ -17,6 +17,7 @@ AArinaBaseWeapon::AArinaBaseWeapon()
 {
 	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = false;
+	AActor::SetReplicateMovement(true);
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	RootComponent = WeaponMesh;
@@ -212,6 +213,7 @@ void AArinaBaseWeapon::Fire(const FVector& HitTarget)
 	{
 		WeaponMesh->PlayAnimation(FireAnimation, false);
 	}
+	
 	if (CasingClass)
 	{
 		const USkeletalMeshSocket* AmmoEjectSocket = WeaponMesh->GetSocketByName(FName("AmmoEject"));
@@ -242,6 +244,8 @@ FString AArinaBaseWeapon::GetWeaponName() const
 		return FString("Assault Rifle");
 	case EWeaponType::EWT_RocketLauncher:
 		return FString("Rocket Launcher");
+	case EWeaponType::EWT_Pistol:
+		return FString("Pistol");
 	default:
 		return FString("Unknown");
 	}

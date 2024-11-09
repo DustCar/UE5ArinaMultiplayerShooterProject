@@ -16,6 +16,8 @@ class ARINA_API AArinaProjectileBullet : public AArinaProjectile
 
 public:
 
+	AArinaProjectileBullet();
+	
 protected:
 
 	virtual void OnHit(

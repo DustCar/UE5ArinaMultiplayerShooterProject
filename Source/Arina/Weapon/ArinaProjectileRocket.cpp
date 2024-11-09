@@ -3,6 +3,7 @@
 
 #include "ArinaProjectileRocket.h"
 
+#include "ArinaRocketMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
@@ -20,6 +21,11 @@ AArinaProjectileRocket::AArinaProjectileRocket()
 	RocketMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RocketMesh"));
 	RocketMesh->SetupAttachment(RootComponent);
 	RocketMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	RocketMovementComponent = CreateDefaultSubobject<UArinaRocketMovementComponent>(TEXT("RocketMovementComponent"));
+	RocketMovementComponent->SetIsReplicated(true);
+	RocketMovementComponent->bRotationFollowsVelocity = true;
+	RocketMovementComponent->ProjectileGravityScale = 0.f;
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +73,10 @@ void AArinaProjectileRocket::BeginPlay()
 void AArinaProjectileRocket::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (OtherActor == GetOwner())
+	{
+		return;
+	}
 	APawn* FiringPawn = GetInstigator();
 	if (FiringPawn && HasAuthority())
 	{

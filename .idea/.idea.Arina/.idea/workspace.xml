@@ -11,16 +11,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaRocketMovementComponent.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaRocketMovementComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arina.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/Arina.uproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/RocketLauncher/RocketLauncher_InAirLoop_Cue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/RocketLauncher/RocketLauncher_InAirLoop_Cue.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Rocket_launcher_B.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Rocket_launcher_B.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Idle_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Idle_Rifle_Hip.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_45_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_45_Right.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/RocketLauncher/RocketLauncherB_Fire_Cue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/RocketLauncher/RocketLauncherB_Fire_Cue.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Anims/Fire_Pistol_W.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Anims/Fire_Pistol_W.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Assault_Rifle_B_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/PistolB_Ammo.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/PistolB_Ammo.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Pistols_B.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Pistols_B.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Pistols_B_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Weapons/Pistols_B_Skeleton.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaWeapon.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/Projectiles/BP_ArinaRocket.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/Projectiles/BP_ArinaRocket.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Arina.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Arina.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileBullet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileBullet.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileBullet.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileBullet.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileRocket.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileRocket.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileRocket.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileRocket.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/WeaponTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/WeaponTypes.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -656,7 +672,9 @@
       <workItem from="1730775438716" duration="805000" />
       <workItem from="1730828917362" duration="3974000" />
       <workItem from="1730849916481" duration="1457000" />
-      <workItem from="1730851543670" duration="12342000" />
+      <workItem from="1730851543670" duration="13059000" />
+      <workItem from="1731021411483" duration="4970000" />
+      <workItem from="1731103940541" duration="10366000" />
     </task>
     <servers />
   </component>

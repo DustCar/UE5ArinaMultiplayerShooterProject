@@ -33,6 +33,9 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnHit(bool bCharacterHit, const FVector_NetQuantize& ImpactLocation, const FVector_NetQuantizeNormal& ImpactNormal);
 
+	UPROPERTY(VisibleAnywhere)
+	UProjectileMovementComponent* ProjectileMovementComponent;
+	
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* CollisionBox;
 	
@@ -46,9 +49,6 @@ protected:
 	USoundBase* ImpactSound;
 	
 private:
-
-	UPROPERTY(VisibleAnywhere)
-	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* TracerFX;

@@ -6,7 +6,6 @@
 #include "Arina/Arina.h"
 #include "Arina/Character/ArinaCharacter.h"
 #include "Components/BoxComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AArinaProjectile::AArinaProjectile()
@@ -22,12 +21,7 @@ AArinaProjectile::AArinaProjectile()
 	CollisionBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	CollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	CollisionBox->SetCollisionResponseToChannel(ECC_SkeletalMesh, ECR_Block);
-
-
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->bRotationFollowsVelocity = true;
-	ProjectileMovementComponent->InitialSpeed = 20000.f;
-	ProjectileMovementComponent->MaxSpeed = 20000.f;
+	
 }
 
 void AArinaProjectile::BeginPlay()
@@ -50,6 +44,7 @@ void AArinaProjectile::BeginPlay()
 	if (HasAuthority())
 	{
 		CollisionBox->OnComponentHit.AddDynamic(this, &ThisClass::OnHit);
+		CollisionBox->IgnoreActorWhenMoving(Owner, true);
 	}
 }
 

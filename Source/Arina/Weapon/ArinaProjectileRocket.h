@@ -6,6 +6,7 @@
 #include "ArinaProjectile.h"
 #include "ArinaProjectileRocket.generated.h"
 
+class UArinaRocketMovementComponent;
 class USpringArmComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
@@ -45,6 +46,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	USoundAttenuation* ProjectileSoundLoopAttenuation;
+
+	UPROPERTY(VisibleAnywhere)
+	UArinaRocketMovementComponent* RocketMovementComponent;
 
 private:
 	UPROPERTY(EditAnywhere)
