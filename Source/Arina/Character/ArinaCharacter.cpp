@@ -366,9 +366,10 @@ float AArinaCharacter::PlayReloadMontage()
 	if (AnimInstance && ReloadMontage)
 	{
 		Duration = AnimInstance->Montage_Play(ReloadMontage);
-		FName SectionName = FName(CombatComp->EquippedWeapon->GetWeaponName());
-		
-		AnimInstance->Montage_JumpToSection(SectionName);
+		//FName SectionName = FName(CombatComp->EquippedWeapon->GetWeaponName());
+
+		// TODO: fix once other reload animations are available!
+		AnimInstance->Montage_JumpToSection("AssaultRifle");
 	}
 
 	return Duration;
@@ -406,7 +407,7 @@ void AArinaCharacter::MulticastEliminated_Implementation()
 	{
 		ArinaPlayerController->SetHUDWeaponAmmo(0);
 		ArinaPlayerController->SetHUDCarryAmmo(0);
-		ArinaPlayerController->SetHUDWeaponType("UnEquipped");
+		ArinaPlayerController->SetHUDWeaponType("Unequipped");
 	}
 
 	// Creating dynamic material instance for dissolve effect and starting it

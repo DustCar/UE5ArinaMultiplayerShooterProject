@@ -418,7 +418,7 @@ void AArinaPlayerController::HandleMatchHasStarted()
 		SetHUDDeaths(0);
 		SetHUDHealth(HUDCurrHealth, HUDMaxHealth);
 		CollapseKilledByMessage();
-		SetHUDWeaponType("UnEquipped");
+		SetHUDWeaponType("Unequipped");
 	}
 }
 

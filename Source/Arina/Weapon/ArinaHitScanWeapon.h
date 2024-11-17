@@ -28,5 +28,14 @@ private:
 	UParticleSystem* ImpactFX;
 
 	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* BodyHitFX;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* BodyHitSound;
+
+	UPROPERTY(EditAnywhere)
 	UParticleSystem* BeamFX;
 };

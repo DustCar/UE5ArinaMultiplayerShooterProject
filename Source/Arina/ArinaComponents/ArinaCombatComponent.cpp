@@ -414,7 +414,7 @@ void UArinaCombatComponent::CalculateCrosshairFactors(float DeltaTime)
 		CrosshairAimFactor = FMath::FInterpTo(CrosshairAimFactor, 0.f, DeltaTime, 30.f);
 	}
 
-	if (EquippedWeapon && !EquippedWeapon->IsEmpty() && bFireButtonPressed)
+	if (EquippedWeapon && !EquippedWeapon->IsEmpty() && bFireButtonPressed && CombatState != ECombatState::ECS_Reloading)
 	{
 		CrosshairShootFactor = FMath::FInterpTo(CrosshairShootFactor, 0.8f, DeltaTime, 20.f);
 	}

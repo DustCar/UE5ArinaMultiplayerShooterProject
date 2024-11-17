@@ -47,15 +47,20 @@ void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 	{
 		BeamEnd = FireHit.ImpactPoint;
 		AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(FireHit.GetActor());
-		if (ArinaCharacter && HasAuthority())
+		if (ArinaCharacter) 
 		{
-			UGameplayStatics::ApplyDamage(
-				ArinaCharacter,
-				BulletDamage,
-				InstigatorController,
-				this,
-				UDamageType::StaticClass()
-			);
+			if (HasAuthority())
+			{
+				UGameplayStatics::ApplyDamage(
+					ArinaCharacter,
+					BulletDamage,
+					InstigatorController,
+					this,
+					UDamageType::StaticClass()
+				);
+			}
+			ImpactFX = BodyHitFX == nullptr ? ImpactFX : BodyHitFX;
+			ImpactSound = BodyHitSound == nullptr ? ImpactSound : BodyHitSound;
 		}
 
 		if (ImpactFX)
@@ -65,6 +70,15 @@ void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 				ImpactFX,
 				FireHit.ImpactPoint,
 				FireHit.ImpactNormal.Rotation()
+			);
+		}
+
+		if (ImpactSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				World,
+				ImpactSound,
+				FireHit.ImpactPoint
 			);
 		}
 	}

@@ -246,6 +246,8 @@ FString AArinaBaseWeapon::GetWeaponName() const
 		return FString("Rocket Launcher");
 	case EWeaponType::EWT_Pistol:
 		return FString("Pistol");
+	case EWeaponType::EWT_SubmachineGun:
+		return FString("Submachine Gun");
 	default:
 		return FString("Unknown");
 	}
