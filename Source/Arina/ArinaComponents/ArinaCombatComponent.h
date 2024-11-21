@@ -9,8 +9,6 @@
 #include "Arina/Weapon/WeaponTypes.h"
 #include "ArinaCombatComponent.generated.h"
 
-#define TRACE_LENGTH 80000.f
-
 class AArinaHUD;
 class AArinaPlayerController;
 class AArinaBaseWeapon;

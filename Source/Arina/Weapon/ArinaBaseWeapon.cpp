@@ -106,34 +106,6 @@ void AArinaBaseWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedCompone
 	}
 }
 
-// notifies client when WeaponState changes, i.e. when a weapon gets equipped
-void AArinaBaseWeapon::OnRep_WeaponState()
-{
-	switch (WeaponState)
-	{
-	case EWeaponState::EWS_Equipped:
-		// Do not need to call the function since server disables weapons pickup collision when character overlap ends
-		// hiding the widget
-		/*ShowPickupWidget(false);*/
-		WeaponMesh->SetSimulatePhysics(false);
-		WeaponMesh->SetEnableGravity(false);
-		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		break;
-	case EWeaponState::EWS_Dropped:
-		WeaponMesh->SetSimulatePhysics(true);
-		WeaponMesh->SetEnableGravity(true);
-		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-		if (DropSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
-		}
-		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
-		break;
-	}
-}
-
 void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 {
 	WeaponState = State;
@@ -145,9 +117,12 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		/*ShowPickupWidget(false);*/
 		PickupArea->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		WeaponMesh->SetSimulatePhysics(false);
-		WeaponMesh->SetEnableGravity(false);
-		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
+		WeaponMesh->SetEnableGravity(WeaponType == EWeaponType::EWT_SubmachineGun);
+		WeaponMesh->SetCollisionEnabled(WeaponType == EWeaponType::EWT_SubmachineGun ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+		if (WeaponType == EWeaponType::EWT_SubmachineGun)
+		{
+			WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+		}
 		break;
 	case EWeaponState::EWS_Dropped:
 		if (HasAuthority())
@@ -157,6 +132,10 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		WeaponMesh->SetSimulatePhysics(true);
 		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		// Set collision response in case of SMG
+		WeaponMesh->SetCollisionResponseToAllChannels(ECR_Block);
+		WeaponMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		WeaponMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 		if (DropSound)
 		{
@@ -166,6 +145,41 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		break;
 	}
 	
+}
+
+// notifies client when WeaponState changes, i.e. when a weapon gets equipped
+void AArinaBaseWeapon::OnRep_WeaponState()
+{
+	switch (WeaponState)
+	{
+	case EWeaponState::EWS_Equipped:
+		// Do not need to call the function since server disables weapons pickup collision when character overlap ends
+			// hiding the widget
+				/*ShowPickupWidget(false);*/
+					WeaponMesh->SetSimulatePhysics(false);
+		WeaponMesh->SetEnableGravity(WeaponType == EWeaponType::EWT_SubmachineGun);
+		WeaponMesh->SetCollisionEnabled(WeaponType == EWeaponType::EWT_SubmachineGun ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+		if (WeaponType == EWeaponType::EWT_SubmachineGun)
+		{
+			WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+		}
+		break;
+	case EWeaponState::EWS_Dropped:
+		WeaponMesh->SetSimulatePhysics(true);
+		WeaponMesh->SetEnableGravity(true);
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		// Set collision response in case of SMG
+		WeaponMesh->SetCollisionResponseToAllChannels(ECR_Block);
+		WeaponMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		WeaponMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+		
+		if (DropSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
+		}
+		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
+		break;
+	}
 }
 
 void AArinaBaseWeapon::SetHUDAmmo()
@@ -248,6 +262,8 @@ FString AArinaBaseWeapon::GetWeaponName() const
 		return FString("Pistol");
 	case EWeaponType::EWT_SubmachineGun:
 		return FString("Submachine Gun");
+	case EWeaponType::EWT_Shotgun:
+		return FString("Shotgun");
 	default:
 		return FString("Unknown");
 	}

@@ -179,6 +179,16 @@ void UArinaCombatComponent::FireTimerFinished()
 	}
 }
 
+bool UArinaCombatComponent::CanFire()
+{
+	if (EquippedWeapon == nullptr)
+	{
+		return false;
+	}
+
+	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
+}
+
 void UArinaCombatComponent::Fire()
 {
 	if (EquippedWeapon->IsEmpty())
@@ -192,16 +202,6 @@ void UArinaCombatComponent::Fire()
 		StartFireTimer();
 	}
 	
-}
-
-bool UArinaCombatComponent::CanFire()
-{
-	if (EquippedWeapon == nullptr)
-	{
-		return false;
-	}
-
-	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
 void UArinaCombatComponent::FireButtonPressed(bool bPressed)

@@ -90,7 +90,9 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex
 	);
-	
+
+	UPROPERTY()
+	AArinaCharacter* OwnerArinaCharacter;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "ArinaWeaponProps")
@@ -145,9 +147,6 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	int32 MagCapacity;
-
-	UPROPERTY()
-	AArinaCharacter* OwnerArinaCharacter;
 
 	UPROPERTY()
 	AArinaPlayerController* OwnerArinaPlayerController;

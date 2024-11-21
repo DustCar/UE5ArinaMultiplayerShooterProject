@@ -6,6 +6,7 @@
 #include "Arina/Character/ArinaCharacter.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 
 AArinaHitScanWeapon::AArinaHitScanWeapon()
@@ -13,10 +14,47 @@ AArinaHitScanWeapon::AArinaHitScanWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AArinaHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit)
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr) { return; }
+	
+	FVector End = bUseScatter ? TraceEndWithScatter(TraceStart, HitTarget) : TraceStart + (HitTarget - TraceStart) * 1.25f;
+	World->LineTraceSingleByChannel(
+		OutHit,
+		TraceStart,
+		End,
+		ECC_Visibility
+	);
+
+	FVector BeamEnd = End;
+
+	if (OutHit.bBlockingHit)
+	{
+		BeamEnd = OutHit.ImpactPoint;
+	}
+	
+	if (BeamFX)
+	{
+		UParticleSystemComponent* BeamFXComponent = UGameplayStatics::SpawnEmitterAtLocation(
+			World,
+			BeamFX,
+			TraceStart,
+			FRotator::ZeroRotator,
+			true
+		);
+
+		if (BeamFXComponent)
+		{
+			BeamFXComponent->SetVectorParameter(FName("Target"), BeamEnd);
+		}
+	}
+}
+
 void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 {
 	Super::Fire(HitTarget);
-
+	
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (OwnerPawn == nullptr) { return; }
 
@@ -28,26 +66,14 @@ void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 	
 	FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
 	FVector Start = SocketTransform.GetLocation();
-	FVector End = Start + (HitTarget - Start) * 1.25f;
 
 	FHitResult FireHit;
-	UWorld* World = GetWorld();
-	if (World == nullptr) { return; }
-	
-	World->LineTraceSingleByChannel(
-		FireHit,
-		Start,
-		End,
-		ECC_Visibility
-	);
-
-	FVector BeamEnd = End;
+	WeaponTraceHit(Start, HitTarget, FireHit);
 
 	if (FireHit.bBlockingHit)
 	{
-		BeamEnd = FireHit.ImpactPoint;
 		AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(FireHit.GetActor());
-		if (ArinaCharacter) 
+		if (ArinaCharacter && InstigatorController) 
 		{
 			if (HasAuthority())
 			{
@@ -66,7 +92,7 @@ void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 		if (ImpactFX)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(
-				World,
+				GetWorld(),
 				ImpactFX,
 				FireHit.ImpactPoint,
 				FireHit.ImpactNormal.Rotation()
@@ -76,36 +102,36 @@ void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 		if (ImpactSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(
-				World,
+				GetWorld(),
 				ImpactSound,
 				FireHit.ImpactPoint
 			);
 		}
 	}
-
-	if (BeamFX)
-	{
-		UParticleSystemComponent* BeamFXComponent = UGameplayStatics::SpawnEmitterAtLocation(
-			World,
-			BeamFX,
-			SocketTransform
-		);
-
-		if (BeamFXComponent)
-		{
-			BeamFXComponent->SetVectorParameter(FName("Target"), BeamEnd);
-		}
-	}
 }
 
-void AArinaHitScanWeapon::BeginPlay()
+FVector AArinaHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget)
 {
-	Super::BeginPlay();
+	FVector ToTargetNormalized = (HitTarget - TraceStart).GetSafeNormal();
+	FVector SphereCenter = TraceStart + ToTargetNormalized * DistanceToSphere;
+	FVector RandomVector =
+		UKismetMathLibrary::RandomUnitVector() *
+		FMath::FRandRange(0.f, OwnerArinaCharacter->IsAiming() ? AimedSphereRadius : SphereRadius);
 	
+	FVector EndPoint = SphereCenter + RandomVector;
+	FVector ToEndPoint = EndPoint - TraceStart;
+
+	/*DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
+	DrawDebugSphere(GetWorld(), EndPoint, 4.f, 12, FColor::Yellow, true);
+	DrawDebugLine(
+		GetWorld(),
+		TraceStart,
+		FVector(TraceStart + ToEndPoint * TRACE_LENGTH / ToEndPoint.Size()),
+		FColor::Cyan,
+		true
+	);*/
+
+	return FVector(TraceStart + ToEndPoint * TRACE_LENGTH / ToEndPoint.Size());
 }
 
-void AArinaHitScanWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 

@@ -12,27 +12,27 @@
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Idle_Rifle_Hip.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Idle_Rifle_Hip.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip_fixed.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip_fixed.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Optimized.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Optimized.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/LearningKit_Games/Assets/Characters/Character/Mesh/SK_EpicCharacter_Skeleton.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/Pistol/PistolB_Fire_Cue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/Pistol/PistolB_Fire_Cue.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/Rifle/RifleB_Fire_Cue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/Rifle/RifleB_Fire_Cue.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/RocketLauncher/RocketLauncherB_Fire_Cue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/MilitaryWeapDark/Sound/RocketLauncher/RocketLauncherB_Fire_Cue.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/AimOffsets/Zero_Pose.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/AimOffsets/Zero_Pose.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_45_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_45_Right.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Bwd_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_45_Left.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_45_Left.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Fwd_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Lt_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_L.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/FinalAnimations/Jog_Rt_Rifle_Lean_R.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip_adj_final.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Reload_Rifle_Hip_adj_final.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/FPS_Weapon_Bundle/Weapons/Meshes/SMG11/SK_SMG11_Y.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/FPS_Weapon_Bundle/Weapons/Meshes/SMG11/SK_SMG11_Y.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/ABP_ArinaCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/BlendSpaces/BS_ArinaEquippedRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/BlendSpaces/BS_ArinaEquippedRun.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/Reload.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Animations/Reload.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaPistol.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaPistol.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaBaseWeapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/WeaponTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/WeaponTypes.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -673,7 +673,9 @@
       <workItem from="1731103940541" duration="10366000" />
       <workItem from="1731287373876" duration="90000" />
       <workItem from="1731287596530" duration="347000" />
-      <workItem from="1731797451894" duration="6714000" />
+      <workItem from="1731797451894" duration="9067000" />
+      <workItem from="1731961946836" duration="193000" />
+      <workItem from="1731962477274" duration="4146000" />
     </task>
     <servers />
   </component>

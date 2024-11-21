@@ -13,14 +13,14 @@ class ARINA_API AArinaHitScanWeapon : public AArinaBaseWeapon
 
 public:
 	AArinaHitScanWeapon();
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void Fire(const FVector& HitTarget) override;
 
 protected:
-	virtual void BeginPlay() override;
 
-private:
+	FVector TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget);
+	void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit);
+
 	UPROPERTY(EditAnywhere)
 	float BulletDamage = 10.f;
 
@@ -38,4 +38,21 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* BeamFX;
+	
+private:
+	
+	/*
+	*	Trace end with scatter
+	*/
+	UPROPERTY(EditAnywhere, Category= "WeaponScatter")
+	float DistanceToSphere = 800.f;
+	
+	UPROPERTY(EditAnywhere, Category= "WeaponScatter")
+	float SphereRadius = 75.f;
+
+	UPROPERTY(EditAnywhere, Category= "WeaponScatter")
+	float AimedSphereRadius = 25.f;
+
+	UPROPERTY(EditAnywhere, Category= "WeaponScatter")
+	bool bUseScatter = false;
 };
