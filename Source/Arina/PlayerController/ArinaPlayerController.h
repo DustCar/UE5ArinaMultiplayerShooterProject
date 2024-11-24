@@ -26,6 +26,7 @@ public:
 	void SetHUDWeaponType(const FString& WeaponType);
 	void SetHUDMatchTimer(const float CountdownTime);
 	void SetHUDAnnouncementTimer(const float CountdownTime);
+	void SetHUDSniperScope(bool bIsAiming);
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;

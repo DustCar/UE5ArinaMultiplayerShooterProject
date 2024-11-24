@@ -5,6 +5,7 @@
 
 #include "ArinaAnnouncement.h"
 #include "ArinaCharacterOverlay.h"
+#include "ArinaSniperScopeWidget.h"
 #include "Arina/PlayerController/ArinaPlayerController.h"
 
 void AArinaHUD::DrawHUD()
@@ -75,6 +76,19 @@ void AArinaHUD::AddAnnouncement()
 	if (Announcement)
 	{
 		Announcement->AddToViewport();
+	}
+}
+
+void AArinaHUD::AddSniperScope()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && SniperScopeClass)
+	{
+		SniperScope = CreateWidget<UArinaSniperScopeWidget>(PlayerController, SniperScopeClass);
+	}
+	if (SniperScope)
+	{
+		SniperScope->AddToViewport();
 	}
 }
 

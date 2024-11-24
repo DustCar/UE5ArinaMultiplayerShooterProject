@@ -28,6 +28,7 @@ public:
 
 	void EquipWeapon(AArinaBaseWeapon* WeaponToEquip);
 	void FireButtonPressed(bool bPressed);
+	void AimButtonPressed(bool bPressed);
 	void ReloadWeapon();
 
 protected:
@@ -69,6 +70,7 @@ private:
 
 	UPROPERTY(Replicated)
 	bool bAiming = false;
+	bool bAimButtonPressed = false;
 
 	UPROPERTY(EditAnywhere)
 	float BaseWalkSpeed = 600.f;
@@ -107,6 +109,13 @@ private:
 
 	void InterpFOV(float DeltaTime);
 	bool CanAim();
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	USoundBase* ZoomInScopeCue;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	USoundBase* ZoomOutScopeCue;
+
+	bool bScopeDisabled = false;
 
 	/**
 	 *	Sensitivity variables
@@ -163,3 +172,5 @@ public:
 
 	
 };
+
+

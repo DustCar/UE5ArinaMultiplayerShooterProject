@@ -132,12 +132,34 @@ void UArinaCombatComponent::UpdateWalkSpeed()
 	}
 }
 
+void UArinaCombatComponent::AimButtonPressed(bool bPressed)
+{
+	bAimButtonPressed = bPressed;
+	SetAiming(bPressed);
+}
+
 // local setting
 void UArinaCombatComponent::SetAiming(bool bIsAiming)
 {
+	if (ArinaCharacter == nullptr || EquippedWeapon == nullptr) { return; }
 	bAiming = bIsAiming;
+	
     ServerSetAiming(bIsAiming);
     UpdateWalkSpeed();
+
+	if (ArinaCharacter->IsLocallyControlled() && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle && !bScopeDisabled)
+	{
+		ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
+		ArinaController->SetHUDSniperScope(bIsAiming);
+		if (bIsAiming)
+		{
+			UGameplayStatics::PlaySound2D(this, ZoomInScopeCue);
+		}
+		else
+		{
+			UGameplayStatics::PlaySound2D(this, ZoomOutScopeCue);
+		}
+	}
 }
 
 // calls to the server to implement changes server wide
@@ -191,6 +213,8 @@ bool UArinaCombatComponent::CanFire()
 
 void UArinaCombatComponent::Fire()
 {
+	if (EquippedWeapon == nullptr) { return; }
+	
 	if (EquippedWeapon->IsEmpty())
 	{
 		ReloadWeapon();
@@ -235,15 +259,25 @@ void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize&
 
 void UArinaCombatComponent::ReloadWeapon()
 {
+	if (EquippedWeapon == nullptr || EquippedWeapon->MagIsFull()) { return; }
+	
 	if (CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading)
 	{
+		if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+		{
+			if (bAimButtonPressed)
+			{
+				SetAiming(false);
+			}
+			bScopeDisabled = true;
+		}
 		ServerReload();
 	}
 }
 
 void UArinaCombatComponent::ServerReload_Implementation()
 {
-	if (ArinaCharacter == nullptr || EquippedWeapon == nullptr || EquippedWeapon->MagIsFull())
+	if (ArinaCharacter == nullptr)
 	{
 		return;
 	}
@@ -315,6 +349,16 @@ void UArinaCombatComponent::ReloadTimerFinished()
 	{
 		Fire();
 	}
+
+	if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+	{
+		bScopeDisabled = false;
+		if (bAimButtonPressed)
+		{
+			SetAiming(true);
+		}
+	}
+	
 	UpdateWalkSpeed();
 }
 
@@ -458,7 +502,7 @@ void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
 		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(ArinaController->GetHUD()) : ArinaHUD;
 		if (ArinaHUD)
 		{
-			if (EquippedWeapon)
+			if (EquippedWeapon && ((EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle && !bAiming && CanAim()) || EquippedWeapon->GetWeaponType() != EWeaponType::EWT_SniperRifle))
 			{
 				HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
 				HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;

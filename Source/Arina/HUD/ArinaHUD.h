@@ -7,6 +7,7 @@
 #include "Arina/ArinaTypesHeaders/HUDPackageStruct.h"
 #include "ArinaHUD.generated.h"
 
+class UArinaSniperScopeWidget;
 class UArinaAnnouncement;
 class UArinaCharacterOverlay;
 /**
@@ -36,6 +37,14 @@ public:
 	UArinaAnnouncement* Announcement;
 
 	void AddAnnouncement();
+
+	UPROPERTY(EditAnywhere, Category = "SniperScope")
+	TSubclassOf<UUserWidget> SniperScopeClass; 
+
+	UPROPERTY()
+	UArinaSniperScopeWidget* SniperScope;
+
+	void AddSniperScope();
 	
 protected:
 	virtual void BeginPlay() override;

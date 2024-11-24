@@ -259,7 +259,7 @@ void AArinaCharacter::AimIn(const FInputActionValue& Value)
 
 	if (CombatComp && CombatComp->EquippedWeapon)
 	{
-		CombatComp->SetAiming(Value.Get<bool>());
+		CombatComp->AimButtonPressed(Value.Get<bool>());
 	}
 }
 
@@ -450,6 +450,18 @@ void AArinaCharacter::MulticastEliminated_Implementation()
 			ElimBotSound,
 			GetActorLocation()
 		);
+	}
+
+	bool bScopedIn = IsLocallyControlled() &&
+		CombatComp &&
+		CombatComp->EquippedWeapon &&
+		CombatComp->EquippedWeapon &&
+		CombatComp->EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle &&
+		CombatComp->bAiming;
+
+	if (bScopedIn)
+	{
+		CombatComp->SetAiming(false);
 	}
 }
 

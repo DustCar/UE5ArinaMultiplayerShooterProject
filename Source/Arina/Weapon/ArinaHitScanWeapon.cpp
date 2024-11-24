@@ -89,24 +89,7 @@ void AArinaHitScanWeapon::Fire(const FVector& HitTarget)
 			ImpactSound = BodyHitSound == nullptr ? ImpactSound : BodyHitSound;
 		}
 
-		if (ImpactFX)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(
-				GetWorld(),
-				ImpactFX,
-				FireHit.ImpactPoint,
-				FireHit.ImpactNormal.Rotation()
-			);
-		}
-
-		if (ImpactSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				GetWorld(),
-				ImpactSound,
-				FireHit.ImpactPoint
-			);
-		}
+		PlayImpactFX(FireHit);
 	}
 }
 
@@ -134,4 +117,25 @@ FVector AArinaHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, cons
 	return FVector(TraceStart + ToEndPoint * TRACE_LENGTH / ToEndPoint.Size());
 }
 
+void AArinaHitScanWeapon::PlayImpactFX(FHitResult& FireHit)
+{
+	if (ImpactFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			ImpactFX,
+			FireHit.ImpactPoint,
+			FireHit.ImpactNormal.Rotation()
+		);
+	}
+
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			ImpactSound,
+			FireHit.ImpactPoint
+		);
+	}
+}
 

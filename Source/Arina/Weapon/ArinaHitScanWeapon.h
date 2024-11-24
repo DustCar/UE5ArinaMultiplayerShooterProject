@@ -20,6 +20,7 @@ protected:
 
 	FVector TraceEndWithScatter(const FVector& TraceStart, const FVector& HitTarget);
 	void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit);
+	void PlayImpactFX(FHitResult& FireHit);
 
 	UPROPERTY(EditAnywhere)
 	float BulletDamage = 10.f;

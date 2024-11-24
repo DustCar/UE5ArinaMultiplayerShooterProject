@@ -23,7 +23,6 @@ private:
 	UPROPERTY(EditAnywhere, Category= "WeaponScatter")
 	uint32 PelletCount = 12;
 
-	void PlayImpactFX(FHitResult& FireHit);
 
 public:
 };

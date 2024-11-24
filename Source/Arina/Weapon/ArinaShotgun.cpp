@@ -76,27 +76,3 @@ void AArinaShotgun::Fire(const FVector& HitTarget)
 		}
 	}
 }
-
-void AArinaShotgun::PlayImpactFX(FHitResult& FireHit)
-{
-	if (ImpactFX)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			ImpactFX,
-			FireHit.ImpactPoint,
-			FireHit.ImpactNormal.Rotation()
-		);
-	}
-
-	if (ImpactSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(
-			GetWorld(),
-			ImpactSound,
-			FireHit.ImpactPoint,
-			.5f,
-			FMath::FRandRange(-0.5f, 0.5f)
-		);
-	}
-}

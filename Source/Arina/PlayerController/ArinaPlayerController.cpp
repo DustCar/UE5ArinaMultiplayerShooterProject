@@ -12,6 +12,7 @@
 #include "Arina/GameMode/ArinaGameMode.h"
 #include "Arina/GameState/ArinaGameState.h"
 #include "Arina/HUD/ArinaAnnouncement.h"
+#include "Arina/HUD/ArinaSniperScopeWidget.h"
 #include "Arina/PlayerState/ArinaPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -284,6 +285,43 @@ void AArinaPlayerController::SetHUDAnnouncementTimer(const float CountdownTime)
 		ArinaHUD->Announcement->AnnouncementTimer->SetText(FText::FromString(CountdownText));
 	}
 }
+
+void AArinaPlayerController::SetHUDSniperScope(bool bIsAiming)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->SniperScope &&
+		ArinaHUD->SniperScope->ScopeOverlay &&
+		ArinaHUD->SniperScope->Background &&
+		ArinaHUD->SniperScope->ZoomInAnim;
+
+	if (bHUDValid)
+	{
+		if (bIsAiming)
+		{
+			ArinaHUD->SniperScope->PlayAnimation(
+				ArinaHUD->SniperScope->ZoomInAnim,
+				0.f,
+				1
+			);
+		}
+		else
+		{
+			ArinaHUD->SniperScope->PlayAnimation(
+				ArinaHUD->SniperScope->ZoomInAnim,
+				0.f,
+				1,
+				EUMGSequencePlayMode::Reverse
+			);
+		}
+	}
+	else
+	{
+		ArinaHUD->AddSniperScope();
+	}
+}
+
 
 void AArinaPlayerController::SetHUDTime()
 {
