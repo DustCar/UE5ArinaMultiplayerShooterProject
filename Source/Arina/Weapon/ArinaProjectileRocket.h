@@ -21,8 +21,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-	void DestroyTrailTimerFinished();
 
 	virtual void OnHit(
 		UPrimitiveComponent* HitComponent,
@@ -31,12 +29,6 @@ protected:
 		FVector NormalImpulse,
 		const FHitResult& Hit 
 	) override;
-
-	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* TrailSystem;
-
-	UPROPERTY()
-	UNiagaraComponent* TrailSystemComponent;
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* ProjectileSoundLoop;
@@ -51,19 +43,5 @@ protected:
 	UArinaRocketMovementComponent* RocketMovementComponent;
 
 private:
-	UPROPERTY(EditAnywhere)
-	float MinDamage = 10.f;
-	UPROPERTY(EditAnywhere)
-	float InnerRadius = 200.f;
-	UPROPERTY(EditAnywhere)
-	float OuterRadius = 500.f;
-
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* RocketMesh;
-
-	FTimerHandle DestroyTrailTimer;
-
-	UPROPERTY(EditAnywhere)
-	float TrailTimer = 3.f;
 	
 };

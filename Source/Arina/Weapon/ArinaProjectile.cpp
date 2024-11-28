@@ -3,6 +3,8 @@
 
 #include "ArinaProjectile.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "TimerManager.h"
 #include "Arina/Arina.h"
 #include "Arina/Character/ArinaCharacter.h"
 #include "Components/BoxComponent.h"
@@ -21,7 +23,6 @@ AArinaProjectile::AArinaProjectile()
 	CollisionBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	CollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	CollisionBox->SetCollisionResponseToChannel(ECC_SkeletalMesh, ECR_Block);
-	
 }
 
 void AArinaProjectile::BeginPlay()
@@ -48,8 +49,23 @@ void AArinaProjectile::BeginPlay()
 	}
 }
 
+void AArinaProjectile::StartDestroyTimer()
+{
+	GetWorldTimerManager().SetTimer(
+		DestroyTrailTimer,
+		this,
+		&ThisClass::DestroyTrailTimerFinished,
+		TrailTimer
+	);
+}
+
+void AArinaProjectile::DestroyTrailTimerFinished()
+{
+	Destroy();
+}
+
 void AArinaProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                             FVector NormalImpulse, const FHitResult& Hit)
 {
 	bool bCharacterHit = Cast<AArinaCharacter>(OtherActor) ? true : false;
 
@@ -75,7 +91,7 @@ void AArinaProjectile::MulticastOnHit_Implementation(bool bCharacterHit, const F
 	
 	if (ImpactFX)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactFX, ImpactLocation, ImpactNormal.Rotation());
+		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactFX, ImpactLocation, ImpactNormal.Rotation());
 	}
 	if (ImpactSound)
 	{
@@ -83,10 +99,45 @@ void AArinaProjectile::MulticastOnHit_Implementation(bool bCharacterHit, const F
 	}
 }
 
-void AArinaProjectile::Tick(float DeltaTime)
+void AArinaProjectile::ExplodeDamage()
 {
-	Super::Tick(DeltaTime);
+	APawn* FiringPawn = GetInstigator();
+	if (FiringPawn && HasAuthority())
+	{
+		AController* FiringController = FiringPawn->GetController();
+		if (FiringController)
+		{
+			UGameplayStatics::ApplyRadialDamageWithFalloff(
+				this,
+				Damage,
+				MinDamage,
+				GetActorLocation(),
+				ExplosionInnerRadius,
+				ExplosionOuterRadius,
+				1.f,
+				UDamageType::StaticClass(),
+				TArray<AActor*>(),
+				this,
+				FiringController
+			);
+		}
+	}
+}
 
+void AArinaProjectile::SpawnTrailSystem()
+{
+	if (TrailSystem)
+	{
+		TrailSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			TrailSystem,
+			GetRootComponent(),
+			FName(),
+			GetActorLocation(),
+			GetActorRotation(),
+			EAttachLocation::KeepWorldPosition,
+			false
+		);
+	}
 }
 
 

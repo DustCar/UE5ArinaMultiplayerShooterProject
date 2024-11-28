@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "ArinaProjectile.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 class UProjectileMovementComponent;
 class UBoxComponent;
 
@@ -16,10 +18,12 @@ class ARINA_API AArinaProjectile : public AActor
 	
 public:	
 	AArinaProjectile();
-	virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;
+	void StartDestroyTimer();
+	void DestroyTrailTimerFinished();
+	void ExplodeDamage();
 
 	UFUNCTION()
 	virtual void OnHit(
@@ -39,31 +43,53 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* CollisionBox;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile")
 	float Damage = 10.f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile|VFX")
 	UParticleSystem* ImpactFX;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile|SFX")
 	USoundBase* ImpactSound;
+
+	UPROPERTY(EditAnywhere, Category= "Projectile|VFX")
+	UParticleSystem* SurfaceHitFX;
+
+	UPROPERTY(EditAnywhere, Category= "Projectile|VFX")
+	UNiagaraSystem* TrailSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* TrailSystemComponent;
+
+	void SpawnTrailSystem();
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ProjectileMesh;
 	
 private:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile|VFX")
 	UParticleSystem* TracerFX;
 
-	UPROPERTY(EditAnywhere)
-	UParticleSystem* SurfaceHitFX;
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile|SFX")
 	USoundBase* SurfaceHitSound;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile|VFX")
 	UParticleSystem* ActorHitFX;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "Projectile|SFX")
 	USoundBase* ActorHitSound;
+
+	FTimerHandle DestroyTrailTimer;
+	UPROPERTY(EditAnywhere, Category= "Projectile")
+	float TrailTimer = 3.f;
+
+	UPROPERTY(EditAnywhere, Category= "Projectile")
+	float MinDamage = 10.f;
+	UPROPERTY(EditAnywhere, Category= "Projectile")
+	float ExplosionInnerRadius = 100.f;
+	UPROPERTY(EditAnywhere, Category= "Projectile")
+	float ExplosionOuterRadius = 300.f;
 
 public:	
 	

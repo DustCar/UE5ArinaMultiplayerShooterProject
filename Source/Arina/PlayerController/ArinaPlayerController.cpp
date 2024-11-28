@@ -326,6 +326,7 @@ void AArinaPlayerController::SetHUDSniperScope(bool bIsAiming)
 void AArinaPlayerController::SetHUDTime()
 {
 	// Make sure to capture LevelStartingTime when game mode is valid on the server before using in TimeLeft, ensures server time
+	// is up to date
 	if (HasAuthority())
 	{
 		ArinaGameMode = ArinaGameMode == nullptr ? Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this)) : ArinaGameMode;
@@ -338,7 +339,7 @@ void AArinaPlayerController::SetHUDTime()
 	}
 	
 	float TimeLeft = 0.f;
-	// When Player joins since session is created
+	// When Player joins since session was created
 	if (MatchState == MatchState::WaitingToStart)
 	{
 		TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;

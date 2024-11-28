@@ -17,29 +17,28 @@ void AArinaProjectileWeapon::Fire(const FVector& HitTarget)
 	APawn* InstigatorPawn = Cast<APawn>(GetOwner());
 	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
 	
-	if (MuzzleFlashSocket)
-	{
-		FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
+	if (MuzzleFlashSocket == nullptr) { return; }
+	
+	FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
 
-		// vector from muzzle flash socket to hit location from trace
-		FVector ToTarget = HitTarget - SocketTransform.GetLocation();
-		FRotator TargetRotation = ToTarget.Rotation();
-		
-		if (ProjectileClass && InstigatorPawn)
+	// vector from muzzle flash socket to hit location from trace
+	FVector ToTarget = HitTarget - SocketTransform.GetLocation();
+	FRotator TargetRotation = ToTarget.Rotation();
+	
+	if (ProjectileClass && InstigatorPawn)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = GetOwner();
+		SpawnParams.Instigator = InstigatorPawn;
+		UWorld* World = GetWorld();
+		if (World)
 		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = GetOwner();
-			SpawnParams.Instigator = InstigatorPawn;
-			UWorld* World = GetWorld();
-			if (World)
-			{
-				World->SpawnActor<AArinaProjectile>(
-					ProjectileClass,
-					SocketTransform.GetLocation(),
-					TargetRotation,
-					SpawnParams
-				);
-			}
+			World->SpawnActor<AArinaProjectile>(
+				ProjectileClass,
+				SocketTransform.GetLocation(),
+				TargetRotation,
+				SpawnParams
+			);
 		}
 	}
 }
