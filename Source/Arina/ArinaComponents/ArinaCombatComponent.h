@@ -30,6 +30,10 @@ public:
 	void FireButtonPressed(bool bPressed);
 	void AimButtonPressed(bool bPressed);
 	void ReloadWeapon();
+	void FinishedReloading();
+
+	void ShotgunShellReload();
+	void JumpToShotgunEnd();
 
 protected:
 	virtual void BeginPlay() override;
@@ -160,11 +164,8 @@ private:
 	/**
 	*	Reload variables
 	*/
-	FTimerHandle ReloadTimerHandle;
-	float ReloadAnimDuration;
-
 	void UpdateAmmoValues();
-	void ReloadTimerFinished();
+	void UpdateShotgunAmmoValues();
 	
 	void UpdateHUDWeaponType();
 

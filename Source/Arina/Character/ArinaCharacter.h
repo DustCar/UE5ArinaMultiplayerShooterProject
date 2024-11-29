@@ -31,7 +31,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
-	float PlayReloadMontage();
+	void PlayReloadMontage();
 	void PlayEliminatedMontage();
 	void Eliminated();
 
@@ -185,8 +185,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* ElimBotSound;
-
-	
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
@@ -203,4 +201,5 @@ public:
 	ECombatState GetCombatState() const;
 	FORCEINLINE UArinaCombatComponent* GetCombatComponent() const { return CombatComp; }
 	FORCEINLINE bool GetDisableGameplay() const { return bDisableGameplay; }
+	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }
 };

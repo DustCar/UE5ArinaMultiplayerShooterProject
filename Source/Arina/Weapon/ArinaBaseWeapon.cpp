@@ -185,7 +185,6 @@ void AArinaBaseWeapon::OnRep_WeaponState()
 void AArinaBaseWeapon::SetHUDAmmo()
 {
 	OwnerArinaCharacter = OwnerArinaCharacter == nullptr ? Cast<AArinaCharacter>(GetOwner()) : OwnerArinaCharacter;
-
 	if (OwnerArinaCharacter)
 	{
 		OwnerArinaPlayerController = OwnerArinaPlayerController == nullptr ? Cast<AArinaPlayerController>(OwnerArinaCharacter->GetController()) : OwnerArinaPlayerController;
@@ -210,6 +209,16 @@ void AArinaBaseWeapon::SpendRound()
 
 void AArinaBaseWeapon::OnRep_Ammo()
 {
+	OwnerArinaCharacter = OwnerArinaCharacter == nullptr ? Cast<AArinaCharacter>(GetOwner()) : OwnerArinaCharacter;
+	bool bIsShotgunAndFull =
+		WeaponType == EWeaponType::EWT_Shotgun &&
+		OwnerArinaCharacter &&
+		OwnerArinaCharacter->GetCombatComponent() &&
+		MagIsFull();
+	if (bIsShotgunAndFull)
+	{
+		OwnerArinaCharacter->GetCombatComponent()->JumpToShotgunEnd();
+	}
 	SetHUDAmmo();
 }
 

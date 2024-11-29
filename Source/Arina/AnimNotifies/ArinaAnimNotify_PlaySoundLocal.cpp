@@ -14,7 +14,8 @@ void UArinaAnimNotify_PlaySoundLocal::Notify(USkeletalMeshComponent* MeshComp, U
 	}
 	if (AActor* Owner = MeshComp->GetOwner())
 	{
-// copied from AnimNotify_PlaySound.cpp just for editor preview
+// copied from AnimNotify_PlaySound.cpp just for editor preview since using the local check prevents Super::Notify
+// from playing in the editor
 #if WITH_EDITORONLY_DATA
 		UWorld* World = MeshComp->GetWorld();
 		if (World && World->WorldType == EWorldType::EditorPreview)

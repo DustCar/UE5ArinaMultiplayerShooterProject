@@ -207,6 +207,10 @@ bool UArinaCombatComponent::CanFire()
 	{
 		return false;
 	}
+	if (EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Shotgun && bCanFire && CombatState == ECombatState::ECS_Reloading)
+	{
+		return true;
+	}
 
 	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
@@ -218,6 +222,7 @@ void UArinaCombatComponent::Fire()
 	if (EquippedWeapon->IsEmpty())
 	{
 		ReloadWeapon();
+		return;
 	}
 	if (CanFire())
 	{
@@ -225,7 +230,6 @@ void UArinaCombatComponent::Fire()
 		ServerFire(HitTarget);
 		StartFireTimer();
 	}
-	
 }
 
 void UArinaCombatComponent::FireButtonPressed(bool bPressed)
@@ -243,6 +247,13 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 	{
 		return;
 	}
+	if (ArinaCharacter && CombatState == ECombatState::ECS_Reloading && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Shotgun)
+	{
+		ArinaCharacter->PlayFireMontage(bAiming);
+		EquippedWeapon->Fire(TraceHitTarget);
+		CombatState = ECombatState::ECS_Unoccupied;
+		return;
+	}
 	if (ArinaCharacter && CombatState == ECombatState::ECS_Unoccupied)
 	{
 		ArinaCharacter->PlayFireMontage(bAiming);
@@ -255,6 +266,14 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	MulticastFire(TraceHitTarget);
+}
+
+void UArinaCombatComponent::ShotgunShellReload()
+{
+	if (ArinaCharacter && ArinaCharacter->HasAuthority())
+	{
+		UpdateShotgunAmmoValues();
+	}
 }
 
 void UArinaCombatComponent::ReloadWeapon()
@@ -288,17 +307,11 @@ void UArinaCombatComponent::ServerReload_Implementation()
 
 void UArinaCombatComponent::HandleReload()
 {
-	ReloadAnimDuration = ArinaCharacter->PlayReloadMontage();
-	ArinaCharacter->GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &ThisClass::ReloadTimerFinished, ReloadAnimDuration - 0.1f, false);
+	ArinaCharacter->PlayReloadMontage();
 }
 
 int32 UArinaCombatComponent::AmountToReload()
 {
-	if (EquippedWeapon == nullptr)
-	{
-		return 0;
-	}
-	
 	int32 RoomInMag = EquippedWeapon->GetMagCapacity() - EquippedWeapon->GetWeaponAmmoAmount();
 
 	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
@@ -322,6 +335,7 @@ void UArinaCombatComponent::UpdateHUDWeaponType()
 
 void UArinaCombatComponent::UpdateAmmoValues()
 {
+	if (ArinaCharacter == nullptr || EquippedWeapon == nullptr) { return; }
 	int32 ReloadAmount = AmountToReload();
 	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
 	{
@@ -332,7 +346,37 @@ void UArinaCombatComponent::UpdateAmmoValues()
 	EquippedWeapon->AddToAmmoCount(ReloadAmount);
 }
 
-void UArinaCombatComponent::ReloadTimerFinished()
+void UArinaCombatComponent::UpdateShotgunAmmoValues()
+{
+	if (ArinaCharacter == nullptr || EquippedWeapon == nullptr) { return; }
+
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmoMap[EquippedWeapon->GetWeaponType()]--;
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+	SetHUDCarriedAmmo();
+	EquippedWeapon->AddToAmmoCount(1);
+
+	bCanFire = true;
+	if (EquippedWeapon->MagIsFull() || CarriedAmmo == 0)
+	{
+		JumpToShotgunEnd();
+	}
+}
+
+void UArinaCombatComponent::JumpToShotgunEnd()
+{
+	UAnimInstance* AnimInstance = ArinaCharacter->GetMesh()->GetAnimInstance();
+	if (AnimInstance && ArinaCharacter->GetReloadMontage())
+	{
+		AnimInstance->Montage_Play(ArinaCharacter->GetReloadMontage());
+
+		AnimInstance->Montage_JumpToSection(FName("Shotgun End"));
+	}
+}
+
+void UArinaCombatComponent::FinishedReloading()
 {
 	if (EquippedWeapon == nullptr)
 	{
@@ -580,5 +624,14 @@ void UArinaCombatComponent::SetHUDCarriedAmmo()
 
 void UArinaCombatComponent::OnRep_CarriedAmmo()
 {
+	bool bIsShotgunAndNoAmmo =
+		EquippedWeapon &&
+		EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Shotgun &&
+		CombatState == ECombatState::ECS_Reloading &&
+		CarriedAmmo == 0;
+	if (bIsShotgunAndNoAmmo)
+	{
+		JumpToShotgunEnd();
+	}
 	SetHUDCarriedAmmo();
 }

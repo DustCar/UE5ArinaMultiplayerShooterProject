@@ -354,25 +354,21 @@ void AArinaCharacter::PlayFireMontage(bool bAiming)
 	}
 }
 
-float AArinaCharacter::PlayReloadMontage()
+void AArinaCharacter::PlayReloadMontage()
 {
 	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
 	{
-		return 0.f;
+		return;
 	}
 
-	float Duration = 0.f;
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && ReloadMontage)
 	{
-		Duration = AnimInstance->Montage_Play(ReloadMontage);
-		//FName SectionName = FName(CombatComp->EquippedWeapon->GetWeaponName());
+		AnimInstance->Montage_Play(ReloadMontage);
+		FName SectionName = FName(CombatComp->EquippedWeapon->GetWeaponName());
 
-		// TODO: fix once other reload animations are available!
-		AnimInstance->Montage_JumpToSection("AssaultRifle");
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
-
-	return Duration;
 }
 
 void AArinaCharacter::PlayEliminatedMontage()
