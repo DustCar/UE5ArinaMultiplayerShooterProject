@@ -35,6 +35,8 @@ public:
 	void ShotgunShellReload();
 	void JumpToShotgunEnd();
 
+	void ThrowGrenadeFinished();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -61,6 +63,14 @@ protected:
 	void ServerReload();
 	void HandleReload();
 	int32 AmountToReload();
+
+	void ThrowGrenade();
+	UFUNCTION(Server, Reliable)
+	void ServerThrowGrenade();
+
+	void DropEquippedWeapon();
+	void AttachActorToRightHand(AActor* ActorToAttach);
+	void AttachActorToLeftHand(AActor* ActorToAttach);
 	
 private:
 	UPROPERTY()

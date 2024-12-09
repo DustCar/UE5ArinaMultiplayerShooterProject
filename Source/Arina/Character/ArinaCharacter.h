@@ -33,6 +33,7 @@ public:
 	void PlayFireMontage(bool bAiming);
 	void PlayReloadMontage();
 	void PlayEliminatedMontage();
+	void PlayThrowGrenadeMontage();
 	void Eliminated();
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -64,6 +65,8 @@ protected:
 	virtual void Jump() override;
 	void Fire(const FInputActionValue& Value);
 	void Reload();
+	void ThrowGrenadePressed();
+	
 	void PlayHitReactMontage();
 	void UpdateHUDHealth();
 
@@ -117,6 +120,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* EliminatedMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* ThrowGrenadeMontage;
 
 	void HideCharacterIfCameraClose();
 

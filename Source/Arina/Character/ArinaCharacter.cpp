@@ -156,6 +156,7 @@ void AArinaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PEI->BindAction(InputActions->InputAim, ETriggerEvent::Triggered, this, &ThisClass::AimIn);
 	PEI->BindAction(InputActions->InputFire, ETriggerEvent::Triggered, this, &ThisClass::Fire);
 	PEI->BindAction(InputActions->InputReload, ETriggerEvent::Triggered, this, &ThisClass::Reload);
+	PEI->BindAction(InputActions->InputThrowGrenade, ETriggerEvent::Triggered, this, &ThisClass::ThrowGrenadePressed);
 }
 
 void AArinaCharacter::MoveForward(const FInputActionValue& Value)
@@ -338,6 +339,16 @@ void AArinaCharacter::Reload()
 	}
 }
 
+void AArinaCharacter::ThrowGrenadePressed()
+{
+	if (bDisableGameplay) { return; }
+
+	if (CombatComp)
+	{
+		CombatComp->ThrowGrenade();
+	}
+}
+
 void AArinaCharacter::PlayFireMontage(bool bAiming)
 {
 	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
@@ -377,6 +388,15 @@ void AArinaCharacter::PlayEliminatedMontage()
 	if (AnimInstance && EliminatedMontage)
 	{
 		AnimInstance->Montage_Play(EliminatedMontage);
+	}
+}
+
+void AArinaCharacter::PlayThrowGrenadeMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ThrowGrenadeMontage)
+	{
+		AnimInstance->Montage_Play(ThrowGrenadeMontage);
 	}
 }
 

@@ -60,31 +60,55 @@ void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 }
 
-void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
+void UArinaCombatComponent::DropEquippedWeapon()
 {
-	if (ArinaCharacter == nullptr || WeaponToEquip == nullptr)
-	{
-		return;
-	}
-
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->Dropped();
 	}
+}
+
+void UArinaCombatComponent::AttachActorToRightHand(AActor* ActorToAttach)
+{
+	if (ArinaCharacter == nullptr || ArinaCharacter->GetMesh() == nullptr || ActorToAttach == nullptr) { return; }
+
+	const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
+	if (HandSocket)
+	{
+		HandSocket->AttachActor(ActorToAttach, ArinaCharacter->GetMesh());
+	}
+}
+
+void UArinaCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
+{
+	if (ArinaCharacter == nullptr || ArinaCharacter->GetMesh() == nullptr || ActorToAttach == nullptr || EquippedWeapon == nullptr) { return; }
+	bool bOtherSocket =
+		EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Pistol ||
+		EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SubmachineGun;
+
+	FName SocketName = bOtherSocket ? FName("PistolLHandSocket") : FName("LeftHandSocket");
+	const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(SocketName);
+	if (HandSocket)
+	{
+		HandSocket->AttachActor(ActorToAttach, ArinaCharacter->GetMesh());
+	}
+}
+
+void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
+{
+	if (ArinaCharacter == nullptr || WeaponToEquip == nullptr) { return; }
+	if (CombatState != ECombatState::ECS_Unoccupied) { return; }
+
+	DropEquippedWeapon();
 
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-
 	if (EquippedWeapon->EquipSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, ArinaCharacter->GetActorLocation());
 	}
 	
-	const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
-	if (HandSocket)
-	{
-		HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
-	}
+	AttachActorToRightHand(EquippedWeapon);
 	EquippedWeapon->SetOwner(ArinaCharacter);
 	EquippedWeapon->SetHUDAmmo();
 	UpdateHUDWeaponType();
@@ -94,6 +118,7 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
 	}
 	SetHUDCarriedAmmo();
+	
 	ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 	ArinaCharacter->bUseControllerRotationYaw = true;
 }
@@ -110,11 +135,7 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 			UGameplayStatics::PlaySoundAtLocation(this, EquippedWeapon->EquipSound, ArinaCharacter->GetActorLocation());
 		}
 		
-		const USkeletalMeshSocket* HandSocket = ArinaCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket"));
-		if (HandSocket)
-		{
-			HandSocket->AttachActor(EquippedWeapon, ArinaCharacter->GetMesh());
-		}
+		AttachActorToRightHand(EquippedWeapon);
 		UpdateHUDWeaponType();
 
 		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -279,9 +300,9 @@ void UArinaCombatComponent::ShotgunShellReload()
 void UArinaCombatComponent::ReloadWeapon()
 {
 	if (EquippedWeapon == nullptr || EquippedWeapon->MagIsFull()) { return; }
-	
-	if (CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading)
+	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied)
 	{
+		// block of code to deal with reloading while aiming down a scope
 		if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
 		{
 			if (bAimButtonPressed)
@@ -290,6 +311,7 @@ void UArinaCombatComponent::ReloadWeapon()
 			}
 			bScopeDisabled = true;
 		}
+		
 		ServerReload();
 	}
 }
@@ -322,6 +344,39 @@ int32 UArinaCombatComponent::AmountToReload()
 	}
 	
 	return 0;
+}
+
+void UArinaCombatComponent::ThrowGrenade()
+{
+	if (EquippedWeapon == nullptr || CombatState != ECombatState::ECS_Unoccupied) { return; }
+
+	CombatState = ECombatState::ECS_ThrowingGrenade;
+	if (ArinaCharacter)
+	{
+		ArinaCharacter->PlayThrowGrenadeMontage();
+		AttachActorToLeftHand(EquippedWeapon);
+	}
+	// don't call server rpc when player is host
+	if (ArinaCharacter && !ArinaCharacter->HasAuthority())
+	{
+		ServerThrowGrenade();
+	}
+}
+
+void UArinaCombatComponent::ServerThrowGrenade_Implementation()
+{
+	CombatState = ECombatState::ECS_ThrowingGrenade;
+	if (ArinaCharacter)
+	{
+		ArinaCharacter->PlayThrowGrenadeMontage();
+		AttachActorToLeftHand(EquippedWeapon);
+	}
+}
+
+void UArinaCombatComponent::ThrowGrenadeFinished()
+{
+	CombatState = ECombatState::ECS_Unoccupied;
+	AttachActorToRightHand(EquippedWeapon);
 }
 
 void UArinaCombatComponent::UpdateHUDWeaponType()
@@ -421,6 +476,12 @@ void UArinaCombatComponent::OnRep_CombatState()
 		}
 		UpdateWalkSpeed();
 		break;
+	case ECombatState::ECS_ThrowingGrenade:
+		if (ArinaCharacter && !ArinaCharacter->IsLocallyControlled())
+		{
+			ArinaCharacter->PlayThrowGrenadeMontage();
+			AttachActorToLeftHand(EquippedWeapon);
+		}
 	default:
 		break;
 	}
@@ -544,53 +605,52 @@ void UArinaCombatComponent::SetHUDCrosshairs(float DeltaTime)
 	if (ArinaController)
 	{
 		ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(ArinaController->GetHUD()) : ArinaHUD;
-		if (ArinaHUD)
+		if (ArinaHUD == nullptr) { return; }
+		
+		if (EquippedWeapon && ((EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle && !bAiming && CanAim()) || EquippedWeapon->GetWeaponType() != EWeaponType::EWT_SniperRifle))
 		{
-			if (EquippedWeapon && ((EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle && !bAiming && CanAim()) || EquippedWeapon->GetWeaponType() != EWeaponType::EWT_SniperRifle))
-			{
-				HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
-				HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
-				HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
-				HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
-				HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
-			}
-			else
-			{
-				HUDPackage.CrosshairCenter = nullptr;
-				HUDPackage.CrosshairRight = nullptr;
-				HUDPackage.CrosshairLeft = nullptr;
-				HUDPackage.CrosshairTop = nullptr;
-				HUDPackage.CrosshairBottom = nullptr;
-			}
-
-			// calculate crosshair spread
-			FVector2D WalkSpeedRange;
-			FVector2D VelocityMultiplierRange;
-
-			if (ArinaCharacter->bIsCrouched)
-			{
-				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeedCrouched);
-				VelocityMultiplierRange =  FVector2D(0.f, 0.5f);
-			}
-			else
-			{
-				WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed);
-				VelocityMultiplierRange =  FVector2D(0.f, 0.8f);
-			}
-			
-			FVector Velocity = ArinaCharacter->GetVelocity();
-			Velocity.Z = 0.f;
-			
-			CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(
-				WalkSpeedRange,
-				VelocityMultiplierRange,
-				Velocity.Size()
-			);
-
-			CalculateCrosshairFactors(DeltaTime);
-			
-			ArinaHUD->SetHUDPackage(HUDPackage);
+			HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
+			HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
+			HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
+			HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
+			HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
 		}
+		else
+		{
+			HUDPackage.CrosshairCenter = nullptr;
+			HUDPackage.CrosshairRight = nullptr;
+			HUDPackage.CrosshairLeft = nullptr;
+			HUDPackage.CrosshairTop = nullptr;
+			HUDPackage.CrosshairBottom = nullptr;
+		}
+
+		// calculate crosshair spread
+		FVector2D WalkSpeedRange;
+		FVector2D VelocityMultiplierRange;
+
+		if (ArinaCharacter->bIsCrouched)
+		{
+			WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeedCrouched);
+			VelocityMultiplierRange =  FVector2D(0.f, 0.5f);
+		}
+		else
+		{
+			WalkSpeedRange = FVector2D(0.f, ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed);
+			VelocityMultiplierRange =  FVector2D(0.f, 0.8f);
+		}
+		
+		FVector Velocity = ArinaCharacter->GetVelocity();
+		Velocity.Z = 0.f;
+		
+		CrosshairVelocityFactor = FMath::GetMappedRangeValueClamped(
+			WalkSpeedRange,
+			VelocityMultiplierRange,
+			Velocity.Size()
+		);
+
+		CalculateCrosshairFactors(DeltaTime);
+		
+		ArinaHUD->SetHUDPackage(HUDPackage);
 	}
 }
 

@@ -87,7 +87,7 @@ void UArinaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		}
 	}
 
-	bUseFABRIK = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading;
-	bUseAimOffsets = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading && !ArinaCharacter->GetDisableGameplay();
-	bTransformRightHand = ArinaCharacter->GetCombatState() != ECombatState::ECS_Reloading && !ArinaCharacter->GetDisableGameplay() ;
+	bUseFABRIK = ArinaCharacter->GetCombatState() == ECombatState::ECS_Unoccupied;
+	bUseAimOffsets = ArinaCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !ArinaCharacter->GetDisableGameplay();
+	bTransformRightHand = ArinaCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !ArinaCharacter->GetDisableGameplay() ;
 }

@@ -26,6 +26,10 @@ AArinaBaseWeapon::AArinaBaseWeapon()
 	WeaponMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+	WeaponMesh->MarkRenderStateDirty();
+	EnableCustomDepth(true);
+
 	PickupArea = CreateDefaultSubobject<USphereComponent>(TEXT("PickupArea"));
 	PickupArea->SetupAttachment(RootComponent);
 
@@ -34,6 +38,14 @@ AArinaBaseWeapon::AArinaBaseWeapon()
 
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
+}
+
+void AArinaBaseWeapon::EnableCustomDepth(bool bEnable)
+{
+	if (WeaponMesh)
+	{
+		WeaponMesh->SetRenderCustomDepth(bEnable);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -123,6 +135,7 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		{
 			WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 		}
+		EnableCustomDepth(false);
 		break;
 	case EWeaponState::EWS_Dropped:
 		if (HasAuthority())
@@ -136,7 +149,11 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		WeaponMesh->SetCollisionResponseToAllChannels(ECR_Block);
 		WeaponMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		WeaponMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
+		
+		WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+		WeaponMesh->MarkRenderStateDirty();
+		EnableCustomDepth(true);
+		
 		if (DropSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
@@ -154,15 +171,16 @@ void AArinaBaseWeapon::OnRep_WeaponState()
 	{
 	case EWeaponState::EWS_Equipped:
 		// Do not need to call the function since server disables weapons pickup collision when character overlap ends
-			// hiding the widget
-				/*ShowPickupWidget(false);*/
-					WeaponMesh->SetSimulatePhysics(false);
+		// hiding the widget
+		/*ShowPickupWidget(false);*/
+		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetEnableGravity(WeaponType == EWeaponType::EWT_SubmachineGun);
 		WeaponMesh->SetCollisionEnabled(WeaponType == EWeaponType::EWT_SubmachineGun ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
 		if (WeaponType == EWeaponType::EWT_SubmachineGun)
 		{
 			WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 		}
+		EnableCustomDepth(false);
 		break;
 	case EWeaponState::EWS_Dropped:
 		WeaponMesh->SetSimulatePhysics(true);
@@ -172,6 +190,10 @@ void AArinaBaseWeapon::OnRep_WeaponState()
 		WeaponMesh->SetCollisionResponseToAllChannels(ECR_Block);
 		WeaponMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		WeaponMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+		WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+		WeaponMesh->MarkRenderStateDirty();
+		EnableCustomDepth(true);
 		
 		if (DropSound)
 		{
