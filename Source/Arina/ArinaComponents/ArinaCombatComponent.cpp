@@ -7,7 +7,9 @@
 #include "Arina/HUD/ArinaHUD.h"
 #include "Arina/PlayerController/ArinaPlayerController.h"
 #include "Arina/Weapon/ArinaBaseWeapon.h"
+#include "Arina/Weapon/ArinaProjectile.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -236,32 +238,6 @@ bool UArinaCombatComponent::CanFire()
 	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
-void UArinaCombatComponent::Fire()
-{
-	if (EquippedWeapon == nullptr) { return; }
-	
-	if (EquippedWeapon->IsEmpty())
-	{
-		ReloadWeapon();
-		return;
-	}
-	if (CanFire())
-	{
-		bCanFire = false;
-		ServerFire(HitTarget);
-		StartFireTimer();
-	}
-}
-
-void UArinaCombatComponent::FireButtonPressed(bool bPressed)
-{
-	bFireButtonPressed = bPressed;
-	if (bFireButtonPressed)
-	{
-		Fire();
-	}
-}
-
 void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	if (EquippedWeapon == nullptr)
@@ -287,6 +263,32 @@ void UArinaCombatComponent::MulticastFire_Implementation(const FVector_NetQuanti
 void UArinaCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
 	MulticastFire(TraceHitTarget);
+}
+
+void UArinaCombatComponent::Fire()
+{
+	if (EquippedWeapon == nullptr) { return; }
+	
+	if (EquippedWeapon->IsEmpty())
+	{
+		ReloadWeapon();
+		return;
+	}
+	if (CanFire())
+	{
+		bCanFire = false;
+		ServerFire(HitTarget);
+		StartFireTimer();
+	}
+}
+
+void UArinaCombatComponent::FireButtonPressed(bool bPressed)
+{
+	bFireButtonPressed = bPressed;
+	if (bFireButtonPressed)
+	{
+		Fire();
+	}
 }
 
 void UArinaCombatComponent::ShotgunShellReload()
@@ -355,6 +357,7 @@ void UArinaCombatComponent::ThrowGrenade()
 	{
 		ArinaCharacter->PlayThrowGrenadeMontage();
 		AttachActorToLeftHand(EquippedWeapon);
+		ShowGrenadeMesh(true);
 	}
 	// don't call server rpc when player is host
 	if (ArinaCharacter && !ArinaCharacter->HasAuthority())
@@ -370,6 +373,7 @@ void UArinaCombatComponent::ServerThrowGrenade_Implementation()
 	{
 		ArinaCharacter->PlayThrowGrenadeMontage();
 		AttachActorToLeftHand(EquippedWeapon);
+		ShowGrenadeMesh(true);
 	}
 }
 
@@ -378,6 +382,47 @@ void UArinaCombatComponent::ThrowGrenadeFinished()
 	CombatState = ECombatState::ECS_Unoccupied;
 	AttachActorToRightHand(EquippedWeapon);
 }
+
+void UArinaCombatComponent::TossGrenade()
+{
+	ShowGrenadeMesh(false);
+
+	if (ArinaCharacter && ArinaCharacter->HasAuthority() && GrenadeClass && ArinaCharacter->GetGrenadeMesh())
+	{
+		const FVector StartLocation = ArinaCharacter->GetGrenadeMesh()->GetComponentLocation();
+		FVector ToTarget = HitTarget - StartLocation;
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = ArinaCharacter;
+		SpawnParams.Instigator = ArinaCharacter;
+
+		UWorld* World = GetWorld();
+		if (World == nullptr) { return; }
+		AArinaProjectile* Grenade = World->SpawnActor<AArinaProjectile>(
+			GrenadeClass,
+			StartLocation,
+			ToTarget.Rotation(),
+			SpawnParams
+		);
+
+		// setup params to avoid grenade on hitting character when thrown
+		if (Grenade)
+		{
+			FCollisionQueryParams QueryParams;
+			QueryParams.AddIgnoredActor(SpawnParams.Owner);
+			Grenade->GetCollisionBox()->IgnoreActorWhenMoving(SpawnParams.Owner, true);
+		}
+	}
+}
+
+void UArinaCombatComponent::ShowGrenadeMesh(bool bShow)
+{
+	if (ArinaCharacter && ArinaCharacter->GetGrenadeMesh())
+	{
+		ArinaCharacter->GetGrenadeMesh()->SetVisibility(bShow);
+	}
+}
+
 
 void UArinaCombatComponent::UpdateHUDWeaponType()
 {
@@ -481,6 +526,7 @@ void UArinaCombatComponent::OnRep_CombatState()
 		{
 			ArinaCharacter->PlayThrowGrenadeMontage();
 			AttachActorToLeftHand(EquippedWeapon);
+			ShowGrenadeMesh(true);
 		}
 	default:
 		break;
@@ -530,7 +576,7 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			TraceHitResult.ImpactPoint = End;
 		}
 
-		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UArinaCrosshairInteractionInterface>())
+		if (TraceHitResult.GetActor() && TraceHitResult.GetActor() != ArinaCharacter && TraceHitResult.GetActor()->Implements<UArinaCrosshairInteractionInterface>())
 		{
 			HUDPackage.CrosshairColor = FLinearColor::Red;
 			bEnemyInSight = true;

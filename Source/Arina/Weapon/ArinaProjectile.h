@@ -92,6 +92,6 @@ private:
 	float ExplosionOuterRadius = 300.f;
 
 public:	
-	
+	FORCEINLINE UBoxComponent* GetCollisionBox() const { return CollisionBox; }
 
 };

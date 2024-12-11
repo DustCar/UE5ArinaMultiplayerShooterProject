@@ -58,6 +58,10 @@ AArinaCharacter::AArinaCharacter()
 	MinNetUpdateFrequency = 60.f;
 
 	DissolveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DissolveTimelineComponent"));
+
+	GrenadeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrenadeMesh"));
+	GrenadeMesh->SetupAttachment(GetMesh(), FName("GrenadeSocket"));
+	GrenadeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -89,6 +93,11 @@ void AArinaCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		OnTakeAnyDamage.AddDynamic(this, &ThisClass::AArinaCharacter::ReceiveDamage);
+	}
+
+	if (GrenadeMesh)
+	{
+		GrenadeMesh->SetVisibility(false);
 	}
 }
 

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "ThrowGrenadeFinished.generated.h"
+#include "ArinaAnimNotify_TossGrenade.generated.h"
 
 /**
-*	Anim notify to call after grenade throw animation is finished 
-*/
-UCLASS()
-class ARINA_API UThrowGrenadeFinished : public UAnimNotify
+ * 
+ */
+UCLASS(meta = (DisplayName = "TossGrenade"))
+class ARINA_API UArinaAnimNotify_TossGrenade : public UAnimNotify
 {
 	GENERATED_BODY()
 

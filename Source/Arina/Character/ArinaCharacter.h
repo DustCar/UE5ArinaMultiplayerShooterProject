@@ -191,6 +191,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* ElimBotSound;
+
+	/**
+	*	Grenade variables
+	*/
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* GrenadeMesh;
 	
 public:	
 	void SetOverlappingWeapon(AArinaBaseWeapon* Weapon);
@@ -208,4 +214,5 @@ public:
 	FORCEINLINE UArinaCombatComponent* GetCombatComponent() const { return CombatComp; }
 	FORCEINLINE bool GetDisableGameplay() const { return bDisableGameplay; }
 	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }
+	FORCEINLINE UStaticMeshComponent* GetGrenadeMesh() const { return GrenadeMesh; }
 };

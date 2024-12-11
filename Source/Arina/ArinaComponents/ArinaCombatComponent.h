@@ -9,6 +9,7 @@
 #include "Arina/Weapon/WeaponTypes.h"
 #include "ArinaCombatComponent.generated.h"
 
+class AArinaProjectile;
 class AArinaHUD;
 class AArinaPlayerController;
 class AArinaBaseWeapon;
@@ -36,6 +37,7 @@ public:
 	void JumpToShotgunEnd();
 
 	void ThrowGrenadeFinished();
+	void TossGrenade();
 
 protected:
 	virtual void BeginPlay() override;
@@ -67,6 +69,9 @@ protected:
 	void ThrowGrenade();
 	UFUNCTION(Server, Reliable)
 	void ServerThrowGrenade();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AArinaProjectile> GrenadeClass;
 
 	void DropEquippedWeapon();
 	void AttachActorToRightHand(AActor* ActorToAttach);
@@ -178,6 +183,8 @@ private:
 	void UpdateShotgunAmmoValues();
 	
 	void UpdateHUDWeaponType();
+
+	void ShowGrenadeMesh(bool bShow);
 
 public:	
 
