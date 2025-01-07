@@ -19,7 +19,7 @@ In this course, I learned new topics that broadened my skill set with Unreal Eng
 - Using anim notifies on animations to run C++ code
 - Implemented multiple weapons/weapons types (hit scan, projectile, scatter, explosives) and equipment
 
-*_The topics listed are what I have currently covered as of Sep. 5, 2024_
+*_The topics listed are what I have currently covered as of Jan. 7, 2025_
 
 # Personal Additions
 In addition to the topics I learned through the course, I added my own additions to try my hand at applying what I have learned.
