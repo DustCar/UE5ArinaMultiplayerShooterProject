@@ -2,7 +2,7 @@
 
 **Many of what I have listed are things that I have already covered**
 
-**Last Update: 10/08/2024**
+**Last Update: 01/07/2025**
 
 # Project Purpose
 Personal project that I created alongside a UDemy course called "Unreal Engine 5 C++ Multiplayer Shooter" made by Stephen Ulibarri.
@@ -15,7 +15,9 @@ In this course, I learned new topics that broadened my skill set with Unreal Eng
 - Setting up Networking/Multiplayer through Steam, including hosting and joining game sessions (works only regionally on Steam)
 - Replicating data for multiplayer using RPCs and OnRep functions
 - Using game state and player state for player information
-- many more...
+- Adding simple animations and blending them using Animation Blueprints
+- Using anim notifies on animations to run C++ code
+- Implemented multiple weapons/weapons types (hit scan, projectile, scatter, explosives) and equipment
 
 *_The topics listed are what I have currently covered as of Sep. 5, 2024_
 
@@ -37,8 +39,6 @@ A Game Module plugin that can be used in any project that is meant to be used wi
 I created a new UGameInstanceSubsystem C++ class, called MultiplayerSessionsSubsystem, which holds the functionality for the custom Online Subsystem class. This class references the World's Online Subsystem its Session Interface to call Session Interface methods for online session functionality.
 
 I created 5 local functions that are used as setup functions for the actual Session Interface functions that are included in the IOnlineSessionPtr interface class (same names but different parameters). In addition to the functions, they each had a delegate and a delegate handle variable that would get added to the session interface's delegate list, which would get triggered after its respective function runs and runs the callback functions bound to them.
-
-All delegates were created during initialization using `CreateUObject()` from their respective structs.
 
 **FUNCTIONS**
 ---
