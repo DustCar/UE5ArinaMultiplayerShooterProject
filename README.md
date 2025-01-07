@@ -165,4 +165,10 @@ https://github.com/user-attachments/assets/a1305060-0539-45cb-94f1-51a09cb2688f
 
 
 
+# Attributions
+<a href="https://www.zapsplat.com/music/cyberpunk-electronic-equipment-beep-power-1/" title="death effect sfx">Death effect sound created by ZapSplat</a>
+
+<a href="https://www.flaticon.com/free-icons/grenade" title="grenade icons">Grenade icons created by manshagraphics - Flaticon</a>
+
+
 
