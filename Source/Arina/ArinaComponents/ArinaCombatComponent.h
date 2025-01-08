@@ -39,6 +39,9 @@ public:
 	void ThrowGrenadeFinished();
 	void TossGrenade();
 
+	UFUNCTION(Server, Reliable)
+	void ServerTossGrenade(const FVector_NetQuantize& Target);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -185,6 +188,9 @@ private:
 	void UpdateHUDWeaponType();
 
 	void ShowGrenadeMesh(bool bShow);
+
+	UPROPERTY(EditAnywhere)
+	float GrenadeThrowAdjustment = 20.f;
 
 public:	
 

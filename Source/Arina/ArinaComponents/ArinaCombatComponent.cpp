@@ -386,32 +386,37 @@ void UArinaCombatComponent::ThrowGrenadeFinished()
 void UArinaCombatComponent::TossGrenade()
 {
 	ShowGrenadeMesh(false);
+	if (ArinaCharacter && ArinaCharacter->IsLocallyControlled())
+	{
+		ServerTossGrenade(HitTarget);
+	}
+}
 
-	if (ArinaCharacter && ArinaCharacter->HasAuthority() && GrenadeClass && ArinaCharacter->GetGrenadeMesh())
+void UArinaCombatComponent::ServerTossGrenade_Implementation(const FVector_NetQuantize& Target)
+{
+	if (ArinaCharacter && GrenadeClass && ArinaCharacter->GetGrenadeMesh())
 	{
 		const FVector StartLocation = ArinaCharacter->GetGrenadeMesh()->GetComponentLocation();
-		FVector ToTarget = HitTarget - StartLocation;
+		FVector ToTarget = Target - StartLocation;
 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = ArinaCharacter;
 		SpawnParams.Instigator = ArinaCharacter;
 
+		FVector UpdatedStartLocation = StartLocation;
+		if (ArinaCharacter->GetVelocity() != FVector::ZeroVector)
+		{
+			UpdatedStartLocation = StartLocation + (ToTarget.GetSafeNormal() * GrenadeThrowAdjustment);
+		}
+
 		UWorld* World = GetWorld();
 		if (World == nullptr) { return; }
-		AArinaProjectile* Grenade = World->SpawnActor<AArinaProjectile>(
+		World->SpawnActor<AArinaProjectile>(
 			GrenadeClass,
-			StartLocation,
+			UpdatedStartLocation,
 			ToTarget.Rotation(),
 			SpawnParams
 		);
-
-		// setup params to avoid grenade on hitting character when thrown
-		if (Grenade)
-		{
-			FCollisionQueryParams QueryParams;
-			QueryParams.AddIgnoredActor(SpawnParams.Owner);
-			Grenade->GetCollisionBox()->IgnoreActorWhenMoving(SpawnParams.Owner, true);
-		}
 	}
 }
 
@@ -564,14 +569,12 @@ void UArinaCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 		
 		FVector End = Start + CrosshairWorldDir * TRACE_LENGTH;
 
-		GetWorld()->LineTraceSingleByChannel(
-			TraceHitResult,
-			Start,
-			End,
-			ECC_Visibility
-		);
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(ArinaCharacter);
 
-		if (TraceHitResult.bBlockingHit == false)
+		GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECC_Visibility, QueryParams);
+
+		if (!TraceHitResult.bBlockingHit)
 		{
 			TraceHitResult.ImpactPoint = End;
 		}

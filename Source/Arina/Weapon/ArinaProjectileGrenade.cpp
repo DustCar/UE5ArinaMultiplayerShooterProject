@@ -3,6 +3,7 @@
 
 #include "ArinaProjectileGrenade.h"
 
+#include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -19,6 +20,8 @@ AArinaProjectileGrenade::AArinaProjectileGrenade()
 	ProjectileMovementComponent->InitialSpeed = 1000.f;
 	ProjectileMovementComponent->MaxSpeed = 1000.f;
 	ProjectileMovementComponent->bShouldBounce = true;
+
+	CollisionBox->IgnoreActorWhenMoving(Owner, true);
 }
 
 void AArinaProjectileGrenade::Destroyed()
@@ -53,7 +56,6 @@ void AArinaProjectileGrenade::OnBounce(const FHitResult& ImpactResult, const FVe
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, BounceSound, GetActorLocation());
 	}
-	
 
 	if (SurfaceHitFX)
 	{
