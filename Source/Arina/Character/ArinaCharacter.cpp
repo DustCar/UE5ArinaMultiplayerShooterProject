@@ -126,6 +126,7 @@ void AArinaCharacter::PossessedBy(AController* NewController)
 	if (PlayerController)
 	{
 		UpdateHUDHealth();
+		
 	}
 }
 
@@ -517,6 +518,8 @@ void AArinaCharacter::PlayHitReactMontage()
 void AArinaCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatorBy, AActor* DamageCauser)
 {
+	if (bEliminated) return;
+	
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
 	UpdateHUDHealth();
 

@@ -48,4 +48,7 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MatchTimerText;
+	
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* GrenadeCount;
 };

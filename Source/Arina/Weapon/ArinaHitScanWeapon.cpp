@@ -104,16 +104,6 @@ FVector AArinaHitScanWeapon::TraceEndWithScatter(const FVector& TraceStart, cons
 	FVector EndPoint = SphereCenter + RandomVector;
 	FVector ToEndPoint = EndPoint - TraceStart;
 
-	/*DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
-	DrawDebugSphere(GetWorld(), EndPoint, 4.f, 12, FColor::Yellow, true);
-	DrawDebugLine(
-		GetWorld(),
-		TraceStart,
-		FVector(TraceStart + ToEndPoint * TRACE_LENGTH / ToEndPoint.Size()),
-		FColor::Cyan,
-		true
-	);*/
-
 	return FVector(TraceStart + ToEndPoint * TRACE_LENGTH / ToEndPoint.Size());
 }
 

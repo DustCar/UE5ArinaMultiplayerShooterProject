@@ -42,6 +42,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerTossGrenade(const FVector_NetQuantize& Target);
 
+	void PickupAmmo(EWeaponType WeaponType, int32 AmmoToPickup);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -79,7 +81,7 @@ protected:
 	void DropEquippedWeapon();
 	void AttachActorToRightHand(AActor* ActorToAttach);
 	void AttachActorToLeftHand(AActor* ActorToAttach);
-	
+
 private:
 	UPROPERTY()
 	AArinaCharacter* ArinaCharacter;
@@ -166,7 +168,9 @@ private:
 	// Carried ammo for the currently equipped weapon
 	UPROPERTY(ReplicatedUsing=OnRep_CarriedAmmo)
 	int32 CarriedAmmo;
-
+	
+	void UpdateCarriedAmmo();
+	
 	UFUNCTION()
 	void OnRep_CarriedAmmo();
 
@@ -189,11 +193,24 @@ private:
 
 	void ShowGrenadeMesh(bool bShow);
 
-	UPROPERTY(EditAnywhere)
+	/**
+	*	Grenades
+	*/
+	UPROPERTY(EditAnywhere, Category = "Grenades")
 	float GrenadeThrowAdjustment = 20.f;
 
-public:	
+	UPROPERTY(EditAnywhere, Category = "Grenades", ReplicatedUsing = OnRep_GrenadesHeld)
+	int32 GrenadesHeld = 0;
 
+	UFUNCTION()
+	void OnRep_GrenadesHeld();
+
+	UPROPERTY(EditAnywhere, Category = "Grenades")
+	int32 MaxGrenadesHeld = 5;
+
+	void UpdateHUDGrenadesHeld();
+public:	
+	FORCEINLINE int32 GetGrenadesHeld() const { return GrenadesHeld; }
 	
 };
 

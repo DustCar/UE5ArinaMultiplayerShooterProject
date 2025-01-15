@@ -12,32 +12,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ba56a44-096f-4873-80e0-5959f0f58a8f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Pickups/ArinaAmmoPickup.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Pickups/ArinaAmmoPickup.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Pickups/ArinaPickup.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Arina/Pickups/ArinaPickup.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Arina/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Bottom.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Center.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Left.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Right.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/Crosshair_Top.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Primary/DefaultCrosshair.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/Shotgun_Crosshair_center.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/Shotgun_Crosshair_center_outline.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/Shotgun_Crosshair_left.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/Shotgun_Crosshair_right.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/shotgun_small_center.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/shotgun_small_left.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Crosshairs/Shotgun/shotgun_small_right.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_ArinaCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaCharacterOverlay.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/HUD/WBP_ArinaCharacterOverlay.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaAssaultRifle.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaGrenadeLauncher.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaGrenadeLauncher.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaPistol.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaPistol.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaRocketLauncher.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaRocketLauncher.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaSMG.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaSMG.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaShotgun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaShotgun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaSniperRifle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/BP_ArinaSniperRifle.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapons/Projectiles/BP_ArinaRocket.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapons/Projectiles/BP_ArinaRocket.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/ArinaMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/ArinaComponents/ArinaCombatComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileGrenade.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaProjectileGrenade.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Character/ArinaCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/HUD/ArinaCharacterOverlay.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/PlayerController/ArinaPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaHitScanWeapon.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaRocketMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Arina/Weapon/ArinaRocketMovementComponent.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +79,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Pawn.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerState.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/ProjectileMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/Materials/MaterialInterface.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Actor.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -95,6 +87,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Animation/AnimNotify.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Animation/AnimNotify_PlaySound.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Components/ProjectileMovementComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Components/SceneComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/GameMode.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/GameModeBase.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -725,7 +718,10 @@
       <workItem from="1733870541456" duration="8080000" />
       <workItem from="1734051662252" duration="602000" />
       <workItem from="1736279612307" duration="205000" />
-      <workItem from="1736280116310" duration="8607000" />
+      <workItem from="1736280116310" duration="9212000" />
+      <workItem from="1736446175360" duration="2961000" />
+      <workItem from="1736813082701" duration="6792000" />
+      <workItem from="1736889740474" duration="10095000" />
     </task>
     <servers />
   </component>

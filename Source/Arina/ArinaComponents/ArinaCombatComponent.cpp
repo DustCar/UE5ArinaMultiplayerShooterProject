@@ -29,6 +29,7 @@ void UArinaCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 	DOREPLIFETIME(ThisClass, bAiming);
 	DOREPLIFETIME_CONDITION(ThisClass, CarriedAmmo, COND_OwnerOnly);
 	DOREPLIFETIME(ThisClass, CombatState);
+	DOREPLIFETIME(ThisClass, GrenadesHeld);
 }
 
 void UArinaCombatComponent::BeginPlay()
@@ -96,6 +97,17 @@ void UArinaCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
 	}
 }
 
+void UArinaCombatComponent::UpdateCarriedAmmo()
+{
+	if (EquippedWeapon == nullptr) return;
+	
+	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
+	{
+		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
+	}
+	SetHUDCarriedAmmo();
+}
+
 void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 {
 	if (ArinaCharacter == nullptr || WeaponToEquip == nullptr) { return; }
@@ -115,11 +127,7 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 	EquippedWeapon->SetHUDAmmo();
 	UpdateHUDWeaponType();
 	
-	if (CarriedAmmoMap.Contains(EquippedWeapon->GetWeaponType()))
-	{
-		CarriedAmmo = CarriedAmmoMap[EquippedWeapon->GetWeaponType()];
-	}
-	SetHUDCarriedAmmo();
+	UpdateCarriedAmmo();
 	
 	ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 	ArinaCharacter->bUseControllerRotationYaw = true;
@@ -348,9 +356,18 @@ int32 UArinaCombatComponent::AmountToReload()
 	return 0;
 }
 
+void UArinaCombatComponent::ShowGrenadeMesh(bool bShow)
+{
+	if (ArinaCharacter && ArinaCharacter->GetGrenadeMesh())
+	{
+		ArinaCharacter->GetGrenadeMesh()->SetVisibility(bShow);
+	}
+}
+
 void UArinaCombatComponent::ThrowGrenade()
 {
-	if (EquippedWeapon == nullptr || CombatState != ECombatState::ECS_Unoccupied) { return; }
+	if (GrenadesHeld == 0) return;
+	if (EquippedWeapon == nullptr || CombatState != ECombatState::ECS_Unoccupied) return;
 
 	CombatState = ECombatState::ECS_ThrowingGrenade;
 	if (ArinaCharacter)
@@ -359,21 +376,45 @@ void UArinaCombatComponent::ThrowGrenade()
 		AttachActorToLeftHand(EquippedWeapon);
 		ShowGrenadeMesh(true);
 	}
-	// don't call server rpc when player is host
+	// call server rpc when not host
 	if (ArinaCharacter && !ArinaCharacter->HasAuthority())
 	{
 		ServerThrowGrenade();
+	}
+	if (ArinaCharacter && ArinaCharacter->HasAuthority())
+	{
+		GrenadesHeld = FMath::Clamp(GrenadesHeld - 1, 0, MaxGrenadesHeld);
+		UpdateHUDGrenadesHeld();
 	}
 }
 
 void UArinaCombatComponent::ServerThrowGrenade_Implementation()
 {
+	if (GrenadesHeld == 0) return;
+	
 	CombatState = ECombatState::ECS_ThrowingGrenade;
 	if (ArinaCharacter)
 	{
 		ArinaCharacter->PlayThrowGrenadeMontage();
 		AttachActorToLeftHand(EquippedWeapon);
 		ShowGrenadeMesh(true);
+	}
+
+	GrenadesHeld = FMath::Clamp(GrenadesHeld - 1, 0, MaxGrenadesHeld);
+	UpdateHUDGrenadesHeld();
+}
+
+void UArinaCombatComponent::OnRep_GrenadesHeld()
+{
+	UpdateHUDGrenadesHeld();
+}
+
+void UArinaCombatComponent::UpdateHUDGrenadesHeld()
+{
+	ArinaController = ArinaController == nullptr ? Cast<AArinaPlayerController>(ArinaCharacter->GetController()) : ArinaController;
+	if (ArinaController)
+	{
+		ArinaController->SetHUDGrenades(GrenadesHeld);
 	}
 }
 
@@ -383,6 +424,7 @@ void UArinaCombatComponent::ThrowGrenadeFinished()
 	AttachActorToRightHand(EquippedWeapon);
 }
 
+// Function that is used for an AnimNotify called the same name
 void UArinaCombatComponent::TossGrenade()
 {
 	ShowGrenadeMesh(false);
@@ -419,15 +461,6 @@ void UArinaCombatComponent::ServerTossGrenade_Implementation(const FVector_NetQu
 		);
 	}
 }
-
-void UArinaCombatComponent::ShowGrenadeMesh(bool bShow)
-{
-	if (ArinaCharacter && ArinaCharacter->GetGrenadeMesh())
-	{
-		ArinaCharacter->GetGrenadeMesh()->SetVisibility(bShow);
-	}
-}
-
 
 void UArinaCombatComponent::UpdateHUDWeaponType()
 {
@@ -743,4 +776,19 @@ void UArinaCombatComponent::OnRep_CarriedAmmo()
 		JumpToShotgunEnd();
 	}
 	SetHUDCarriedAmmo();
+}
+
+void UArinaCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoToPickup)
+{
+	if (CarriedAmmoMap.Contains(WeaponType))
+	{
+		CarriedAmmoMap[WeaponType] = FMath::Clamp(CarriedAmmoMap[WeaponType] + AmmoToPickup, 0, 999);
+		
+		UpdateCarriedAmmo();
+	}
+
+	if (EquippedWeapon && EquippedWeapon->IsEmpty() && EquippedWeapon->GetWeaponType() == WeaponType)
+	{
+		ReloadWeapon();
+	}
 }

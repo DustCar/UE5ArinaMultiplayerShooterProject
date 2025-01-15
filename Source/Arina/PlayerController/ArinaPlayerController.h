@@ -27,6 +27,7 @@ public:
 	void SetHUDMatchTimer(const float CountdownTime);
 	void SetHUDAnnouncementTimer(const float CountdownTime);
 	void SetHUDSniperScope(bool bIsAiming);
+	void SetHUDGrenades(int32 Grenades);
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
@@ -92,6 +93,7 @@ private:
 
 	float HUDMaxHealth = 0.f;
 	float HUDCurrHealth = 0.f;
+	int32 HUDGrenades = 0.f;
 	
 	void DisplayWinners();
 	void DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*> Leaderboard, FString& InfoTextString);

@@ -14,7 +14,6 @@ void UArinaRocketMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 }
 
 void UArinaRocketMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,

@@ -39,6 +39,8 @@ void AArinaPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	ClientCollapseKilledByMessage();
+	
+	SetHUDGrenades(HUDGrenades);
 }
 
 void AArinaPlayerController::Tick(float DeltaSeconds)
@@ -322,6 +324,21 @@ void AArinaPlayerController::SetHUDSniperScope(bool bIsAiming)
 	}
 }
 
+void AArinaPlayerController::SetHUDGrenades(int32 Grenades)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->GrenadeCount;
+
+	if (bHUDValid)
+	{
+		FString GrenadesText = FString::Printf(TEXT("%d"), Grenades);
+		ArinaHUD->CharacterOverlay->GrenadeCount->SetText(FText::FromString(GrenadesText));
+	}
+}
+
 
 void AArinaPlayerController::SetHUDTime()
 {
@@ -458,6 +475,13 @@ void AArinaPlayerController::HandleMatchHasStarted()
 		SetHUDHealth(HUDCurrHealth, HUDMaxHealth);
 		CollapseKilledByMessage();
 		SetHUDWeaponType("Unequipped");
+
+		AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(GetPawn());
+		if (ArinaCharacter && ArinaCharacter->GetCombatComponent())
+		{
+			HUDGrenades = ArinaCharacter->GetCombatComponent()->GetGrenadesHeld();
+			SetHUDGrenades(HUDGrenades);
+		}
 	}
 }
 
