@@ -9,6 +9,9 @@
 AArinaAmmoPickup::AArinaAmmoPickup()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	PickupMesh->SetRenderCustomDepth(true);
+	PickupMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
 }
 
 void AArinaAmmoPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

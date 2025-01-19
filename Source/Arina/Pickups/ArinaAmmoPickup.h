@@ -30,7 +30,7 @@ private:
 	int32 AmmoAmount = 0;
 
 	UPROPERTY(EditAnywhere)
-	EWeaponType WeaponType;
+	EWeaponType WeaponType = EWeaponType::EWT_MAX;
 	
 public:
 };

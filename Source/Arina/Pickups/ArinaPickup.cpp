@@ -21,13 +21,13 @@ AArinaPickup::AArinaPickup()
 	OverlapSphere->SetSphereRadius(150.f);
 	OverlapSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	OverlapSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	OverlapSphere->AddLocalOffset(FVector(0.f, 0.f, 50.f));
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	PickupMesh->SetupAttachment(OverlapSphere);
 	PickupMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PickupMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-	PickupMesh->SetRenderCustomDepth(true);
-	PickupMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_PURPLE);
+	PickupMesh->SetRelativeScale3D(FVector(2.5f));
 }
 
 void AArinaPickup::BeginPlay()
@@ -57,12 +57,12 @@ void AArinaPickup::Tick(float DeltaTime)
 
 	if (PickupMesh)
 	{
-		PickupMesh->AddLocalRotation(FRotator(0.f, BaseTurnRate * DeltaTime, 0.f));
+		PickupMesh->AddWorldRotation(FRotator(0.f, BaseTurnRate * DeltaTime, 0.f));
 		if (PickupMesh->GetComponentLocation().Z > StartLocation.Z + DistanceFromStart || PickupMesh->GetComponentLocation().Z < StartLocation.Z - DistanceFromStart)
 		{
 			BaseFloatRate *= -1.f;
 		}
-		PickupMesh->AddLocalOffset(FVector(0.f, 0.f, BaseFloatRate * DeltaTime));
+		PickupMesh->AddWorldOffset(FVector(0.f, 0.f, BaseFloatRate * DeltaTime));
 	}
 }
 

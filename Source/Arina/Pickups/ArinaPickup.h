@@ -31,6 +31,9 @@ protected:
 		const FHitResult& SweepResult
 	);
 
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* PickupMesh;
+
 	UPROPERTY(EditAnywhere, Category = "FX")
 	float BaseTurnRate = 45.f;
 
@@ -46,9 +49,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "FX|Sound")
 	USoundBase* PickupSound;
-
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* PickupMesh;
 
 	FVector StartLocation;
 public:

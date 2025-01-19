@@ -783,7 +783,6 @@ void UArinaCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoToPicku
 	if (CarriedAmmoMap.Contains(WeaponType))
 	{
 		CarriedAmmoMap[WeaponType] = FMath::Clamp(CarriedAmmoMap[WeaponType] + AmmoToPickup, 0, 999);
-		
 		UpdateCarriedAmmo();
 	}
 

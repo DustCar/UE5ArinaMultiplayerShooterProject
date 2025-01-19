@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "ArinaCharacter.generated.h"
 
+class UArinaBuffComponent;
 class AArinaPlayerController;
 class UArinaCombatComponent;
 class AArinaBaseWeapon;
@@ -34,6 +35,7 @@ public:
 	void PlayReloadMontage();
 	void PlayEliminatedMontage();
 	void PlayThrowGrenadeMontage();
+	void UpdateHUDHealth();
 	void Eliminated();
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -68,7 +70,6 @@ protected:
 	void ThrowGrenadePressed();
 	
 	void PlayHitReactMontage();
-	void UpdateHUDHealth();
 
 	UFUNCTION()
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorBy, AActor* DamageCauser);
@@ -88,6 +89,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UArinaCombatComponent* CombatComp;
+
+	UPROPERTY(VisibleAnywhere)
+	UArinaBuffComponent* BuffComp;
 
 	UPROPERTY()
 	AArinaPlayerController* ArinaPlayerController;
@@ -139,12 +143,11 @@ private:
 	*/
 	UPROPERTY(EditAnywhere, Category = "PlayerStats")
 	float MaxHealth = 100.f;
-
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentHealth, VisibleAnywhere, Category = "PlayerStats")
 	float CurrentHealth = MaxHealth;
 
 	UFUNCTION()
-	void OnRep_CurrentHealth();
+	void OnRep_CurrentHealth(float LastHealth);
 
 	bool bEliminated = false;
 
@@ -215,4 +218,8 @@ public:
 	FORCEINLINE bool GetDisableGameplay() const { return bDisableGameplay; }
 	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }
 	FORCEINLINE UStaticMeshComponent* GetGrenadeMesh() const { return GrenadeMesh; }
+	FORCEINLINE UArinaBuffComponent* GetBuffComponent() const { return BuffComp; }
+	FORCEINLINE float GetHealth() const { return CurrentHealth; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	FORCEINLINE void SetHealth(const float Health) { CurrentHealth = Health; }
 };

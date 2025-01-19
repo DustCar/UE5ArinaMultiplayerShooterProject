@@ -9,6 +9,7 @@
 #include "Arina/Arina.h"
 #include "EnhancedInput/Public//EnhancedInputComponent.h"
 #include "Arina/ArinaInputConfigData.h"
+#include "Arina/ArinaComponents/ArinaBuffComponent.h"
 #include "Arina/ArinaComponents/ArinaCombatComponent.h"
 #include "Arina/GameMode/ArinaGameMode.h"
 #include "Arina/PlayerController/ArinaPlayerController.h"
@@ -43,6 +44,9 @@ AArinaCharacter::AArinaCharacter()
 
 	CombatComp = CreateDefaultSubobject<UArinaCombatComponent>(TEXT("CombatComponent"));
 	CombatComp->SetIsReplicated(true);
+
+	BuffComp = CreateDefaultSubobject<UArinaBuffComponent>(TEXT("BuffComponent"));
+	BuffComp->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 
@@ -81,6 +85,10 @@ void AArinaCharacter::PostInitializeComponents()
 	if (CombatComp)
 	{
 		CombatComp->ArinaCharacter = this;
+	}
+	if (BuffComp)
+	{
+		BuffComp->ArinaCharacter = this;
 	}
 }
 
@@ -586,10 +594,10 @@ void AArinaCharacter::UpdateHUDHealth()
 	}
 }
 
-void AArinaCharacter::OnRep_CurrentHealth()
+void AArinaCharacter::OnRep_CurrentHealth(float LastHealth)
 {
 	UpdateHUDHealth();
-	if (CurrentHealth > 0.f)
+	if (CurrentHealth > 0.f && CurrentHealth < LastHealth)
 	{
 		PlayHitReactMontage();
 	}
