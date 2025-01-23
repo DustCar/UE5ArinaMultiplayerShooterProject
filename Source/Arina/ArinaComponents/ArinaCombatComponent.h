@@ -34,7 +34,7 @@ public:
 	void FinishedReloading();
 
 	void ShotgunShellReload();
-	void JumpToShotgunEnd();
+	void JumpToShotgunEnd() const;
 
 	void ThrowGrenadeFinished();
 	void TossGrenade();
@@ -43,6 +43,8 @@ public:
 	void ServerTossGrenade(const FVector_NetQuantize& Target);
 
 	void PickupAmmo(EWeaponType WeaponType, int32 AmmoToPickup);
+
+	void SetWalkSpeeds(const float& SpeedMultiplier);
 
 protected:
 	virtual void BeginPlay() override;
@@ -68,7 +70,7 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
-	void HandleReload();
+	void HandleReload() const;
 	int32 AmountToReload();
 
 	void ThrowGrenade();
@@ -78,9 +80,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AArinaProjectile> GrenadeClass;
 
-	void DropEquippedWeapon();
-	void AttachActorToRightHand(AActor* ActorToAttach);
-	void AttachActorToLeftHand(AActor* ActorToAttach);
+	void DropEquippedWeapon() const;
+	void AttachActorToRightHand(AActor* ActorToAttach) const;
+	void AttachActorToLeftHand(AActor* ActorToAttach) const;
 
 private:
 	UPROPERTY()
@@ -96,10 +98,11 @@ private:
 	bool bAiming = false;
 	bool bAimButtonPressed = false;
 
+	float InitialBaseWalkSpeed;
+	float BaseWalkSpeed;
 	UPROPERTY(EditAnywhere)
-	float BaseWalkSpeed = 600.f;
-	UPROPERTY(EditAnywhere)
-	float AimWalkSpeed = 350.f;
+	float InitialAimWalkSpeed = 350.f;
+	float AimWalkSpeed = InitialAimWalkSpeed;
 
 	bool bFireButtonPressed = false;
 
@@ -132,7 +135,7 @@ private:
     float UnZoomInterpSpeed = 15.f;
 
 	void InterpFOV(float DeltaTime);
-	bool CanAim();
+	bool CanAim() const;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	USoundBase* ZoomInScopeCue;
@@ -160,7 +163,7 @@ private:
 	void StartFireTimer();
 	void FireTimerFinished();
 	void Fire();
-	bool CanFire();
+	bool CanFire() const;
 
 	/**
 	*	Ammo and Ammo types (future)
@@ -191,7 +194,7 @@ private:
 	
 	void UpdateHUDWeaponType();
 
-	void ShowGrenadeMesh(bool bShow);
+	void ShowGrenadeMesh(bool bShow) const;
 
 	/**
 	*	Grenades

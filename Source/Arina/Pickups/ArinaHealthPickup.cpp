@@ -3,8 +3,6 @@
 
 #include "ArinaHealthPickup.h"
 
-#include "NiagaraComponent.h"
-#include "NiagaraFunctionLibrary.h"
 #include "Arina/ArinaComponents/ArinaBuffComponent.h"
 #include "Arina/Character/ArinaCharacter.h"
 
@@ -12,9 +10,6 @@
 AArinaHealthPickup::AArinaHealthPickup()
 {
 	bReplicates = true;
-
-	PickupEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PickupEffectComponent"));
-	PickupEffectComponent->SetupAttachment(RootComponent);
 	
 }
 
@@ -32,20 +27,6 @@ void AArinaHealthPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponen
 	ArinaBuffComponent->Heal(HealAmount, HealingTime);
 
 	Destroy();
-}
-
-void AArinaHealthPickup::Destroyed()
-{
-	if (DestroyedEffect == nullptr) return;
-	
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		this,
-		DestroyedEffect,
-		GetActorLocation(),
-		GetActorRotation()
-	);
-	
-	Super::Destroyed();
 }
 
 

@@ -49,6 +49,7 @@ AArinaCharacter::AArinaCharacter()
 	BuffComp->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 
 	// Remove collision between character and camera to not bug out camera
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -89,6 +90,9 @@ void AArinaCharacter::PostInitializeComponents()
 	if (BuffComp)
 	{
 		BuffComp->ArinaCharacter = this;
+		BuffComp->SetInitialSpeeds(
+			GetCharacterMovement()->MaxWalkSpeed,
+			GetCharacterMovement()->MaxWalkSpeedCrouched);
 	}
 }
 

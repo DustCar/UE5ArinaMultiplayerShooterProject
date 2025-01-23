@@ -9,7 +9,6 @@
 #include "Arina/Weapon/ArinaBaseWeapon.h"
 #include "Arina/Weapon/ArinaProjectile.h"
 #include "Camera/CameraComponent.h"
-#include "Components/BoxComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,7 +37,7 @@ void UArinaCombatComponent::BeginPlay()
 
 	if (ArinaCharacter)
 	{
-		ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+		BaseWalkSpeed = InitialBaseWalkSpeed = ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed;
 
 		if (ArinaCharacter->GetFollowCamera())
 		{
@@ -63,7 +62,7 @@ void UArinaCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 }
 
-void UArinaCombatComponent::DropEquippedWeapon()
+void UArinaCombatComponent::DropEquippedWeapon() const
 {
 	if (EquippedWeapon)
 	{
@@ -71,7 +70,7 @@ void UArinaCombatComponent::DropEquippedWeapon()
 	}
 }
 
-void UArinaCombatComponent::AttachActorToRightHand(AActor* ActorToAttach)
+void UArinaCombatComponent::AttachActorToRightHand(AActor* ActorToAttach) const
 {
 	if (ArinaCharacter == nullptr || ArinaCharacter->GetMesh() == nullptr || ActorToAttach == nullptr) { return; }
 
@@ -82,7 +81,7 @@ void UArinaCombatComponent::AttachActorToRightHand(AActor* ActorToAttach)
 	}
 }
 
-void UArinaCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
+void UArinaCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach) const
 {
 	if (ArinaCharacter == nullptr || ArinaCharacter->GetMesh() == nullptr || ActorToAttach == nullptr || EquippedWeapon == nullptr) { return; }
 	bool bOtherSocket =
@@ -153,6 +152,12 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 	}
 }
 
+void UArinaCombatComponent::SetWalkSpeeds(const float& SpeedMultiplier)
+{
+	AimWalkSpeed = InitialAimWalkSpeed * SpeedMultiplier;
+	BaseWalkSpeed = InitialBaseWalkSpeed * SpeedMultiplier;
+}
+
 void UArinaCombatComponent::UpdateWalkSpeed()
 {
 	if (ArinaCharacter && EquippedWeapon)
@@ -200,7 +205,7 @@ void UArinaCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 	UpdateWalkSpeed();
 }
 
-bool UArinaCombatComponent::CanAim()
+bool UArinaCombatComponent::CanAim() const
 {
 	if (EquippedWeapon == nullptr)
 	{
@@ -232,7 +237,7 @@ void UArinaCombatComponent::FireTimerFinished()
 	}
 }
 
-bool UArinaCombatComponent::CanFire()
+bool UArinaCombatComponent::CanFire() const
 {
 	if (EquippedWeapon == nullptr)
 	{
@@ -337,7 +342,7 @@ void UArinaCombatComponent::ServerReload_Implementation()
 	UpdateWalkSpeed();
 }
 
-void UArinaCombatComponent::HandleReload()
+void UArinaCombatComponent::HandleReload() const
 {
 	ArinaCharacter->PlayReloadMontage();
 }
@@ -356,7 +361,7 @@ int32 UArinaCombatComponent::AmountToReload()
 	return 0;
 }
 
-void UArinaCombatComponent::ShowGrenadeMesh(bool bShow)
+void UArinaCombatComponent::ShowGrenadeMesh(bool bShow) const
 {
 	if (ArinaCharacter && ArinaCharacter->GetGrenadeMesh())
 	{
@@ -503,7 +508,7 @@ void UArinaCombatComponent::UpdateShotgunAmmoValues()
 	}
 }
 
-void UArinaCombatComponent::JumpToShotgunEnd()
+void UArinaCombatComponent::JumpToShotgunEnd() const
 {
 	UAnimInstance* AnimInstance = ArinaCharacter->GetMesh()->GetAnimInstance();
 	if (AnimInstance && ArinaCharacter->GetReloadMontage())
@@ -791,3 +796,5 @@ void UArinaCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoToPicku
 		ReloadWeapon();
 	}
 }
+
+

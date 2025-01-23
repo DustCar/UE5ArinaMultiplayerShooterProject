@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "ArinaPickup.generated.h"
 
+class UNiagaraSystem;
+class UNiagaraComponent;
 class USphereComponent;
 
 UCLASS()
@@ -51,6 +53,13 @@ private:
 	USoundBase* PickupSound;
 
 	FVector StartLocation;
+
+	UPROPERTY(VisibleAnywhere)
+	UNiagaraComponent* PickupEffectComponent;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* DestroyedEffect;
+	
 public:
 };
 

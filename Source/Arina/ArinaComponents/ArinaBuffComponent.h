@@ -18,7 +18,9 @@ public:
 	UArinaBuffComponent();
 	friend class AArinaCharacter;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void Heal(float HealAmount, float HealTime);
+	void Heal(const float& HealAmount, const float& HealTime);
+	void BuffSpeed(const float& SpeedMultiplier, const float& BuffTime);
+	void SetInitialSpeeds(const float& BaseSpeed, const float& CrouchSpeed);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -28,10 +30,27 @@ private:
 	UPROPERTY()
 	AArinaCharacter* ArinaCharacter;
 
+	/**
+	*	Health Buff 
+	*/
+	
 	bool bHealing = false;
 	float HealingRate = 0.f;
 	float AmountToHeal = 0.f;
+
+	/**
+	*	Speed Buff 
+	*/
+
+	FTimerHandle SpeedBuffTimer;
+	void ResetSpeeds();
+	float InitialBaseSpeed;
+	float InitialCrouchSpeed;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastUpdateSpeed(const float& Multiplier = 1.f);
 	
 public:
 	
 };
+

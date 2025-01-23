@@ -3,7 +3,8 @@
 
 #include "ArinaPickup.h"
 
-#include "Arina/Weapon/WeaponTypes.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -28,6 +29,9 @@ AArinaPickup::AArinaPickup()
 	PickupMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PickupMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	PickupMesh->SetRelativeScale3D(FVector(2.5f));
+
+	PickupEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PickupEffectComponent"));
+	PickupEffectComponent->SetupAttachment(RootComponent);
 }
 
 void AArinaPickup::BeginPlay()
@@ -74,4 +78,15 @@ void AArinaPickup::Destroyed()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation());
 	}
+	
+	if (DestroyedEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			DestroyedEffect,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+	
 }

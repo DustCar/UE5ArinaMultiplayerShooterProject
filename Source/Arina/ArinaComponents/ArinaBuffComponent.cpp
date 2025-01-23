@@ -4,6 +4,7 @@
 #include "ArinaBuffComponent.h"
 
 #include "Arina/Character/ArinaCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 UArinaBuffComponent::UArinaBuffComponent()
@@ -20,7 +21,17 @@ void UArinaBuffComponent::BeginPlay()
 	
 }
 
-void UArinaBuffComponent::Heal(float HealAmount, float HealTime)
+void UArinaBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+										FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	HealRampUp(DeltaTime);
+}
+
+// NOTE: Since each buff has some section, I know that these can be refactored so that this component
+// only handles applying the buffs but tbh I am having a hard time envisioning it :(
+// Heal buff section
+void UArinaBuffComponent::Heal(const float& HealAmount, const float& HealTime)
 {
 	bHealing = true;
 	HealingRate = HealAmount / HealTime;
@@ -43,12 +54,46 @@ void UArinaBuffComponent::HealRampUp(float DeltaTime)
 	}
 }
 
-
-void UArinaBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                        FActorComponentTickFunction* ThisTickFunction)
+// Speed buff section
+void UArinaBuffComponent::BuffSpeed(const float& SpeedMultiplier, const float& BuffTime)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	HealRampUp(DeltaTime);
+	if (ArinaCharacter == nullptr) return;
+
+	ArinaCharacter->GetWorldTimerManager().SetTimer(
+		SpeedBuffTimer,
+		this,
+		&ThisClass::ResetSpeeds,
+		BuffTime
+	);
+
+	if (ArinaCharacter->GetCharacterMovement())
+	{
+		MulticastUpdateSpeed(SpeedMultiplier);
+	}
+}
+
+void UArinaBuffComponent::SetInitialSpeeds(const float& BaseSpeed, const float& CrouchSpeed)
+{
+	InitialBaseSpeed = BaseSpeed;
+	InitialCrouchSpeed = CrouchSpeed;
+}
+
+void UArinaBuffComponent::ResetSpeeds()
+{
+	if (ArinaCharacter == nullptr || ArinaCharacter->GetCharacterMovement() == nullptr) return;
+
+	MulticastUpdateSpeed();
+}
+
+void UArinaBuffComponent::MulticastUpdateSpeed_Implementation(const float& Multiplier)
+{
+	ArinaCharacter->GetCharacterMovement()->MaxWalkSpeed = InitialBaseSpeed * Multiplier;
+	ArinaCharacter->GetCharacterMovement()->MaxWalkSpeedCrouched = InitialCrouchSpeed * Multiplier;
+
+	if (ArinaCharacter->GetCombatComponent())
+	{
+		ArinaCharacter->GetCombatComponent()->SetWalkSpeeds(Multiplier);
+	}
 }
 
 

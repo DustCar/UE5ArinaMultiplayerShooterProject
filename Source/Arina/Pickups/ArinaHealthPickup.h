@@ -16,7 +16,6 @@ class ARINA_API AArinaHealthPickup : public AArinaPickup
 
 public:
 	AArinaHealthPickup();
-	virtual void Destroyed() override;
 	
 protected:
 	virtual void OnSphereOverlap(
@@ -36,11 +35,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float HealingTime = 3.f;
-
-	UPROPERTY(VisibleAnywhere)
-	UNiagaraComponent* PickupEffectComponent;
-
-	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* DestroyedEffect;
 	
 };
