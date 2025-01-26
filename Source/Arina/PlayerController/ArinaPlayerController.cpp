@@ -116,6 +116,31 @@ void AArinaPlayerController::SetHUDHealth(const float& CurrentHealth, const floa
 	}
 }
 
+void AArinaPlayerController::SetHUDShield(const float& CurrentShield, const float& MaxShield)
+{
+	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
+
+	bool bHUDValid = ArinaHUD &&
+		ArinaHUD->CharacterOverlay &&
+		ArinaHUD->CharacterOverlay->ShieldBar &&
+		ArinaHUD->CharacterOverlay->ShieldText;
+	
+	if (bHUDValid)
+	{
+		const float ShieldPercent = CurrentShield / MaxShield;
+
+		ArinaHUD->CharacterOverlay->ShieldBar->SetPercent(ShieldPercent);
+
+		FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt32(CurrentShield), FMath::CeilToInt32(MaxShield));
+		ArinaHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
+	}
+	else
+	{
+		HUDMaxShield = MaxShield;
+		HUDCurrShield = CurrentShield;
+	}
+}
+
 void AArinaPlayerController::SetHUDScore(const float& Score)
 {
 	ArinaHUD = ArinaHUD == nullptr ? Cast<AArinaHUD>(GetHUD()) : ArinaHUD;
@@ -473,6 +498,7 @@ void AArinaPlayerController::HandleMatchHasStarted()
 		SetHUDScore(0.f);
 		SetHUDDeaths(0);
 		SetHUDHealth(HUDCurrHealth, HUDMaxHealth);
+		SetHUDShield(HUDCurrShield, HUDMaxShield);
 		CollapseKilledByMessage();
 		SetHUDWeaponType("Unequipped");
 
@@ -485,7 +511,7 @@ void AArinaPlayerController::HandleMatchHasStarted()
 	}
 }
 
-void AArinaPlayerController::DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*> Leaderboard, FString& InfoTextString)
+void AArinaPlayerController::DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*>& Leaderboard, FString& InfoTextString)
 {
 	if (Leaderboard.Num() > 3)
 	{

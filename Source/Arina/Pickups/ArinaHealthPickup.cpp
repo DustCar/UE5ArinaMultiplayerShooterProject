@@ -9,7 +9,6 @@
 
 AArinaHealthPickup::AArinaHealthPickup()
 {
-	bReplicates = true;
 	
 }
 
@@ -19,12 +18,20 @@ void AArinaHealthPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponen
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
 	AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(OtherActor);
+	OnOverlap(ArinaCharacter);
+}
+
+// same functionality as original OnSphereOverlap but alse used for when a player is directly on top of a pickup being spawned
+void AArinaHealthPickup::OnOverlap(AArinaCharacter* ArinaCharacter)
+{
+	Super::OnOverlap(ArinaCharacter);
+
 	if (ArinaCharacter == nullptr) return;
 	
 	UArinaBuffComponent* ArinaBuffComponent = ArinaCharacter->GetBuffComponent();
 	if (ArinaBuffComponent == nullptr || ArinaCharacter->GetHealth() == ArinaCharacter->GetMaxHealth()) return;
 
-	ArinaBuffComponent->Heal(HealAmount, HealingTime);
+	ArinaBuffComponent->Heal(HealAmount, HealingTime, ArinaCharacter->GetHealth());
 
 	Destroy();
 }

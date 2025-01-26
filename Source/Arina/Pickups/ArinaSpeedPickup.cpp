@@ -19,12 +19,24 @@ void AArinaSpeedPickup::BeginPlay()
 	
 }
 
+void AArinaSpeedPickup::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
 void AArinaSpeedPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
 	AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(OtherActor);
+	OnOverlap(ArinaCharacter);
+}
+
+void AArinaSpeedPickup::OnOverlap(AArinaCharacter* ArinaCharacter)
+{
+	Super::OnOverlap(ArinaCharacter);
+
 	if (ArinaCharacter == nullptr) return;
 	
 	UArinaBuffComponent* ArinaBuffComponent = ArinaCharacter->GetBuffComponent();
@@ -35,8 +47,4 @@ void AArinaSpeedPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 	Destroy();
 }
 
-void AArinaSpeedPickup::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 

@@ -26,6 +26,8 @@ protected:
 		const FHitResult& SweepResult
 	) override;
 
+	virtual void OnOverlap(AArinaCharacter* ArinaCharacter) override;
+
 private:
 	UPROPERTY(EditAnywhere)
 	float SpeedBuffMult = 1.25f;

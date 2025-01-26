@@ -20,13 +20,20 @@ void AArinaAmmoPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent,
 	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
 	AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(OtherActor);
+	OnOverlap(ArinaCharacter);
+
+}
+
+void AArinaAmmoPickup::OnOverlap(AArinaCharacter* ArinaCharacter)
+{
+	Super::OnOverlap(ArinaCharacter);
+
 	if (ArinaCharacter && ArinaCharacter->GetCombatComponent() && ArinaCharacter->GetEquippedWeapon())
 	{
 		ArinaCharacter->GetCombatComponent()->PickupAmmo(WeaponType, AmmoAmount);
 
 		Destroy();
 	}
-
 }
 
 

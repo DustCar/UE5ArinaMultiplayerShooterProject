@@ -36,6 +36,7 @@ public:
 	void PlayEliminatedMontage();
 	void PlayThrowGrenadeMontage();
 	void UpdateHUDHealth();
+	void UpdateHUDShield();
 	void Eliminated();
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -159,6 +160,17 @@ private:
 	void EliminatedTimerFinished();
 
 	/**
+	*	Player Shield
+	*/
+	UPROPERTY(EditAnywhere, Category = "PlayerStats")
+	float MaxShield = 100.f;
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentShield, EditAnywhere, Category = "PlayerStats", meta = (ClampMin = "0.0", ClampMax = "100.0", UIMin = "0.0", UIMax = "100.0"))
+	float CurrentShield = 0.f;
+
+	UFUNCTION()
+	void OnRep_CurrentShield(float LastShield);
+
+	/**
 	*	Dissolve Effect
 	*/
 
@@ -221,5 +233,8 @@ public:
 	FORCEINLINE UArinaBuffComponent* GetBuffComponent() const { return BuffComp; }
 	FORCEINLINE float GetHealth() const { return CurrentHealth; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	FORCEINLINE float GetShield() const { return CurrentShield; }
+	FORCEINLINE float GetMaxShield() const { return MaxShield; }
 	FORCEINLINE void SetHealth(const float Health) { CurrentHealth = Health; }
+	FORCEINLINE void SetShield(const float Shield) { CurrentShield = Shield; }
 };

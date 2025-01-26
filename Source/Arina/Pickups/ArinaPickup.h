@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ArinaPickup.generated.h"
 
+class AArinaCharacter;
 class UNiagaraSystem;
 class UNiagaraComponent;
 class USphereComponent;
@@ -33,6 +34,8 @@ protected:
 		const FHitResult& SweepResult
 	);
 
+	virtual void OnOverlap(AArinaCharacter* ArinaCharacter);
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* PickupMesh;
 
@@ -59,6 +62,14 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* DestroyedEffect;
+
+	// timer delay for OnSphereOverlap binding
+	FTimerHandle BindOverlapTimer;
+	float BindOverlapDelay = 0.25f;
+
+	void BindOverlapTimerFinished();
+
+	AActor* GetClosestActor(const TArray<AActor*> OverlappingActors);
 	
 public:
 };

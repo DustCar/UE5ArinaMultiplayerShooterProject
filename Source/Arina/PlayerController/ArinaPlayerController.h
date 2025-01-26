@@ -19,6 +19,7 @@ class ARINA_API AArinaPlayerController : public APlayerController
 
 public:
 	void SetHUDHealth(const float& CurrentHealth, const float& MaxHealth);
+	void SetHUDShield(const float& CurrentShield, const float& MaxShield);
 	void SetHUDScore(const float& Score);
 	void SetHUDDeaths(const int32& Defeats);
 	void SetHUDWeaponAmmo(const int32& WeaponAmmo);
@@ -93,10 +94,12 @@ private:
 
 	float HUDMaxHealth = 0.f;
 	float HUDCurrHealth = 0.f;
+	float HUDMaxShield = 0.f;
+	float HUDCurrShield = 0.f;
 	int32 HUDGrenades = 0.f;
 	
 	void DisplayWinners();
-	void DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*> Leaderboard, FString& InfoTextString);
+	void DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*>& Leaderboard, FString& InfoTextString);
 	
 	void StartUrgentCountdown();
 	FTimerHandle BlinkerTimerHandle;

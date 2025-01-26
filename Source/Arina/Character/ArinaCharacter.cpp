@@ -75,6 +75,7 @@ void AArinaCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 
 	DOREPLIFETIME_CONDITION(ThisClass, OverlappingWeapon, COND_OwnerOnly);
 	DOREPLIFETIME(ThisClass, CurrentHealth);
+	DOREPLIFETIME(ThisClass, CurrentShield);
 	DOREPLIFETIME(ThisClass, bDisableGameplay);
 }
 
@@ -93,6 +94,7 @@ void AArinaCharacter::PostInitializeComponents()
 		BuffComp->SetInitialSpeeds(
 			GetCharacterMovement()->MaxWalkSpeed,
 			GetCharacterMovement()->MaxWalkSpeedCrouched);
+		BuffComp->SetInitialJumpVelocity(GetCharacterMovement()->JumpZVelocity);
 	}
 }
 
@@ -101,6 +103,7 @@ void AArinaCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	UpdateHUDHealth();
+	UpdateHUDShield();
 
 	if (HasAuthority())
 	{
@@ -138,7 +141,7 @@ void AArinaCharacter::PossessedBy(AController* NewController)
 	if (PlayerController)
 	{
 		UpdateHUDHealth();
-		
+		UpdateHUDShield();
 	}
 }
 
@@ -237,6 +240,30 @@ void AArinaCharacter::LookRight(const FInputActionValue& Value)
 		if (LookRightValue != 0.f)
 		{
 			AddControllerYawInput(LookRightValue * RotationLookSpeedMultiplier);
+		}
+	}
+}
+
+void AArinaCharacter::TurnInPlace(float DeltaTime)
+{
+	if (AO_Yaw > 45.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Right;
+	}
+	else if (AO_Yaw < -45.f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
+
+	// Turns the character to where the camera is pointing by resetting Aim Offset yaw to 0
+	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
+	{
+		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 4.f);
+		AO_Yaw = InterpAO_Yaw;
+		if (FMath::Abs(AO_Yaw) < 15.f)
+		{
+			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		}
 	}
 }
@@ -531,47 +558,40 @@ void AArinaCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UD
 	AController* InstigatorBy, AActor* DamageCauser)
 {
 	if (bEliminated) return;
-	
-	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
-	UpdateHUDHealth();
 
 	AArinaGameMode* ArinaGameMode = GetWorld()->GetAuthGameMode<AArinaGameMode>();
-
+	float DamageToHealth = Damage;
+	
+	if (CurrentShield > 0.f)
+	{
+		if (CurrentShield >= Damage)
+		{
+			CurrentShield = FMath::Clamp(CurrentShield - Damage, 0.f, MaxShield);
+			DamageToHealth = 0.f;
+			// TODO: if hit play shield hit animation.
+		}
+		else
+		{
+			DamageToHealth = FMath::Clamp(DamageToHealth - CurrentShield, 0.f, Damage);
+			CurrentShield = 0.f;
+		}
+	}
+	UpdateHUDShield();
+	
 	if (CurrentHealth > 0.f)
 	{
+		CurrentHealth = FMath::Clamp(CurrentHealth - DamageToHealth, 0.f, MaxHealth);
+		UpdateHUDHealth();
 		PlayHitReactMontage();
 	}
-	else
+	
+	if (CurrentHealth <= 0.f)
 	{
 		if (ArinaGameMode)
 		{
 			ArinaPlayerController = ArinaPlayerController == nullptr ? Cast<AArinaPlayerController>(Controller) : ArinaPlayerController;
 			AArinaPlayerController* AttackerController = Cast<AArinaPlayerController>(InstigatorBy);
 			ArinaGameMode->PlayerEliminated(this, ArinaPlayerController, AttackerController);
-		}
-	}
-}
-
-void AArinaCharacter::TurnInPlace(float DeltaTime)
-{
-	if (AO_Yaw > 45.f)
-	{
-		TurningInPlace = ETurningInPlace::ETIP_Right;
-	}
-	else if (AO_Yaw < -45.f)
-	{
-		TurningInPlace = ETurningInPlace::ETIP_Left;
-	}
-
-	// Turns the character to where the camera is pointing by resetting Aim Offset yaw to 0
-	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
-	{
-		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 4.f);
-		AO_Yaw = InterpAO_Yaw;
-		if (FMath::Abs(AO_Yaw) < 15.f)
-		{
-			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
-			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		}
 	}
 }
@@ -605,6 +625,21 @@ void AArinaCharacter::OnRep_CurrentHealth(float LastHealth)
 	{
 		PlayHitReactMontage();
 	}
+}
+
+void AArinaCharacter::UpdateHUDShield()
+{
+	ArinaPlayerController = ArinaPlayerController == nullptr ? Cast<AArinaPlayerController>(Controller) : ArinaPlayerController;
+	if (ArinaPlayerController)
+	{
+		ArinaPlayerController->SetHUDShield(CurrentShield, MaxShield);
+	}
+}
+
+void AArinaCharacter::OnRep_CurrentShield(float LastShield)
+{
+	UpdateHUDShield();
+	// TODO: if hit play shield hit animation.
 }
 
 void AArinaCharacter::UpdateDissolveMaterial(float DissolveValue)

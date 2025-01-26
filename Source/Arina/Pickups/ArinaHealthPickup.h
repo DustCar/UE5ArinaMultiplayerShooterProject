@@ -27,6 +27,8 @@ protected:
 		const FHitResult& SweepResult
 	) override;
 
+	virtual void OnOverlap(AArinaCharacter* ArinaCharacter) override;
+
 private:
 	bool bHealing = false;
 	
