@@ -158,7 +158,7 @@ void AArinaBaseWeapon::SetWeaponState(EWeaponState State)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
 		}
-		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
+		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*700.f);
 		break;
 	}
 	
@@ -199,7 +199,7 @@ void AArinaBaseWeapon::OnRep_WeaponState()
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
 		}
-		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*1000.f);
+		WeaponMesh->AddImpulse(WeaponMesh->GetRightVector()*700.f);
 		break;
 	}
 }

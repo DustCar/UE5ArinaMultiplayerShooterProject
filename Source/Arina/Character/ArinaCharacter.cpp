@@ -140,6 +140,7 @@ void AArinaCharacter::PossessedBy(AController* NewController)
 	AArinaPlayerController* PlayerController = Cast<AArinaPlayerController>(NewController);
 	if (PlayerController)
 	{
+		SpawnDefaultWeapon();
 		UpdateHUDHealth();
 		UpdateHUDShield();
 	}
@@ -398,6 +399,17 @@ void AArinaCharacter::ThrowGrenadePressed()
 	}
 }
 
+void AArinaCharacter::SpawnDefaultWeapon()
+{
+	AArinaGameMode* ArinaGameMode = Cast<AArinaGameMode>(UGameplayStatics::GetGameMode(this));
+	UWorld* World = GetWorld();
+	if (ArinaGameMode == nullptr || World == nullptr || CombatComp == nullptr) return;
+
+	AArinaBaseWeapon* StartingWeapon = World->SpawnActor<AArinaBaseWeapon>(CombatComp->DefaultWeaponClass);
+	StartingWeapon->bDestroyWeapon = true;
+	CombatComp->EquipWeapon(StartingWeapon);
+}
+
 void AArinaCharacter::PlayFireMontage(bool bAiming)
 {
 	if (CombatComp == nullptr || CombatComp->EquippedWeapon == nullptr)
@@ -453,7 +465,14 @@ void AArinaCharacter::Eliminated()
 {
 	if (CombatComp && CombatComp->EquippedWeapon)
 	{
-		CombatComp->EquippedWeapon->Dropped();
+		if (CombatComp->EquippedWeapon->bDestroyWeapon)
+		{
+			CombatComp->EquippedWeapon->Destroy();
+		}
+		else
+		{
+			CombatComp->EquippedWeapon->Dropped();
+		}
 	}
 	MulticastEliminated();
 	GetWorldTimerManager().SetTimer(
@@ -472,7 +491,7 @@ void AArinaCharacter::MulticastEliminated_Implementation()
 	{
 		ArinaPlayerController->SetHUDWeaponAmmo(0);
 		ArinaPlayerController->SetHUDCarryAmmo(0);
-		ArinaPlayerController->SetHUDWeaponType("Unequipped");
+		ArinaPlayerController->SetHUDWeaponType("");
 	}
 
 	// Creating dynamic material instance for dissolve effect and starting it
@@ -568,17 +587,17 @@ void AArinaCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UD
 		{
 			CurrentShield = FMath::Clamp(CurrentShield - Damage, 0.f, MaxShield);
 			DamageToHealth = 0.f;
-			// TODO: if hit play shield hit animation.
 		}
 		else
 		{
 			DamageToHealth = FMath::Clamp(DamageToHealth - CurrentShield, 0.f, Damage);
 			CurrentShield = 0.f;
 		}
+		// TODO: if hit play shield hit animation.
 	}
 	UpdateHUDShield();
 	
-	if (CurrentHealth > 0.f)
+	if (CurrentHealth > 0.f && CurrentShield <= 0.f)
 	{
 		CurrentHealth = FMath::Clamp(CurrentHealth - DamageToHealth, 0.f, MaxHealth);
 		UpdateHUDHealth();

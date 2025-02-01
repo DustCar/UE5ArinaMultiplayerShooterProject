@@ -14,6 +14,7 @@
 #include "Arina/HUD/ArinaAnnouncement.h"
 #include "Arina/HUD/ArinaSniperScopeWidget.h"
 #include "Arina/PlayerState/ArinaPlayerState.h"
+#include "Arina/Weapon/ArinaBaseWeapon.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -184,6 +185,10 @@ void AArinaPlayerController::SetHUDWeaponAmmo(const int32& WeaponAmmo)
 		FString AmmoText = FString::Printf(TEXT("%d"), WeaponAmmo);
 		ArinaHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
 	}
+	else
+	{
+		HUDWeaponAmmo = WeaponAmmo;
+	}
 }
 
 void AArinaPlayerController::SetHUDCarryAmmo(const int32& CarryAmmo)
@@ -199,6 +204,10 @@ void AArinaPlayerController::SetHUDCarryAmmo(const int32& CarryAmmo)
 		FString AmmoText = FString::Printf(TEXT("%d"), CarryAmmo);
 		ArinaHUD->CharacterOverlay->CarryAmmoAmount->SetText(FText::FromString(AmmoText));
 	}
+	else
+	{
+		HUDCarriedAmmo = CarryAmmo;
+	}
 }
 
 void AArinaPlayerController::SetHUDWeaponType(const FString& WeaponType)
@@ -213,6 +222,10 @@ void AArinaPlayerController::SetHUDWeaponType(const FString& WeaponType)
 	{
 		FString WeaponText = FString::Printf(TEXT("%s"), *WeaponType);
 		ArinaHUD->CharacterOverlay->WeaponType->SetText(FText::FromString(WeaponText));
+	}
+	else
+	{
+		HUDWeaponType = WeaponType;
 	}
 }
 
@@ -500,13 +513,15 @@ void AArinaPlayerController::HandleMatchHasStarted()
 		SetHUDHealth(HUDCurrHealth, HUDMaxHealth);
 		SetHUDShield(HUDCurrShield, HUDMaxShield);
 		CollapseKilledByMessage();
-		SetHUDWeaponType("Unequipped");
 
 		AArinaCharacter* ArinaCharacter = Cast<AArinaCharacter>(GetPawn());
 		if (ArinaCharacter && ArinaCharacter->GetCombatComponent())
 		{
 			HUDGrenades = ArinaCharacter->GetCombatComponent()->GetGrenadesHeld();
 			SetHUDGrenades(HUDGrenades);
+			SetHUDCarryAmmo(HUDCarriedAmmo);
+			SetHUDWeaponAmmo(HUDWeaponAmmo);
+			SetHUDWeaponType(HUDWeaponType);
 		}
 	}
 }

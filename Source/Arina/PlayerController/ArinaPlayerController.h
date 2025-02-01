@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Arina/Weapon/WeaponTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "ArinaPlayerController.generated.h"
 
+enum class EWeaponType : uint8;
 class AArinaPlayerState;
 class AArinaGameMode;
 class AArinaHUD;
@@ -96,7 +98,10 @@ private:
 	float HUDCurrHealth = 0.f;
 	float HUDMaxShield = 0.f;
 	float HUDCurrShield = 0.f;
-	int32 HUDGrenades = 0.f;
+	int32 HUDGrenades = 0;
+	int32 HUDWeaponAmmo = 0;
+	int32 HUDCarriedAmmo = 0;
+	FString HUDWeaponType = FString(TEXT("UnEquipped"));
 	
 	void DisplayWinners();
 	void DisplayTopThree(const AArinaPlayerState* CurrentPlayerState, TArray<AArinaPlayerState*>& Leaderboard, FString& InfoTextString);

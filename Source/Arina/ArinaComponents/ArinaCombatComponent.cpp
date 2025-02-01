@@ -4,6 +4,7 @@
 #include "ArinaCombatComponent.h"
 
 #include "Arina/Character/ArinaCharacter.h"
+#include "Arina/GameMode/ArinaGameMode.h"
 #include "Arina/HUD/ArinaHUD.h"
 #include "Arina/PlayerController/ArinaPlayerController.h"
 #include "Arina/Weapon/ArinaBaseWeapon.h"
@@ -125,7 +126,6 @@ void UArinaCombatComponent::EquipWeapon(AArinaBaseWeapon* WeaponToEquip)
 	EquippedWeapon->SetOwner(ArinaCharacter);
 	EquippedWeapon->SetHUDAmmo();
 	UpdateHUDWeaponType();
-	
 	UpdateCarriedAmmo();
 	
 	ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -145,7 +145,9 @@ void UArinaCombatComponent::OnRep_EquippedWeapon()
 		}
 		
 		AttachActorToRightHand(EquippedWeapon);
+		EquippedWeapon->SetHUDAmmo();
 		UpdateHUDWeaponType();
+		UpdateCarriedAmmo();
 
 		ArinaCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 		ArinaCharacter->bUseControllerRotationYaw = true;

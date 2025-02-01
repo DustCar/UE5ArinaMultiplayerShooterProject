@@ -41,6 +41,7 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastEliminated();
+	void SpawnDefaultWeapon();
 
 	virtual void Destroyed() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -69,6 +70,7 @@ protected:
 	void Fire(const FInputActionValue& Value);
 	void Reload();
 	void ThrowGrenadePressed();
+	
 	
 	void PlayHitReactMontage();
 

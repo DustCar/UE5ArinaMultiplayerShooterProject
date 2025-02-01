@@ -25,6 +25,7 @@ public:
 	friend class AArinaCharacter;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetHUDCarriedAmmo();
+	void UpdateCarriedAmmo();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void EquipWeapon(AArinaBaseWeapon* WeaponToEquip);
@@ -172,8 +173,6 @@ private:
 	UPROPERTY(ReplicatedUsing=OnRep_CarriedAmmo)
 	int32 CarriedAmmo;
 	
-	void UpdateCarriedAmmo();
-	
 	UFUNCTION()
 	void OnRep_CarriedAmmo();
 
@@ -212,6 +211,13 @@ private:
 	int32 MaxGrenadesHeld = 5;
 
 	void UpdateHUDGrenadesHeld();
+
+	/**
+	*	Default Weapon
+	*/
+	UPROPERTY(EditAnywhere, Category = "DefaultWeapon")
+	TSubclassOf<AArinaBaseWeapon> DefaultWeaponClass;
+	
 public:	
 	FORCEINLINE int32 GetGrenadesHeld() const { return GrenadesHeld; }
 	
